@@ -35,7 +35,7 @@
                    </el-row>
                </el-row>
                </el-dialog>
-               <!--历史租聘合同-->
+               <!--历史租聘123合同-->
                <el-dialog
                        :visible.sync="hisytor"
                        v-if="hisytor"
