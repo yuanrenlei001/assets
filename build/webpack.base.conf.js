@@ -9,14 +9,14 @@ function resolve (dir) {
 }
 
 const createLintingRule = () => ({
-  test: /\.(js|vue)$/,
-  loader: 'eslint-loader',
-  enforce: 'pre',
-  include: [resolve('src'), resolve('test')],
-  options: {
-    formatter: require('eslint-friendly-formatter'),
-    emitWarning: !config.dev.showEslintErrorsInOverlay
-  }
+  // test: /\.(js|vue)$/,
+  // loader: 'eslint-loader',
+  // enforce: 'pre',
+  // include: [resolve('src'), resolve('test')],
+  // options: {
+  //   formatter: require('eslint-friendly-formatter'),
+  //   emitWarning: !config.dev.showEslintErrorsInOverlay
+  // }
 })
 
 module.exports = {
@@ -24,6 +24,10 @@ module.exports = {
   entry: {
     app: './src/main.js'
   },
+    externals: {
+        'tMap': 'T', // 天地图全局名称
+        // 项目内使用时的组件名称: 某外部组件对外暴露的名称
+    },
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
