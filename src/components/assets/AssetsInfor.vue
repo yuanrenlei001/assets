@@ -124,6 +124,7 @@
                                     :on-remove="handleRemove"
                                     :before-remove="beforeRemove"
                                     :on-success = 'handleSuccess'
+                                    :on-progress = 'progress'
                                     multiple
                                     :limit="3"
                                     :on-exceed="handleExceed"
@@ -350,7 +351,11 @@
                 fileList: [],
                 Wid:'',
                 meansBook:'',
-                shp:''
+                shp:'',
+                realEstateAttachUrl:'',
+                realHouseAttachUrl:'',
+                realLandAttachUrl:'',
+                picUrl:'',
             }
         },
         components:{
@@ -381,16 +386,16 @@
                         'landNature':this.landNatureVal,
                         'noCheckin':this.noCheckinVal,
                         'realEstate':this.realEstate,
-                        'realEstateAttach':this.realEstateAttach[0].url,
-                        'realHouseAttach':this.realHouseAttach[0].url,
+                        'realEstateAttach':this.realEstateAttachUrl,
+                        'realHouseAttach':this.realHouseAttachUrl,
                         'realHouse':this.realHouse,
-                        'realLandAttach':this.realLandAttach[0].url,
+                        'realLandAttach':this.realLandAttachUrl,
                         'realLand':this.realLand,
                         'dealAmount':this.dealAmount,
                         'houseNow':this.houseNowVal,
                         'houseNo':this.houseNo,
                         'remark':this.remark,
-                        'pic':this.handlePic[0].url,
+                        'pic':this.picUrl,
                         'accNameWater':this.accNameWater,//水：户名
                         'accNoWater':this.accNoWater,
                         'accTypeWater':this.accTypeWater,
@@ -402,6 +407,8 @@
                         'accTypeGas':this.accTypeGas,
                     }]
                 }
+                console.log(data)
+
                 this.$alert('修改已提交，等待管理员审核', '提示', {
                     callback: action => {
                     this.$emit('changeShow','false')
@@ -473,20 +480,25 @@
                     var obj = {}
                     that.$set(obj,'name','不动产证');
                     that.$set(obj,'url',meansBook.realEstateAttach);
+                    that.realEstateAttach = [];
                     that.realEstateAttach.push(obj);
                     var obj2 = {}
                     that.$set(obj2,'name','房产证');
                     that.$set(obj2,'url',meansBook.realHouseAttach);
+                    that.realHouseAttach=[]
                     that.realHouseAttach.push(obj2);
                     var obj3 = {}
                     that.$set(obj3,'name','房产证');
                     that.$set(obj3,'url',meansBook.realLandAttach);
+                    that.realLandAttach=[]
                     that.realLandAttach.push(obj3);
                     var obj4 = {}
                     that.$set(obj4,'name','房产证');
                     that.$set(obj4,'url',meansBook.pic);
+                    that.handlePic = []
                     that.handlePic.push(obj4);
-                    // that.pic[0].url = meansBook.pic;
+                    that.pic[0].url = ''
+                    that.pic[0].url = meansBook.pic;
 
                 }else{
                     this.$message({
@@ -506,21 +518,27 @@
             noCheckinChange(val){this.noCheckinVal = val;},
             houseNowChange(val){this.houseNowVal = val;},
             // 不动产证
-            handleRemove(file, fileList) {
-                console.log(file, fileList);
+            handleRemove(file,fileList) {
+                console.log(file);
+                console.log(fileList);
+            },
+            progress(file,fileList){
+                // this.realEstateAttach = []
             },
             handleSuccess(res,file){
-                console.log(res)
+                console.log(123)
+                this.realEstateAttach = []
+                // this.realEstateAttach.push({'url':file.name +'#_#'+res.data[0],'name':file.name})
                 this.realEstateAttach.push({'url':res.data[0],'name':file.name})
-                console.log(this.realEstateAttach)
+                this.realEstateAttachUrl = this.realEstateAttach[0].url
+
             },
             handlePreview(file) {
                 console.log(file);
             },
-            handleExceed(files, fileList) {
-                this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+            handleExceed(files) {
             },
-            beforeRemove(file, fileList) {
+            beforeRemove(file) {
                 return this.$confirm(`确定移除 ${ file.name }？`);
             },
             // 房产证
@@ -537,7 +555,9 @@
                 return this.$confirm(`确定移除 ${ file.name }？`);
             },
             realHouseAttachSuccess(res,file){
+                this.realHouseAttach = []
                 this.realHouseAttach.push({'url':res.data[0],'name':file.name})
+                this.realHouseAttachUrl = this.realHouseAttach[0].url
             },
             // 土地证
             realLandAttachRemove(file, fileList) {
@@ -553,7 +573,9 @@
                 return this.$confirm(`确定移除 ${ file.name }？`);
             },
             realLandAttachSuccess(res,file){
+                this.realLandAttach = []
                 this.realLandAttach.push({'url':res.data[0],'name':file.name})
+                this.realLandAttachUrl = this.realLandAttach[0].url
             },
             // 照片
             handleRemove(file, fileList) {
@@ -565,9 +587,8 @@
                 if(fileList.length >= 3){
                     this.showUpload = true
                 }
-                console.log(res.data[0])
-                console.log(file.name)
                 this.pic.push({'url':res.data[0],'name':file.name})
+                this.picUrl = this.pic[0].url
             },
             handleClose(){
                 // 子组件调用父组件方法，并传递参数
@@ -592,7 +613,6 @@
             this.$emit('childEvent', { name: 'zhangsan', age:  10 });
         },
         created:function () {
-
         }
     }
 </script>

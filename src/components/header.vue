@@ -40,10 +40,10 @@
                             </el-tooltip>
                         </div>
                         <!-- 全屏显示 -->
-                        <img class="avatar" src="@/assets/logo.png">
+                        <img class="avatar" :src="headerData.avatar">
                         <div class="welcome">
                             <p class="name comename">欢迎</p>
-                            <p class="name avatarname">12312</p>
+                            <p class="name avatarname">{{headerData.name}}</p>
                         </div>
                         <span class='username'>
 						<el-dropdown trigger="click" @command='handleCommand'>
@@ -51,7 +51,7 @@
 								<i class="el-icon-caret-bottom el-icon--right"></i>
 							</span>
 							<el-dropdown-menu slot="dropdown">
-								<el-dropdown-item command='setDialogInfo'>权限管理</el-dropdown-item>
+								<el-dropdown-item v-if="headerData.authStr == ''" command='setDialogInfo'>权限管理</el-dropdown-item>
 								<el-dropdown-item command='logout'>退出</el-dropdown-item>
 							</el-dropdown-menu>
 						</el-dropdown>
@@ -105,6 +105,7 @@ export default {
     },
     data() {
         return {
+            headerData:JSON.parse(sessionStorage.getItem('userImg')),
             collapse: false, //菜单栏是否闭合
             fullscreen: false,
             showlrc:true,

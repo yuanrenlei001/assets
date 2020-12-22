@@ -78,7 +78,7 @@
                         </el-col>
                         <el-col :span="24" style="position: relative;">
                             <el-form-item label="审批人：" style="margin-left: 48px;" v-for='(item,index) in books'  :key="item.id">
-                                <el-select  v-model="item.id" placeholder="请选择" style="margin-left: 25px;" @change="houseNowChange3(item.id)">
+                                <el-select  v-model="books[index].id" placeholder="请选择" style="margin-left: 25px;" @change="houseNowChange3(item.id)">
                                     <el-option
                                             v-for="item in RoleAdmin"
                                             :key="item.value"
@@ -94,7 +94,7 @@
                         </el-col>
                         <el-col :span="24" style="position: relative;">
                             <el-form-item label="抄送人：" style="margin-left: 48px;" v-for='(item,index) in books2'  :key="item.id">
-                                    <el-select  v-model="item.id" placeholder="请选择" style="margin-left: 25px;" @change="houseNowChange4(item.id)">
+                                    <el-select  v-model="books2[index].id" placeholder="请选择" style="margin-left: 25px;" @change="houseNowChange4(item.id)">
                                         <el-option
                                                 v-for="item in RoleAdmin"
                                                 :key="item.value"
@@ -203,6 +203,8 @@
                 this.splxVal = data.typeName;
                 this.descStrInput = data.descStr;
                 this.OpenRoleIdVal = data.openRole[0].id;
+                this.checkRoleVal = data.checkRole[0].id;
+                this.noticeRoleVal = data.noticeRole[0].id;
                 var checkRole = data.checkRole;
                 var arr = [];
                 for(var i=0;i<checkRole.length;i++){
@@ -288,7 +290,7 @@
             // 修改流程
             success(){
                 var id = this.approvalId;
-                var typeName = this.splxVal;
+                var typeName = this.splxVal == 1?'资产更新':'物业巡检审批';
                 var roveOpenRoleId = this.OpenRoleIdVal;
                 var descStr = this.descStrInput;
                 var lenBooks = this.books;
@@ -312,6 +314,7 @@
                     'roveNoticeRoleIds':roveNoticeRoleIds,
                     'status':1
                 }
+                console.log(data)
                 if(typeName == '' || descStr == '' || roveOpenRoleId == '' || roveCheckRoleIds == '' || roveNoticeRoleIds == ''){
                     this.$message({
                         message: '输入框内值不能为空！',
@@ -348,8 +351,9 @@
             houseNowChange1(val){
                 this.splxVal = val
             },
-            houseNowChange2(val){this.OpenRoleIdVal = val;},
+            houseNowChange2(val){this.OpenRoleIdVal = val;console.log(val)},
             houseNowChange3(id){
+                // this.checkRoleVal = val
                 this.booksid = id
                 let testColData = {}
                 for(let i = 0; i< this.RoleAdmin.length; i++){
@@ -357,7 +361,8 @@
                         testColData = this.RoleAdmin[i]
                     }
                 }
-                console.log(testColData)
+                console.log(id)
+                this.checkRoleVal = testColData;
                 let data = this.books
                 for(let i = 0; i < data.length; i++){
                     if(data[i].id == testColData.id){

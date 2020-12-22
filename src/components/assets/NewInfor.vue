@@ -8,17 +8,17 @@
             <el-row>
                 <el-form ref="form" >
                     <el-col :span="24">
-                        <el-form-item label="资产编号：">
+                        <el-form-item label=" * 资产编号：">
                             <el-input v-model="assetCode" placeholder="请输入内容"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="24">
-                        <el-form-item label="产权人：">
+                        <el-form-item label=" * 产权人：">
                             <el-input v-model="assetUser" placeholder="请输入内容" :disabled="disabled"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="24">
-                        <el-form-item label="房屋坐落：">
+                        <el-form-item label=" * 房屋坐落：">
                             <el-input v-model="houseAddress" placeholder="请输入内容" :disabled="disabled"></el-input>
                         </el-form-item>
                     </el-col>
@@ -28,7 +28,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col  :span="24">
-                        <el-form-item label="房屋类型：" >
+                        <el-form-item label=" * 房屋类型：" >
                             <el-select  v-model="houseNatureVal" placeholder="请选择" :disabled="disabled" @change="houseNatureChange">
                                 <el-option
                                         v-for="item in houseNature"
@@ -53,16 +53,16 @@
                     <!--</el-col>-->
                     <el-col :span="24">
                         <el-form-item label="未登记建筑面积：">
-                            <el-input v-model="noCheckinArea" placeholder="请输入内容" :disabled="disabled"></el-input>
+                            <el-input v-model="noCheckinArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="24">
-                        <el-form-item label="房屋建筑面积：">
-                            <el-input v-model="houseArea" placeholder="请输入内容" :disabled="disabled"></el-input>
+                        <el-form-item label=" * 房屋建筑面积：">
+                            <el-input v-model="houseArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col  :span="24">
-                        <el-form-item label="用途（产权用途）：" >
+                        <el-form-item label=" * 用途（产权用途）：" >
                             <el-select  v-model="assetUseVal" placeholder="请选择" :disabled="disabled" @change="assetUseChange">
                                 <el-option
                                         v-for="item in assetUse"
@@ -74,12 +74,12 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="24">
-                        <el-form-item label="土地面积/m²：">
-                            <el-input v-model="landArea" placeholder="请输入内容" :disabled="disabled"></el-input>
+                        <el-form-item label=" * 土地面积/m²：">
+                            <el-input v-model="landArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col  :span="24">
-                        <el-form-item label="土地用途：" >
+                        <el-form-item label=" * 土地用途：" >
                             <el-select  v-model="landUseVal" placeholder="请选择" :disabled="disabled" @change="landUseChange">
                                 <el-option
                                         v-for="item in landUse"
@@ -91,7 +91,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col  :span="24">
-                        <el-form-item label="土地性质：" >
+                        <el-form-item label=" * 土地性质：" >
                             <el-select  v-model="landNatureVal" placeholder="请选择" :disabled="disabled" @change="landNatureChange">
                                 <el-option
                                         v-for="item in landNature"
@@ -166,12 +166,12 @@
                     </el-col>
                     <el-col :span="24">
                         <el-form-item label="协议金额：">
-                            <el-input v-model="dealAmount" placeholder="请输入内容" :disabled="disabled"></el-input>
+                            <el-input v-model="dealAmount" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>
                         </el-form-item>
                     </el-col>
 
                     <el-col  :span="24">
-                        <el-form-item label="房屋现状：" >
+                        <el-form-item label=" * 房屋现状：" >
                             <el-select  v-model="houseNowVal" placeholder="请选择" :disabled="disabled" @change="houseNowChange">
                                 <el-option
                                         v-for="item in houseNow"
@@ -344,7 +344,11 @@
         zoom: 10, // 地图的初始化级别，及放大比例
         multipleSelection: [],
         types:'',
-        fileList: []
+        fileList: [],
+        realEstateAttachUrl:'',
+        realHouseAttachUrl:'',
+        realLandAttachUrl:'',
+        picUrl:'',
     }
   },
         components:{
@@ -371,17 +375,17 @@
                 'landNature':this.landNatureVal,
                 'noCheckin':this.noCheckinVal,
                 'realEstate':this.realEstate,
-                // 'realEstateAttach':this.realEstateAttach[0].url,
-                // 'realHouseAttach':this.realHouseAttach[0].url,
+                'realEstateAttach':this.realEstateAttachUrl,
+                'realHouseAttach':this.realHouseAttachUrl,
                 'realHouse':this.realHouse,
-                // 'realLandAttach':this.realLandAttach[0].url,
+                'realLandAttach':this.realLandAttachUrl,
                 'realLand':this.realLand,
                 'dealAmount':this.dealAmount,
                 'houseNow':this.houseNowVal,
                 'houseNo':this.houseNo,
                 'remark':this.remark,
-                // 'pic':this.pic[0].url,
-                'accNameWater':this.accNameWater,//水：户名
+                'pic':this.picUrl,
+                'accNameWater':this.accNameWater,
                 'accNoWater':this.accNoWater,
                 'accTypeWater':this.accTypeWater,
                 'accNameElec':this.accNameElec,
@@ -391,11 +395,81 @@
                 'accNoGas':this.accNoGas,
                 'accTypeGas':this.accTypeGas,
             }
-            this.$alert('修改已提交，等待管理员审核', '提示', {
-                callback: action => {
+            if(data.assetCode == ''){
+                this.$message({
+                    message: '资产编号不能为空',
+                    type: 'warning'
+                });
+                return;
+            }
+            if(data.assetUser == ''){
+                this.$message({
+                    message: '产权人不能为空',
+                    type: 'warning'
+                });
+                return;
+            }
+            if(data.houseAddress == ''){
+                this.$message({
+                    message: '房屋坐落不能为空',
+                    type: 'warning'
+                });
+                return;
+            }
+            if(data.houseNature == ''){
+                this.$message({
+                    message: '房屋类型不能为空',
+                    type: 'warning'
+                });
+                return;
+            }
+            if(data.houseArea == ''){
+                this.$message({
+                    message: '房屋建筑面积不能为空',
+                    type: 'warning'
+                });
+                return;
+            }
+            if(data.assetUseVal == ''){
+                this.$message({
+                    message: '产权用途不能为空',
+                    type: 'warning'
+                });
+                return;
+            }
+            if(data.landArea == ''){
+                this.$message({
+                    message: '土地面积不能为空',
+                    type: 'warning'
+                });
+                return;
+            }
+            if(data.assetUse == ''){
+                this.$message({
+                    message: '土地用途为空',
+                    type: 'warning'
+                });
+                return;
+            }
+            if(data.landNatureVal){
+                this.$message({
+                    message: '土地性质为空',
+                    type: 'warning'
+                });
+                return;
+            }
+            if(data.houseNowVal == ''){
+                this.$message({
+                    message: '房屋现状为空',
+                    type: 'warning'
+                });
+                return;
+            }
+                this.$alert('已提交，等待管理员审核', '提示', {
+                    callback: action => {
                     this.$emit('changeShow','false')
-                    this.$emit('child-event',data)
-                }
+                this.$emit('child-event',data)
+            }
             });
         },
         upload(){
@@ -414,6 +488,7 @@
         handleSuccess(res,file){
             console.log(res)
             this.realEstateAttach.push({'url':res.data[0],'name':file.name})
+            this.realEstateAttachUrl = this.realEstateAttach[0].url
             console.log(this.realEstateAttach)
         },
         handlePreview(file) {
@@ -440,6 +515,7 @@
         },
         realHouseAttachSuccess(res,file){
             this.realHouseAttach.push({'url':res.data[0],'name':file.name})
+            this.realHouseAttachUrl = this.realHouseAttach[0].url
         },
         // 土地证
         realLandAttachRemove(file, fileList) {
@@ -456,6 +532,7 @@
         },
         realLandAttachSuccess(res,file){
             this.realLandAttach.push({'url':res.data[0],'name':file.name})
+            this.realLandAttachUrl = this.realLandAttach[0].url
         },
         // 照片
         handleRemove(file, fileList) {
@@ -470,6 +547,7 @@
             console.log(res.data[0])
             console.log(file.name)
             this.pic.push({'url':res.data[0],'name':file.name})
+            this.picUrl = this.pic[0].url
         },
         handleClose(){
             // 子组件调用父组件方法，并传递参数

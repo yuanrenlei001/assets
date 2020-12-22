@@ -7,7 +7,7 @@
                 @close="handleClose">
             <el-row>
                 <el-form ref="form" >
-                    <el-col :span="24" style="position: relative;">
+                    <el-col v-if="str == 'zy'" :span="24" style="position: relative;">
                         <el-form-item label="资产编号：" v-for='(item,index) in assetCode'>
                             <el-input v-model="item.value" placeholder="请输入内容" disabled></el-input>
                         </el-form-item>
@@ -85,19 +85,7 @@
                     </el-col>
                     <el-col :span="24">
                         <el-form-item label="附件：">
-                            <el-upload
-                                    action="http://39.100.95.204:2005/file/attachment/upload?type=asset"
-                                    list-type="picture-card"
-                                    :on-preview="handlePictureCardPreview"
-                                    :on-success="phone"
-                                    :limit="1"
-                                    :class="{hide:showUpload}"
-                                    :on-remove="handleRemove">
-                                <i class="el-icon-plus"></i>
-                            </el-upload>
-                            <el-dialog :visible.sync="dialogVisible">
-                                <img width="100%" :src="dialogImageUrl" alt="">
-                            </el-dialog>
+                                <img width="100%" style="width: 146px;height:146px;" :src="attach" alt="">
                         </el-form-item>
                     </el-col>
                     <el-col :span="24">
@@ -223,6 +211,8 @@
                 times: [],
                 params:'',
                 id:'',
+                str:'',
+                attach:'',
             }
         },
         components:{
@@ -233,54 +223,94 @@
             },
         },
         methods:{
-            detail(data){
+            detail(data,str){
                 console.log('***********')
                 this.id = data.id
+                this.str = str
                 var that = this;
-                this.$axios({
-                    url: this.getAjax + '/admin/property/findDetails?id='+data.id,
-                    method: "get",
-                    headers: {
-                        'Content-Type': 'application/json;charset=UTF-8',
-                        'Token':sessionStorage.getItem('token')
-                    },
-                    data:{}
-                }).then(res => {
-                    if(res.data.code == '2004'){
-                    this.$message({
-                        message: res.data.msg,
-                        type: 'warning'
-                    });
-                    this.$router.push('/')
+                if(str == 'zy'){
+                    this.$axios({
+                        url: this.getAjax + '/admin/property/findDetails?id='+data.id,
+                        method: "get",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:{}
+                    }).then(res => {
+                        if(res.data.code == '2004'){
+                            this.$message({
+                                message: res.data.msg,
+                                type: 'warning'
+                            });
+                            this.$router.push('/')
+                        }else{
+                            var params = res.data.data
+                            // var list = res.data.data;
+                            // that.list();
+                            var arr = [];
+                            var ass= params.assetCode.split(',');
+                            for(var i=0;i<ass.length;i++){
+                                var obj = {};
+                                obj['value'] = ass[i]
+                                arr.push(obj)
+                            }
+                            that.assetCode = arr
+                            that.attach = params.attach
+                            that.houseAddr = params.houseAddr
+                            that.pactCode = params.pactCode
+                            that.tenant = params.tenant
+                            that.contact = params.contact
+                            that.rentAmount = params.rentAmount
+                            that.fee = params.fee
+                            that.tradeName = params.tradeName
+                            that.formatsVal = params.formats
+                            that.margin = params.margin
+                            that.remark = params.remark
+                            that.books2 = params.propertyPayTypeList
+                            that.value1 = [params.rentStart,params.rentEnd]
+                            that.rentStart = params.rentStart
+                            that.rentEnd = params.rentEnd
+                            console.log(that.params)
+                        }
+                    })
                 }else{
-                    var params = res.data.data
-                    // var list = res.data.data;
-                    // that.list();
-                    var arr = [];
-                    var ass= params.assetCode.split(',');
-                    for(var i=0;i<ass.length;i++){
-                        var obj = {};
-                        obj['value'] = ass[i]
-                        arr.push(obj)
-                    }
-                    that.assetCode = arr
-                    that.houseAddr = params.houseAddr
-                    that.pactCode = params.pactCode
-                    that.tenant = params.tenant
-                    that.contact = params.contact
-                    that.rentAmount = params.rentAmount
-                    that.fee = params.fee
-                    that.tradeName = params.tradeName
-                    that.formatsVal = params.formats
-                    that.margin = params.margin
-                    that.remark = params.remark
-                    that.books2 = params.propertyPayTypeList
-                    that.value1 = [params.rentStart,params.rentEnd]
-                    that.rentStart = params.rentStart
-                    that.rentEnd = params.rentEnd
-                    console.log(that.params)
+                    this.$axios({
+                        url: this.getAjax + '/admin/property/findDetails?id='+data.id,
+                        method: "get",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:{}
+                    }).then(res => {
+                        if(res.data.code == '2004'){
+                            this.$message({
+                                message: res.data.msg,
+                                type: 'warning'
+                            });
+                            this.$router.push('/')
+                        }else{
+                            var params = res.data.data
+                            that.houseAddr = params.houseAddr
+                            that.attach = params.attach
+                            that.pactCode = params.pactCode
+                            that.tenant = params.tenant
+                            that.contact = params.contact
+                            that.rentAmount = params.rentAmount
+                            that.fee = params.fee
+                            that.tradeName = params.tradeName
+                            that.formatsVal = params.formats
+                            that.margin = params.margin
+                            that.remark = params.remark
+                            that.books2 = params.propertyPayTypeList
+                            that.value1 = [params.rentStart,params.rentEnd]
+                            that.rentStart = params.rentStart
+                            that.rentEnd = params.rentEnd
+                            console.log(that.params)
+                        }
+                    })
                 }
-            })
             },
             timeChange(id){
                 console.log(id)

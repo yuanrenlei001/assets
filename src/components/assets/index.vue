@@ -117,7 +117,7 @@
                         <el-button type="primary" @click="handleClickAdd">新增</el-button>
                         <el-button type="warning" @click="updateBatchs">批量修改</el-button>
                         <el-button type="success" @click="dialogVisible = true">统计</el-button>
-                        <el-button type="danger">导出</el-button>
+                        <el-button type="danger" @click="findExportTitles">导出</el-button>
                     </div>
                 </el-col>
             </el-form>
@@ -132,7 +132,7 @@
                 <el-table-column type="selection" width="55"></el-table-column>
                 <el-table-column  type="index" label="序号"></el-table-column>
                 <el-table-column prop="assetCode" label="资产编号"></el-table-column>
-                <el-table-column prop="assetUserOri" label="产权人"></el-table-column>
+                <el-table-column prop="assetUser" label="产权人"></el-table-column>
                 <el-table-column prop="houseAddress" label="房屋坐落"></el-table-column>
                 <el-table-column prop="houseNature" label="房屋性质"></el-table-column>
                 <el-table-column prop="landUse" label="土地用途"></el-table-column>
@@ -146,16 +146,22 @@
                 </el-table-column>
                 <el-table-column  label="资产详情">
                     <template slot-scope="tableData">
-                        <el-button  @click="detail(tableData.$index,tableData.row)" type="text" size="small">详情</el-button>
+                        <el-button  @click="detail(tableData.$index,tableData.row,'zc')" type="text" size="small">详情</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column
                         fixed="right"
                         label="操作"
                         >
-                    <template slot-scope="tableData">
-                        <el-button  @click="dialogUpdates(tableData.$index,tableData.row)" type="text" size="small" style="color: #333;">修改</el-button>
-                        <el-button  type="text" size="small" style="color: red;" @click="deletes(tableData.$index,tableData.row)">删除</el-button>
+                    <template slot-scope="tableData" >
+                        <div v-if="sysAuthAdmin !== '' && sysAuthAdmin !== 'xjsb,htgx' && sysAuthAdmin !== 'zcgxsp' && sysAuthAdmin !== 'xjsb,xjyjsp,htgx'">
+                            <el-button  @click="dialogUpdates(tableData.$index,tableData.row)" type="text" size="small" style="color: #333;">修改</el-button>
+                            <el-button  type="text" size="small" style="color: red;" @click="deletes(tableData.$index,tableData.row)">删除</el-button>
+                        </div>
+                        <div v-else>
+                            <el-button  type="text" size="small" style="color: #999;" >修改</el-button>
+                            <el-button  type="text" size="small" style="color: #999;" >删除</el-button>
+                        </div>
                     </template>
                 </el-table-column>
             </el-table>
@@ -212,11 +218,11 @@
                                 <!--<el-button type="primary" @click="handleClickss()" style="margin-left: 20px;">填写</el-button>-->
                             <!--</div>-->
                             <div style="margin-bottom: 12px;" v-if="books.length == 0">
-                                <el-input v-model="input" placeholder="" style="width: 300px;" ></el-input>
+                                <el-input disabled v-model="input" placeholder="" style="width: 300px;" ></el-input>
                                 <el-button type="primary" @click="handleClickss" style="margin-left: 20px;">填写</el-button>
                             </div>
                             <div v-for='(item,index) in books' :id="'myid'+index" v-model="myValue[index]" style="margin-bottom: 12px;" v-else>
-                                <el-input v-model="item.assetCode" placeholder="" style="width: 300px;" ></el-input>
+                                <el-input disabled v-model="item.assetCode" placeholder="" style="width: 300px;" ></el-input>
                                 <el-button type="primary" @click="handleClickss" style="margin-left: 20px;">填写</el-button>
                             </div>
 
@@ -242,9 +248,17 @@
                     <el-col :span="24">
                         <el-form-item label="审批：">
                             <div class="sp">
-                                <div  v-for="item in approvalFindList.openRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>
-                                <div v-for="item in approvalFindList.checkRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>
-                                <span class="hr"></span>
+                                <div>
+                                    <div>发起人：</div>
+                                    <div v-for="item in approvalFindList.openRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                </div>
+                                <div>
+                                    <div>审批人：</div>
+                                    <div v-for="item in approvalFindList.checkRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                </div>
+                                <!--<div  v-for="item in approvalFindList.openRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>-->
+                                <!--<div v-for="item in approvalFindList.checkRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>-->
+                                <!--<span class="hr"></span>-->
                             </div>
                         </el-form-item>
 
@@ -252,8 +266,10 @@
                     <el-col :span="24">
                         <el-form-item label="抄送：">
                             <div class="sp">
-                                <div v-for="item in approvalFindList.noticeRole" style="width: 200px;"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>
-                                <span class="add">+</span>
+                                <div>
+                                    <div>抄送人：</div>
+                                    <div v-for="item in approvalFindList.noticeRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                </div>
                             </div>
                         </el-form-item>
 
@@ -293,22 +309,28 @@
                         <el-input type="textarea" v-model="delinput" style="width: 80%;"></el-input>
                         </el-form-item>
                     </el-col>
-                        <el-col class="sspps" :span="24">
-                            <el-form-item label="审批：">
+                        <el-col  :span="24">
+                            <el-form-item label="">
                                 <div class="sp">
-                                    <div  v-for="item in approvalFindList.openRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>
-                                    <div v-for="item in approvalFindList.checkRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>
-                                    <span class="hr"></span>
-                                    <span class="hr" style="width: 52%;left:130px;"></span>
+                                    <div>
+                                        <div>发起人：</div>
+                                        <div v-for="item in approvalFindList.openRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                    </div>
+                                    <div>
+                                        <div>审批人：</div>
+                                        <div v-for="item in approvalFindList.checkRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                    </div>
                                 </div>
                             </el-form-item>
 
                         </el-col>
-                        <el-col class="sspps" :span="24">
-                            <el-form-item label="抄送：">
+                        <el-col  :span="24">
+                            <el-form-item label="">
                                 <div class="sp">
-                                    <div v-for="item in approvalFindList.noticeRole" style="width: 140px;"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>
-                                    <span class="add" >+</span>
+                                    <div>
+                                        <div>抄送人：</div>
+                                        <div v-for="item in approvalFindList.noticeRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                    </div>
                                 </div>
                             </el-form-item>
 
@@ -408,9 +430,14 @@
                     <el-col :span="24">
                         <el-form-item label="审批：">
                             <div class="sp">
-                                <div  v-for="item in approvalFindList.openRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>
-                                <div v-for="item in approvalFindList.checkRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>
-                                <span class="hr" style="width: 46%;left:260px;"></span>
+                                <div >
+                                    <div>发起人：</div>
+                                    <div v-for="item in approvalFindList.openRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                </div>
+                                <div>
+                                    <div>审批人：</div>
+                                    <div v-for="item in approvalFindList.checkRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                </div>
                             </div>
                         </el-form-item>
 
@@ -418,8 +445,8 @@
                     <el-col :span="24">
                         <el-form-item label="抄送：">
                             <div class="sp">
-                                <div v-for="item in approvalFindList.noticeRole" style="width: 200px;"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>
-                                <span class="add" style="left:60%;">+</span>
+                                <div>抄送人：</div>
+                                <div v-for="item in approvalFindList.noticeRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
                             </div>
                         </el-form-item>
 
@@ -486,6 +513,28 @@
 
         <!--物业合同详情-->
         <assets-kanwy :dialogVisibleKanwy="dialogVisibleKanwy"  @changeShow="showdialogVisibleKan" ref="dialogVisibleKanwyRef"></assets-kanwy>
+
+        <!--导出-->
+        <el-dialog
+                :visible.sync="findExportTitle"
+                v-if="findExportTitle"
+                title="选择导出字段"
+                width="500px">
+            <el-row>
+                <el-form rel="form">
+                    <el-col :span="24">
+                        <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+                        <div style="margin: 15px 0;"></div>
+                        <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
+                            <el-checkbox v-for="city in cities" :label="city" :key="city.key">{{city.key}}</el-checkbox>
+                        </el-checkbox-group>
+                    </el-col>
+                    <el-col :span="24" style="text-align: right;margin-top: 20px;">
+                        <el-button type="primary" round @click="daochu">导出</el-button>
+                    </el-col>
+                </el-form>
+            </el-row>
+        </el-dialog>
     </div>
 </template>
 
@@ -502,6 +551,12 @@ export default {
   name: 'login',
   data () {
     return {
+        sysAuthAdmin:sessionStorage.getItem('authStr'),
+        checkAll: false,
+        checkedCities: [],
+        cities: [{'title':'上海','key':'shanghai'},{'title':'上海1','key':'shanghai1'},{'title':'上海2','key':'shanghai2'},],
+        isIndeterminate: false,
+        findExportTitle:false,
         hisytor:false,
         pageSizesList: [10, 15, 20, 30, 50],
         newAddinput:'',
@@ -525,7 +580,7 @@ export default {
 
         ],
         value: '',
-        tableData: '',
+        tableData: [],
         multipleSelection: [],
         parentMessage: '我是来自父组件的消息',
         dialogVisible: false,
@@ -541,7 +596,7 @@ export default {
         total:1,
         pageType:false,
         token:'',
-        approvalFindList:'',
+        approvalFindList:[{openRole:{'user':''}},{checkRole:{'user':''}},{noticeRole:{'user':''}}],
         zcAdd:'',
         books:[],
         delId:'',
@@ -557,13 +612,122 @@ export default {
         realHouse:'',//房产证
         realLand:'',//土地证
         hisytortableData:[],
-        dialogVisibleKanwy:false
+        dialogVisibleKanwy:false,
+        formDatas:''
     }
   },
     components:{
         DateChart,AssetsInfor,NewInfor,NewAdd,AssetsKan,AddOrUpdate,history,AssetsKanwy
     },
     methods:{
+      // 获取导出列表
+        findExportTitles(){
+            this.findExportTitle = true
+            this.$axios({
+                url: this.getAjax + '/admin/meansAdmin/findExportTitle',
+                method: "get",
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Token':sessionStorage.getItem('token')
+                },
+                data:{}
+            }).then(res => {
+                if(res.data.code == '1001'){
+                    this.cities = res.data.data
+            }else{
+                this.$message({
+                    message: res.data.msg,
+                    type: 'warning'
+                });
+            }
+        })
+        },
+
+        handleCheckAllChange(val) {
+            const cityOptions = this.cities;
+            this.checkedCities = val ? cityOptions : [];
+            this.isIndeterminate = false;
+            this.exports(this.checkedCities)
+        },
+        handleCheckedCitiesChange(value) {
+            let checkedCount = value.length;
+            this.checkAll = checkedCount === this.cities.length;
+            this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
+            this.exports(value)
+        },
+        // 导出
+        exports(str){
+            var arr = []
+            for(var i=0;i<str.length;i++){
+                var obj = {};
+                obj['title']=str[i].key
+                obj['key']=str[i].title
+                arr.push(obj)
+            }
+            // var data = str
+            var that = this;
+            var formData = new FormData();
+            console.log(JSON.stringify(arr))
+            formData.append('exportTitle',JSON.stringify(arr))
+            this.formDatas = formData
+
+        },
+        daochu(){
+            var url =this.getAjax + '/admin/meansAdmin/export';
+            // this.formSubmit(url,this.formDatas)
+            this.$axios({
+                url: url,
+                method: "post",
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    'Token':sessionStorage.getItem('token')
+                },
+                responseType: 'blob',
+                data:this.formDatas
+            }).then(res => {
+                this.download(res.data)
+            })
+        },
+        download(data){
+            if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                let blob = new Blob([data], {
+                    type: 'application/vnd.ms-excel'
+                })
+                window.navigator.msSaveOrOpenBlob(blob,
+                    new Date().getTime() + '.xlsxs')
+            } else {
+                /* 火狐谷歌的文件下载方式 */
+                var blob = new Blob([data])
+                var downloadElement = document.createElement('a')
+                var href = window.URL.createObjectURL(blob)
+                downloadElement.href = href
+                downloadElement.download = new Date().getTime() + '.xlsx'
+                document.body.appendChild(downloadElement)
+                downloadElement.click()
+                document.body.removeChild(downloadElement)
+                window.URL.revokeObjectURL(href)
+            }
+        },
+        formSubmit(url,data){
+
+            sessionStorage.getItem('token')
+            var form1 = document.createElement('form');
+            document.body.appendChild(form1);
+            for(var key in data){
+                var input = document.createElement('input');
+                input.name = key;
+                input.value = data[key];
+                form1.appendChild(input)
+            }
+            form1.method = 'POST';
+            form1.enctype = 'multipart/form-data';
+            form1.action = url;
+            console.log(url)
+            console.log(data)
+            console.log(form1)
+            // form1.submit();
+            // document.body.removeChild(form1)
+        },
         historyHt(data){
             this.dialogVisibleKanwy = true
             this.$refs.dialogVisibleKanwyRef.detail(data)
@@ -634,7 +798,8 @@ export default {
             }).then(res => {
                 if(res.data.code == '1001'){
                 this.$message.success('批量修改成功！');
-                    that.list();
+                this.updateBatch = false;
+                    this.list();
             }else{
                 this.$message({
                     message: res.data.msg,
@@ -738,11 +903,21 @@ export default {
         },
         // 批量修改
         updateBatchs(){
-            if(this.multipleSelection.length == 0){
-                this.$message.error('请选择需要批量修改的数据');
+            var sysAuthAdmin = this.sysAuthAdmin
+            if(sysAuthAdmin == '' || sysAuthAdmin == 'zcgxsp' || sysAuthAdmin == 'xjsb,xjyjsp,htgx' || sysAuthAdmin == 'xjsb,htgx'){
+                this.$message({
+                    message: '暂无权限！',
+                    type: 'warning'
+                });
             }else{
-                this.updateBatch = true;
+                this.findList();
+                if(this.multipleSelection.length == 0){
+                    this.$message.error('请选择需要批量修改的数据');
+                }else{
+                    this.updateBatch = true;
+                }
             }
+
 
         },
         houseNowChange(val){this.houseNowVal = val;},
@@ -811,6 +986,8 @@ export default {
         },
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
+            this.pageSize = val
+            this.list()
         },
         handleCurrentChange(val) {
             this.pageNum = val
@@ -849,6 +1026,7 @@ export default {
             console.log(data)
         },
         deletes(index,data){
+            this.findList();
             this.delId = data.id
             if(data.checkDel == 0 ){
                 this.dialogdetail = true;
@@ -861,10 +1039,10 @@ export default {
             this.addOrUpdateVisible = true
         },
         // 资产详情查看
-        detail(index,data){
+        detail(index,data,str){
             this.AssetsKanVisible = true
             let param = data.id
-            this.$refs.AssetsKanRef.detail(param)
+            this.$refs.AssetsKanRef.detail(param,str)
         },
         // 资产修改
         dialogUpdates(index,data){
@@ -922,40 +1100,48 @@ export default {
             }
             var that = this;
             console.log(data)
-            this.$confirm('确认提交本次资产新增？', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                this.$alert('修改已提交，等待管理员审核', '提示', {
-                    callback: action => {
-                        this.NewAdd = false;
-                    }
-                });
-                this.$axios({
-                    url: this.getAjax + '/admin/meansAdmin/saveOrUpdate',
-                    method: "post",
-                    headers: {
-                        'Content-Type': 'application/json;charset=UTF-8',
-                        'Token':sessionStorage.getItem('token')
-                    },
-                    data:data
-                }).then(res => {
-                    if(res.data.code = '1001'){
-                        that.list();
-                }else{
-                    this.$message({
-                        message: res.data.msg,
-                        type: 'warning'
+            if(data.books.length>0){
+                this.$confirm('确认提交本次资产新增？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$alert('修改已提交，等待管理员审核', '提示', {
+                        callback: action => {
+                            this.NewAdd = false;
+                        }
                     });
-                }
-            })
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
+                    this.$axios({
+                        url: this.getAjax + '/admin/meansAdmin/saveOrUpdate',
+                        method: "post",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:data
+                    }).then(res => {
+                        if(res.data.code == '1001'){
+                            that.list();
+                    }else{
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'warning'
+                        });
+                    }
+                })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
                 });
-            });
+            }else{
+                this.$message({
+                    message: '请填写台账信息！',
+                    type: 'warning'
+                });
+            }
+
 
 
         },
@@ -1000,8 +1186,17 @@ export default {
             this.detailKan = true
         },
         handleClickAdd(){
-           this.NewAdd = true;
-           this.findList();
+            var sysAuthAdmin = this.sysAuthAdmin;
+            if(sysAuthAdmin == '' || sysAuthAdmin == 'zcgxsp' || sysAuthAdmin == 'xjsb,xjyjsp,htgx' || sysAuthAdmin == 'xjsb,htgx' ){
+                this.$message({
+                    message: '暂无权限！',
+                    type: 'warning'
+                });
+            }else{
+                this.NewAdd = true;
+                this.findList();
+            }
+
 
         },
         handleClicks(){
@@ -1014,7 +1209,7 @@ export default {
     mounted(){
         this.list();
         this.books = []
-        this.findList();
+        // this.findList();
     }
 }
 </script>
@@ -1060,7 +1255,7 @@ export default {
     .newAdd>>>.el-upload{width: 40px;height:40px;position: relative;border: 1px solid #999;}
     .newAdd>>>.el-upload img{width: 40px;height:40px;position: relative;}
     .count>>>.col {margin: 0 25px 25px 0;background: #fff;}
-    .count>>>.el-form-item__label {width: 42%;font-size: 14px;line-height: 40px;}
+    .count>>>.el-form-item__label {width: 30%;font-size: 14px;line-height: 40px;}
     .newAdd>>>.el-form-item__label {text-align: left;width: 35%;}
     .count>>>.el-form-item {margin-bottom: 5px;}
     .files>>>.el-upload-list {width: 30%;margin-left: 33%;}
@@ -1083,9 +1278,9 @@ export default {
     .pagination>>>.el-pagination.is-background .btn-next, .pagination>>>.el-pagination.is-background .btn-prev, .pagination>>>.el-pagination.is-background .el-pager li{width: 48px;height:48px;text-align: center;line-height: 48px;font-size: 18px;}
     .pagination>>>.el-pagination.is-background .el-pager li:not(.disabled).active {background-color:rgba(75,116,255,.62)}
     .sp {width: 100%;position: relative;}
-    .sp div {display: inline-block; width: 140px;text-align: center;position: relative;z-index: 2;}
+    .sp div {display: inline-block;text-align: center;position: relative;z-index: 2;font-size: 12px;margin-right: 5px;}
     .sp img {width: 40px;height:40px;background-color: #fff;}
-    .sp p {width: 100%;text-align: center;line-height: normal;margin-top: -10px;font-size: 16px;color: #333;}
+    .sp p {width: 100%;text-align: center;line-height: normal;margin-top: -10px;font-size: 12px;color: #333;}
     .sp .hr {display: block;height:1px;width: 60%;z-index: 1;position: absolute;top:22px;left:110px;border-bottom: 3px dotted #333;}
     .sp .add {position: absolute;top:0;left:50%;font-size: 40px;color: #333;font-weight: bold;}
     .countDel>>>.el-form-item__label {width: 0;font-size: 14px;line-height: 40px;}

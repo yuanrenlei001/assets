@@ -46,8 +46,8 @@
                    <el-col :span="5" class="rightS">
                        <div class="btns2">
                            <el-button type="success" @click="dialogVisible = true">统计</el-button>
-                           <el-button type="primary" @click="handleClickss">新增</el-button>
-                           <el-button type="primary">导出</el-button>
+                           <el-button  type="primary" @click="handleClickss">新增</el-button>
+                           <el-button type="primary" @click="findExportTitles">导出</el-button>
                        </div>
                    </el-col>
                </el-form>
@@ -57,6 +57,7 @@
                        ref="multipleTable"
                        :data="tableData"
                        tooltip-effect="dark"
+                       :key="toggleIndex"
                        style="width: 100%"
                        @selection-change="handleSelectionChange">
                    <el-table-column type="selection" width="55"></el-table-column>
@@ -103,8 +104,14 @@
                            label="操作"
                    >
                        <template slot-scope="tableData">
-                           <el-button  type="text" size="small" @click="info(tableData.row)">修改</el-button>
-                           <el-button type="text" size="small" @click="del(tableData.row)">删除</el-button>
+                           <div v-if="sysAuthAdmin !== '' && sysAuthAdmin !== 'zcxxlrjgx' && sysAuthAdmin !== 'zcgxsp'">
+                               <el-button  type="text" size="small" @click="info(tableData.row)">修改</el-button>
+                               <el-button type="text" size="small" @click="del(tableData.row)">删除</el-button>
+                           </div>
+                           <div v-else>
+                               <el-button  type="text" size="small" style="color: #999;">修改</el-button>
+                               <el-button type="text" size="small" style="color: #999;">删除</el-button>
+                           </div>
                        </template>
                    </el-table-column>
                </el-table>
@@ -114,11 +121,11 @@
                        background
                        @size-change="handleSizeChange"
                        @current-change="handleCurrentChange"
-                       :current-page="currentPage4"
+                       :current-page="page.pageNum"
                        :page-sizes="[10, 20, 30, 40]"
-                       :page-size="10"
+                       :page-size="page.pageSize"
                        layout=" prev, pager, next, sizes,jumper"
-                       :total="400">
+                       :total="page.total">
                </el-pagination>
            </el-row>
        </div>
@@ -161,7 +168,7 @@
 
                     <el-col :span="5" class="rightS">
                         <div class="btns2">
-                            <el-button type="primary" @click="handleClickss">新增</el-button>
+                            <el-button type="primary" @click="handleClicksswz">新增</el-button>
                         </div>
                     </el-col>
                 </el-form>
@@ -169,42 +176,55 @@
             <el-row class="tables" >
                 <el-table
                         ref="multipleTable"
-                        :data="tableData2"
+                        :data="tableData"
+                        :key="toggleIndex"
                         tooltip-effect="dark"
                         style="width: 100%"
                         @selection-change="handleSelectionChange">
                     <el-table-column type="selection" width="55"></el-table-column>
-                    <el-table-column  prop="date1" label="序号"></el-table-column>
-                    <el-table-column prop="date2" label="租进合同编号"></el-table-column>
-                    <el-table-column prop="date3" label="承租方"></el-table-column>
-                    <el-table-column prop="date4" label="联系方式"></el-table-column>
-                    <el-table-column prop="date5" width="200" label="房屋坐落"></el-table-column>
-                    <el-table-column prop="date6" label="租金（元）"></el-table-column>
-                    <el-table-column prop="date7" label="物业费（元）"></el-table-column>
-                    <el-table-column prop="date8" width="200" label="租约日期"></el-table-column>
-                    <el-table-column prop="date9" label="付款状态">
-                        <template scope="scope">
-                            <span v-if="scope.row.date9 === '1'" style="color:deepskyblue;">已缴纳</span>
-                            <span v-if="scope.row.date9 === '2'" style="color:red;">已超期</span>
-                            <span v-if="scope.row.date9 === '3'" style="color:orange;">即将到期</span>
+                    <el-table-column  type="index" label="序号"></el-table-column>
+                    <el-table-column prop="pactCode" label="租进合同编号"></el-table-column>
+                    <el-table-column prop="tenant" label="承租方"></el-table-column>
+                    <el-table-column prop="contact" label="联系方式"></el-table-column>
+                    <el-table-column prop="houseAddr" width="200" label="房屋坐落"></el-table-column>
+                    <el-table-column prop="rentAmount" label="租金（元）"></el-table-column>
+                    <el-table-column prop="fee" label="物业费（元）"></el-table-column>
+                    <el-table-column prop="date8" width="200" label="租约日期">
+                        <template scope="tableData">
+                            <span >{{tableData.row.rentStart}} - {{tableData.row.rentEnd}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="tradeName"  label="店名"></el-table-column>
+                    <el-table-column prop="formats"  label="业态"></el-table-column>
+                    <el-table-column prop="margin"  label="保证金（元）"></el-table-column>
+                    <el-table-column prop="tableData" label="付款状态">
+                        <template scope="tableData">
+                            <el-button  type="text" size="small" @click="fkzt(tableData.row)">详情</el-button>
                         </template>
                     </el-table-column>
                     <el-table-column
                             label="合同详情"
                     >
-                        <template slot-scope="scope">
-                            <el-button  type="text" size="small" @click="kan">详情</el-button>
+                        <template slot-scope="tableData">
+                            <el-button  type="text" size="small" @click="kan(tableData.row)">详情</el-button>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="name" label="合同状态"></el-table-column>
-                    <el-table-column prop="name" label="备注"></el-table-column>
+                    <el-table-column prop="contStatus" label="合同状态"></el-table-column>
+                    <el-table-column prop="remark" label="备注"></el-table-column>
                     <el-table-column
                             label="操作"
                     >
-                        <template slot-scope="scope">
-                            <el-button  type="text" size="small" @click="info">修改</el-button>
-                            <el-button type="text" size="small">删除</el-button>
+                        <template slot-scope="tableData">
+                            <div v-if="sysAuthAdmin !== '' && sysAuthAdmin !== 'zcxxlrjgx' && sysAuthAdmin !== 'zcgxsp'">
+                                <el-button  type="text" size="small" @click="info(tableData.row)">修改</el-button>
+                                <el-button type="text" size="small" @click="del(tableData.row)">删除</el-button>
+                            </div>
+                            <div v-else>
+                                <el-button  type="text" size="small" style="color: #999;">修改</el-button>
+                                <el-button type="text" size="small" style="color: #999;">删除</el-button>
+                            </div>
                         </template>
+
                     </el-table-column>
                     <el-table-column
                             label="历史出租合同"
@@ -224,7 +244,7 @@
                         :page-sizes="[10, 20, 30, 40]"
                         :page-size="10"
                         layout=" prev, pager, next, sizes,jumper"
-                        :total="400">
+                        :total="page.total">
                 </el-pagination>
             </el-row>
         </div>
@@ -303,28 +323,55 @@
                                 <div style="position: absolute;top:15px;left:0;">第 {{index+1}} 笔</div>
                                 <el-input style="margin-left: 50px;" v-model="item.dateStr" placeholder="请输入内容" disabled></el-input>
                             </el-col>
-                            <el-col :span="10">
+                            <el-col :span="10" style="position: relative">
                                 <el-input v-model="item.rentAmount" placeholder="请输入内容" disabled></el-input>
-                                <span class="inputs">
+                                <div class="sjsc">
                                     <el-upload
                                             class="upload-demo"
                                             action="http://39.100.95.204:2005/file/attachment/upload?type=asset"
-                                            :on-preview="realLandAttachPreview"
-                                            :on-remove="realLandAttachRemove"
-                                            :before-remove="realLandAttachRemove"
-                                            :on-success = 'realLandAttachSuccess'
+                                            :on-preview="handlePictureCardPreview"
+                                            :on-success="phone.bind(null, {'index':index,'data':item})"
                                             multiple
-                                            :limit="3"
-                                            :on-exceed="realLandAttachExceed"
-                                            :file-list="realLandAttach">
-                                <el-button size="small" type="primary">点击上传</el-button>
-                            </el-upload>
-                                </span>
+                                            :limit="1"
+                                            :file-list="item.img"
+                                            :class="{hide:showUpload}"
+                                            :on-remove="handleRemove">
+                                        <!--<i class="el-icon-plus"></i>-->
+                                        <el-button size="small" type="primary">点击上传</el-button>
+                                    </el-upload>
+                                    <!--<el-dialog :visible.sync="dialogVisibless">-->
+                                        <!--<img width="100%" :src="dialogImageUrl" alt="">-->
+                                    <!--</el-dialog>-->
+                                    <span></span>
+                                </div>
                             </el-col>
                         </el-col>
+
+                        <div>共计：{{books2.length}} 笔 累计金额：{{Amount}}</div>
                     </el-form>
                 </el-row>
             </div>
+        </el-dialog>
+        <!--导出-->
+        <el-dialog
+                :visible.sync="findExportTitle"
+                v-if="findExportTitle"
+                title="选择导出字段"
+                width="500px">
+            <el-row>
+                <el-form rel="form">
+                    <el-col :span="24">
+                        <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+                        <div style="margin: 15px 0;"></div>
+                        <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
+                            <el-checkbox v-for="city in cities" :label="city" :key="city.key">{{city.key}}</el-checkbox>
+                        </el-checkbox-group>
+                    </el-col>
+                    <el-col :span="24" style="text-align: right;margin-top: 20px;">
+                        <el-button type="primary" round @click="daochu">导出</el-button>
+                    </el-col>
+                </el-form>
+            </el-row>
         </el-dialog>
     </div>
 </template>
@@ -339,11 +386,15 @@
         name: 'login',
         data () {
             return {
+                Amount:0,
+                toggleIndex:0,
+                sysAuthAdmin:sessionStorage.getItem('authStr'),
                 dialogVisibleKanwy:false,
                 disabled:true,
                 AssetsKanVisible: false,
                 skvisible: false,
                 zcvisible:false,
+                dialogVisibless:false,
                 currentPage4: 4,
                 user:1,
                 input2:'',
@@ -370,16 +421,6 @@
                 value: '',
                 tableData: [],
                 tableData2: [
-                    {date1: '1',date2:'201712',date3:'姚惠芬',date4:'123456789',date5:'下塘东街48-60号',date6:'60000',date7:'',date8:'2019.11.1-2020.10.31',date9:'1'},
-                    {date1: '2',date2:'201852',date3:'立新（店面）',date4:'123456789',date5:'南东街14-16号',date6:'3585.6',date7:'',date8:'2017.1.1-2018.12.31',date9:'2'},
-                    {date1: '3',date2:'201846',date3:'巨人电梯总厂（店面）',date4:'123456789',date5:'南东街37、39、41号',date6:'15530.4',date7:'',date8:'2018.1.1-2018.12.31',date9:'2'},
-                    {date1: '4',date2:'201925',date3:'方建康',date4:'123456789',date5:'便民路5号',date6:'8000',date7:'',date8:'2019.11.1-2020.10.31',date9:'1'},
-                    {date1: '5',date2:'201930',date3:'宋娟丽',date4:'123456789',date5:'便民路15号',date6:'9000',date7:'',date8:'2019.12.1-2020.11.30',date9:'1'},
-                    {date1: '6',date2:'201922',date3:'周闽萍',date4:'123456789',date5:'便民路17号',date6:'9000',date7:'',date8:'2019.12.1-2020.11.30',date9:'1'},
-                    {date1: '7',date2:'201917',date3:'严晓燕',date4:'123456789',date5:'便民路25号',date6:'9000',date7:'',date8:'2019.9.15-2020.9.14',date9:'1'},
-                    {date1: '8',date2:'201932',date3:'冯国明',date4:'123456789',date5:'便民路27号',date6:'10000',date7:'',date8:'2019.11.1-2020.10.31',date9:'3'},
-                    {date1: '9',date2:'201921',date3:'孙建华',date4:'123456789',date5:'便民路29号',date6:'9000',date7:'',date8:'2019.10.1-2020.9.30',date9:'1'},
-                    {date1: '10',date2:'201851',date3:'万元粮行（店面）',date4:'123456789',date5:'南西街12号',date6:'3756',date7:'',date8:'2017.1.1-2018.12.31',date9:'2'},
                 ],
                 tablezclist:[],
                 multipleSelection: [],
@@ -421,12 +462,172 @@
                 books2:[
                     {id:null,num:null,dateStr:null,rentAmount:null,attach:null,rentType:null}
                 ],
+                page:'',
+                pageNum:1,
+                pageSize:10,
+                itemtypes:'zy',
+                dialogImageUrl:'',
+                showUpload:false,
+                pic:[],
+                picUrl:'',
+                handlePic:[],
+                formDatas:'',
+                checkAll: false,
+                checkedCities: [],
+                cities: [{'title':'上海','key':'shanghai'},{'title':'上海1','key':'shanghai1'},{'title':'上海2','key':'shanghai2'},],
+                isIndeterminate: false,
+                findExportTitle:false,
             }
         },
         components:{
             DateChart,AssetsInfor,AssetsAdd,AssetsKan,AssetsKans
         },
         methods:{
+            // 获取导出列表
+            findExportTitles(){
+                this.findExportTitle = true
+                this.$axios({
+                    url: this.getAjax + '/admin/property/findExportTitle',
+                    method: "get",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    data:{}
+                }).then(res => {
+                    if(res.data.code == '1001'){
+                        this.cities = res.data.data
+                    }else{
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'warning'
+                        });
+                    }
+                })
+            },
+            handleCheckAllChange(val) {
+                const cityOptions = this.cities;
+                this.checkedCities = val ? cityOptions : [];
+                this.isIndeterminate = false;
+                this.exports(this.checkedCities)
+            },
+            handleCheckedCitiesChange(value) {
+                let checkedCount = value.length;
+                this.checkAll = checkedCount === this.cities.length;
+                this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
+                this.exports(value)
+            },
+            // 导出
+            exports(str){
+                var arr = []
+                for(var i=0;i<str.length;i++){
+                    var obj = {};
+                    obj['title']=str[i].key
+                    obj['key']=str[i].title
+                    arr.push(obj)
+                }
+                // var data = str
+                var that = this;
+                var formData = new FormData();
+                console.log(JSON.stringify(arr))
+                formData.append('exportTitle',JSON.stringify(arr))
+                this.formDatas = formData
+
+            },
+            daochu(){
+                var url =this.getAjax + '/admin/property/export';
+                // this.formSubmit(url,this.formDatas)
+                this.$axios({
+                    url: url,
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    responseType: 'blob',
+                    data:this.formDatas
+                }).then(res => {
+                    this.download(res.data)
+                })
+            },
+            download(data){
+                if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                    let blob = new Blob([data], {
+                        type: 'application/vnd.ms-excel'
+                    })
+                    window.navigator.msSaveOrOpenBlob(blob,
+                        new Date().getTime() + '.xlsxs')
+                } else {
+                    /* 火狐谷歌的文件下载方式 */
+                    var blob = new Blob([data])
+                    var downloadElement = document.createElement('a')
+                    var href = window.URL.createObjectURL(blob)
+                    downloadElement.href = href
+                    downloadElement.download = new Date().getTime() + '.xlsx'
+                    document.body.appendChild(downloadElement)
+                    downloadElement.click()
+                    document.body.removeChild(downloadElement)
+                    window.URL.revokeObjectURL(href)
+                }
+            },
+            formSubmit(url,data){
+
+                sessionStorage.getItem('token')
+                var form1 = document.createElement('form');
+                document.body.appendChild(form1);
+                for(var key in data){
+                    var input = document.createElement('input');
+                    input.name = key;
+                    input.value = data[key];
+                    form1.appendChild(input)
+                }
+                form1.method = 'POST';
+                form1.enctype = 'multipart/form-data';
+                form1.action = url;
+                console.log(url)
+                console.log(data)
+                console.log(form1)
+                // form1.submit();
+                // document.body.removeChild(form1)
+            },
+            handleExceed(files, fileList) {
+                console.log(fileList)
+            },
+            handlePictureCardPreview(file) {
+                console.log(file)
+                this.dialogImageUrl = file.url;
+                this.dialogVisibless = true;
+            },
+            phone(obj,res,file) {
+                var obj4 = {}
+                console.log(this.books2)
+                this.$set(obj4,'name','新增收据');
+                this.$set(obj4,'url',res.data[0]);
+                this.handlePic = []
+                this.handlePic.push(obj4);
+                obj.data['attach'] = res.data[0]
+
+                var that = this;
+                setTimeout(function(){
+                    that.books2[obj.index]['img'] = []
+                    that.books2[obj.index]['img'].push(obj4)
+                },100)
+                console.log(this.books2)
+                this.$axios({
+                    url: this.getAjax + '/admin/property/updatePayList',
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    data:this.books2
+                }).then(res => {
+                })
+                // admin/property/updatePayList
+            },
+            handleRemove(file, fileList) {
+                console.log(file, fileList);
+            },
             realLandAttachRemove(file, fileList) {
                 console.log(file, fileList);
             },
@@ -464,7 +665,18 @@
                     this.$router.push('/')
                 }else{
                     var params = res.data.data
+                        this.Amount = 0;
                     that.books2 = params.propertyPayTypeList
+                        for(var i=0;i<that.books2.length;i++){
+                            var obj4 = {}
+                            that.$set(obj4,'name','第'+(i+1)+'笔收据');
+                            that.$set(obj4,'url',that.books2[i].attach);
+                            var arr4 = []
+                            arr4.push(obj4)
+                            that.books2[i]['img'] = arr4
+                            this.Amount += parseFloat(that.books2[i].rentAmount)
+                        }
+                        console.log(that.books2)
                 }
             })
             },
@@ -527,7 +739,7 @@
                         type: 'success',
                         message: '删除成功!'
                     });
-                    that.findList()
+                        this.findList(this.user,this.pageNum,this.pageSize)
                 }else{
                     this.$message({
                         message: res.data.msg,
@@ -543,15 +755,16 @@
                 });
             });
             },
-            newInforAdd(data){this.findList();},
-            newInforInfo(data){this.findList();},
+            newInforAdd(data){this.findList(this.user,this.pageNum,this.pageSize)},
+            newInforInfo(data){this.findList(this.user,this.pageNum,this.pageSize)},
             // 查询列表
-            findList(){
+            findList(type,pageNum,pageSize){
                 var that = this;
+                this.toggleIndex = Math.random()
                 var data = {
-                    "pageNum": 1,
-                    "pageSize": 10,
-                    "typeItem": this.user
+                    "pageNum": pageNum,
+                    "pageSize": pageSize,
+                    "typeItem": type
                 }
                 this.$axios({
                     url: this.getAjax + '/admin/property/findList',
@@ -564,6 +777,9 @@
                 }).then(res => {
                     if(res.data.code == '1001'){
                     var list = res.data.data.list;
+                    this.page = [];
+                    this.page = res.data.data;
+                    console.log(this.page)
                     this.tableData = list
                 }else{
                     this.$message({
@@ -573,18 +789,55 @@
                 }
             })
             },
-                handleSizeChange(val) {
+            handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
+                this.pageSize = val
+                    this.findList(this.user,this.pageNum,this.pageSize)
             },
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
+                this.pageNum = val;
+                this.findList(this.user,this.pageNum,this.pageSize)
             },
             typeChange(val){
                 console.log(val)
+                this.toggleIndex = Math.random()
                 this.user = val
+                if(val ==  1){
+                    this.itemtypes = 'zy'
+                }else{
+                    this.itemtypes = 'wz'
+                }
+                this.findList(val,1,10)
             },
             handleClickss(){
-                this.dialogVisibleAdd = true
+                var sysAuthAdmin = this.sysAuthAdmin;
+                if(sysAuthAdmin == '' || sysAuthAdmin == 'zcxxlrjgx' || sysAuthAdmin == 'zcgxsp'){
+                    this.$message({
+                        message: '暂无权限！',
+                        type: 'warning'
+                    });
+                }else{
+                    this.dialogVisibleAdd = true
+                    var type = this.user
+                    this.$refs.dialogVisibleAddRef.detail(type,'zy')
+                }
+
+            },
+            // 外租合同
+            handleClicksswz(){
+                var sysAuthAdmin = this.sysAuthAdmin;
+                if(sysAuthAdmin == '' || sysAuthAdmin == 'zcxxlrjgx' || sysAuthAdmin == 'zcgxsp'){
+                    this.$message({
+                        message: '暂无权限！',
+                        type: 'warning'
+                    });
+                }else{
+                    this.dialogVisibleAdd = true
+                    var type = this.user
+                    this.$refs.dialogVisibleAddRef.detail(type,'wz')
+                }
+
             },
             showdialogVisibleAdd(data){
                 if(data === 'false'){
@@ -608,7 +861,7 @@
 
             info(data){
                 this.dialogVisibleInfor = true
-                this.$refs.dialogVisibleInforRef.detail(data)
+                this.$refs.dialogVisibleInforRef.detail(data,this.itemtypes)
             },
             showdialogVisibleInfor(data){
                 if(data === 'false'){
@@ -620,10 +873,6 @@
             handleSelectionChange(val) {
                 this.multipleSelection = val;
             },
-            // handClose(){
-            //     this.dialogVisibleAdd = false;
-            //     this.type = ''
-            // },
             parentMethod({ name, age }) {
                 console.log(this.parentMessage, name, age)
             },
@@ -634,7 +883,7 @@
         created:function () {
         },
         mounted(){
-            this.findList();
+            this.findList(1,1,10);
         }
     }
 </script>
@@ -661,6 +910,9 @@
     .pagination>>>.el-pagination.is-background .el-pager li:not(.disabled).active {background-color:rgba(75,116,255,.62)}
     .main>>>.el-input--mini .el-input__inner {height:48px;line-height: 48px;}
     .main>>>.el-pagination__editor.el-input .el-input__inner {height:48px;line-height: 48px;}
-
+    .sjsc {position: absolute;top:5px;right:-25px;}
+    /*.sjsc>>>.el-upload {width: 40px;height:40px;}*/
+    .sjsc>>>.el-upload-list{position: absolute;top:24px;left:0;}
+    /*.sjsc>>>.el-upload-list--picture-card .el-upload-list__item{right:-100px;width: 40px;height:40px;}*/
 </style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

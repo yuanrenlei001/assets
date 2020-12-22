@@ -7,7 +7,7 @@
                 @close="handleClose">
         <el-row>
             <el-form ref="form" >
-                <el-col :span="24" style="position: relative;">
+                <el-col v-if="str == 'zy'" :span="24" style="position: relative;">
                     <el-form-item label="资产编号：" v-for='(item,index) in assetCode'>
                         <el-input v-model="item.value" placeholder="请输入内容" ></el-input>
                     </el-form-item>
@@ -218,9 +218,12 @@
             name: 'food2.jpeg',
             url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         }],
+        str:'',
         showUpload:false,
         showDialog:false,
-        times: []
+        times: [],
+        typeItem:'',
+        picUrl:''
     }
   },
         components:{
@@ -231,6 +234,11 @@
         },
     },
     methods:{
+        detail(type,str){
+            console.log(type)
+            this.typeItem = type
+            this.str = str
+        },
         timeChange(id){
             console.log(id)
             this.times = id
@@ -289,10 +297,8 @@
             if(fileList.length >= 3){
                 this.showUpload = true
             }
-            console.log(res.data[0])
-            console.log(file.name)
-            // this.pic.push({'url':res.data[0],'name':file.name})
-            this.pic = res.data[0].url
+            this.pic.push({'url':res.data[0],'name':file.name})
+            this.picUrl = this.pic[0].url
         },
         handleRemove(file, fileList) {
             console.log(file, fileList);
@@ -311,71 +317,130 @@
             });
         },
         open() {
-            var arr = [];
-            for(var i=0;i<this.assetCode.length;i++){
-                arr.push(this.assetCode[i].value)
-            }
-            var str = arr.join(",");
-            var data= {
-                'id':null,
-                'assetCode':str,
-                'attach':this.pic,
-                'houseAddr':this.houseAddr,
-                'pactCode':this.pactCode,
-                'tenant':this.tenant,
-                'contact':parseInt(this.contact),
-                'rentAmount':parseInt(this.rentAmount),
-                'fee':parseInt(this.fee),
-                'rentStart':this.rentStart,
-                'rentEnd':this.rentEnd,
-                'tradeName':this.tradeName,
-                'formats':this.formatsVal,
-                'margin':this.margin,
-                'remark':this.remark,
-                'typeItem':1,
-                'propertyPayTypeList':this.books2
-            }
-            console.log(data)
-            if(str == '' ||this.houseAddr==''||this.tenant==''||this.contact==''||this.rentAmount==''
-                ||this.fee==''||this.rentStart==''||this.rentEnd==''||this.tradeName==''||this.formatsVal==''
-                ||this.margin==''||this.remark==''||this.propertyPayTypeList==[]
-            ){
-                this.$message({
-                    message: '值不能为空！',
-                    type: 'warning'
-                });
-            }else{
-                console.log(data)
-                var that = this;
-                this.$axios({
-                    url: this.getAjax + '/admin/property/addOrUpdate',
-                    method: "post",
-                    headers: {
-                        'Content-Type': 'application/json;charset=UTF-8',
-                        'Token':sessionStorage.getItem('token')
-                    },
-                    data:data
-                }).then(res => {
-                    if(res.data.code == '2004'){
+            console.log(this.str)
+            if(this.str == 'zy'){
+                var arr = [];
+                for(var i=0;i<this.assetCode.length;i++){
+                    arr.push(this.assetCode[i].value)
+                }
+                var str = arr.join(",");
+                var data= {
+                    'id':null,
+                    'assetCode':str,
+                    'attach':this.picUrl,
+                    'houseAddr':this.houseAddr,
+                    'pactCode':this.pactCode,
+                    'tenant':this.tenant,
+                    'contact':this.contact,
+                    'rentAmount':this.rentAmount,
+                    'fee':this.fee,
+                    'rentStart':this.rentStart,
+                    'rentEnd':this.rentEnd,
+                    'tradeName':this.tradeName,
+                    'formats':this.formatsVal,
+                    'margin':this.margin,
+                    'remark':this.remark,
+                    'typeItem':this.typeItem,
+                    'propertyPayTypeList':this.books2
+                }
+                if(str == '' ||this.houseAddr==''||this.tenant==''||this.contact==''||this.rentAmount==''
+                    ||this.fee==''||this.rentStart==''||this.rentEnd==''||this.tradeName==''||this.formatsVal==''
+                    ||this.margin==''||this.remark==''||this.propertyPayTypeList==[]
+                ){
                     this.$message({
-                        message: res.data.msg,
+                        message: '值不能为空！',
                         type: 'warning'
                     });
-                    this.$router.push('/')
                 }else{
-                    // var list = res.data.data;
-                    // that.list();
-                    // console.log(list)
-                    this.$alert('修改已提交，等待管理员审核', '提示', {
-                        callback: action => {
-                            this.$emit('changeShow','false')
-                            this.$emit('child-event',data)
+                    var that = this;
+                    this.$axios({
+                        url: this.getAjax + '/admin/property/addOrUpdate',
+                        method: "post",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:data
+                    }).then(res => {
+                        if(res.data.code == '2004'){
+                            this.$message({
+                                message: res.data.msg,
+                                type: 'warning'
+                            });
+                            this.$router.push('/')
+                        }else{
+                            // var list = res.data.data;
+                            // that.list();
+                            // console.log(list)
+                            this.$alert('修改已提交，等待管理员审核', '提示', {
+                                callback: action => {
+                                    this.$emit('changeShow','false')
+                                    this.$emit('child-event',data)
+                                }
+                            });
                         }
-                    });
+                    })
                 }
-            })
-            }
 
+            }else{
+                var data= {
+                    'id':null,
+                    'attach':this.picUrl,
+                    'houseAddr':this.houseAddr,
+                    'pactCode':this.pactCode,
+                    'tenant':this.tenant,
+                    'contact':this.contact,
+                    'rentAmount':this.rentAmount,
+                    'fee':this.fee,
+                    'rentStart':this.rentStart,
+                    'rentEnd':this.rentEnd,
+                    'tradeName':this.tradeName,
+                    'formats':this.formatsVal,
+                    'margin':this.margin,
+                    'remark':this.remark,
+                    'typeItem':this.typeItem,
+                    'propertyPayTypeList':this.books2
+                }
+                console.log(data)
+                if(this.houseAddr==''||this.tenant==''||this.contact==''||this.rentAmount==''
+                    ||this.fee==''||this.rentStart==''||this.rentEnd==''||this.tradeName==''||this.formatsVal==''
+                    ||this.margin==''||this.remark==''||this.propertyPayTypeList==[]
+                ){
+                    this.$message({
+                        message: '值不能为空！',
+                        type: 'warning'
+                    });
+                }else{
+                    var that = this;
+                    this.$axios({
+                        url: this.getAjax + '/admin/property/addOrUpdate',
+                        method: "post",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:data
+                    }).then(res => {
+                        if(res.data.code == '2004'){
+                            this.$message({
+                                message: res.data.msg,
+                                type: 'warning'
+                            });
+                            this.$router.push('/')
+                        }else{
+                            // var list = res.data.data;
+                            // that.list();
+                            // console.log(list)
+                            this.$alert('修改已提交，等待管理员审核', '提示', {
+                                callback: action => {
+                                    this.$emit('changeShow','false')
+                                    this.$emit('child-event',data)
+                                }
+                            });
+                        }
+                    })
+                }
+            }
         },
         handleClose(){
             // 子组件调用父组件方法，并传递参数

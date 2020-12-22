@@ -1,6 +1,39 @@
 <template>
     <div class="main">
-        消息列表
+        <el-row class="tables" >
+            <el-table
+                    ref="multipleTable"
+                    :data="tableData"
+                    tooltip-effect="dark"
+                    :key="toggleIndex"
+                    style="width: 100%"
+                    >
+                <el-table-column  type="index" label="序号" width="100"></el-table-column>
+                <el-table-column  label="消息类型">
+                    <template slot-scope="tableData">
+                        <div v-if="tableData.row.msgType == 'zcsp'">资产审批</div>
+                        <div v-if="tableData.row.msgType == 'ht'">合同提示</div>
+                        <div v-if="tableData.row.msgType == 'xjsp'">巡检审批</div>
+                        <div v-if="tableData.row.msgType == 'xjfk'">巡检反馈</div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="data1" label="时间">
+                    <template slot-scope="tableData">
+                        {{tableData.row.createTime | dateFormat}}
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        fixed="right"
+                        label="操作"
+                >
+                    <template slot-scope="tableData">
+                        <div>
+                            <el-button  type="text" size="small" >查看</el-button>
+                        </div>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-row>
     </div>
 </template>
 
@@ -34,35 +67,7 @@
                 value: '',
                 value22: '',
                 tableData: [
-                    {
-                        date: '2016-05-03',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        date: '2016-05-02',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        date: '2016-05-04',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        date: '2016-05-01',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        date: '2016-05-08',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        date: '2016-05-06',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        date: '2016-05-07',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }
+
                 ],
                 multipleSelection: [],
                 parentMessage: '我是来自父组件的消息',
@@ -71,13 +76,39 @@
                 title:'',
                 type:'',
                 imageUrl: '',
-                input:''
+                input:'',
+                toggleIndex:'',
+                lists:''
             }
         },
         components:{
             DateChart,AssetsInfor
         },
         methods:{
+            // 消息列表
+            list(){
+                var that = this;
+                this.toggleIndex = Math.random()
+                this.$axios({
+                    url: this.getAjax + '/admin/messageAdmin/findMessage',
+                    method: "get",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    data:{}
+                }).then(res => {
+                    if(res.data.code == '2004'){
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'warning'
+                        });
+                        this.$router.push('/')
+                    }else{
+                        this.tableData = res.data.data
+                    }
+                })
+            },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
             },
@@ -119,6 +150,9 @@
             }
         },
         created:function () {
+        },
+        mounted(){
+            this.list();
         }
     }
 </script>
@@ -166,7 +200,7 @@
     .rightS {position: relative;}
     .btns {position: absolute;top:-10px;right:-68px;}
     .btns2 {position: absolute;top:0;right:-55px;}
-    .tables>>>th{padding: 0;height:80px;background: #eee;font-size: 24px;font-weight: normal;color: #333;text-align: center;}
+    .tables>>>th{padding: 0;height:80px;background: #eee;font-size: 16px;font-weight: normal;color: #333;text-align: center;}
     .tables>>>.el-table {border: 1px dotted #eee;}
     .tables>>>.el-table__row td{padding: 0;height:50px;text-align: center;color: #333;}
     .pagination>>>.el-pagination.is-background .btn-next, .pagination>>>.el-pagination.is-background .btn-prev, .pagination>>>.el-pagination.is-background .el-pager li{width: 48px;height:48px;text-align: center;line-height: 48px;font-size: 18px;}

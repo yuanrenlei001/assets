@@ -1,24 +1,21 @@
 <template>
     <div class="main" >
-        <div>（演示用！）
+        <div v-if="userType == ''">
             <el-radio-group v-model="tabPosition3" style="margin-bottom: 30px;" @change="typeChange">
-                <el-radio-button label="1">超管</el-radio-button>
-                <el-radio-button label="2" >资管提交人</el-radio-button>
-                <el-radio-button label="2" >资管提审批人</el-radio-button>
-                <el-radio-button label="3" >物业管理人</el-radio-button>
+                <el-radio-button label="1">资产审批</el-radio-button>
+                <el-radio-button label="2" >物业巡检审批</el-radio-button>
             </el-radio-group>
-            （演示用！）
         </div>
         <!--超管-->
-        <div v-if="user == 1">
+        <div v-if="user == '超管' || user == '审批人'">
             <el-row>
                 <el-form ref="form" >
                     <el-col class="sort" :span="7">
                         <el-form-item label="资产审批管理：">
-                            <el-radio-group v-model="tabPosition" style="margin-bottom: 30px;">
-                                <el-radio-button label="top">全部</el-radio-button>
-                                <el-radio-button label="right">已审批</el-radio-button>
-                                <el-radio-button label="left">未审批</el-radio-button>
+                            <el-radio-group v-model="tabPosition" style="margin-bottom: 20px;" @change="ZCtype">
+                                <el-radio-button label="-1">全部</el-radio-button>
+                                <el-radio-button label="1">已审批</el-radio-button>
+                                <el-radio-button label="0">未审批</el-radio-button>
                             </el-radio-group>
                         </el-form-item>
                     </el-col>
@@ -41,7 +38,7 @@
                     </el-col>
                     <el-col :span="3" class="rightS">
                         <div class="btns2">
-                            <el-button type="danger">批量修改</el-button>
+                            <el-button type="danger" @click="plsp">批量审批</el-button>
                             <el-button type="primary">导出</el-button>
                         </div>
                     </el-col>
@@ -52,30 +49,82 @@
                         ref="multipleTable"
                         :data="tableData"
                         tooltip-effect="dark"
+                        :key="toggleIndex"
                         style="width: 100%"
                         @selection-change="handleSelectionChange">
                     <el-table-column type="selection" width="55"></el-table-column>
-                    <el-table-column  prop="date1" label="序号"></el-table-column>
-                    <el-table-column prop="date2" label="审批类型"></el-table-column>
-                    <el-table-column prop="date3" label="提交人/单位"></el-table-column>
-                    <el-table-column prop="date4" label="提交时间"></el-table-column>
-                    <el-table-column
-                            label="变更详情"
-                    >
-                        <template slot-scope="scope">
-                            <el-button @click="ZCdetail" type="text" size="small">详情</el-button>
+                    <el-table-column  type="index" label="序号"></el-table-column>
+                    <el-table-column prop="meansBook.assetCode" label="资产编号"></el-table-column>
+                    <el-table-column prop="meansBook.assetUser" label="产权人"></el-table-column>
+                    <el-table-column prop="tableData" label="审批类型">
+                        <template slot-scope="tableData">
+                            <div v-if="tableData.row.roveType == 1">资产新增</div>
+                            <div v-if="tableData.row.roveType == 2">资产修改</div>
+                            <div v-if="tableData.row.roveType == 3">资产删除</div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="date5" label="审批人/单位"></el-table-column>
-                    <el-table-column prop="date6" label="审批状态"></el-table-column>
-                    <el-table-column prop="date7" label="备注"></el-table-column>
+                    <el-table-column prop="tableData" label="提交人/单位">
+                        <template slot-scope="tableData">
+                            <div>123</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="meansBook.houseAddress" label="房屋坐落"></el-table-column>
+                    <el-table-column prop="tableData" label="提交时间">
+                        <template slot-scope="tableData">
+                            <div>{{tableData.row.createTime | dateFormat}}</div>
+                        </template>
+
+                    </el-table-column>
+                    <el-table-column
+                            prop="tableData"
+                            label="详情"
+                    >
+                        <template slot-scope="tableData">
+                            <el-button  @click="detail(tableData.$index,tableData.row,'sp')" type="text" size="small">详情</el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column  label="审批状态">
+                        <template slot-scope="tableData">
+                            <div v-if="tableData.row.roveType == 1">
+                                <div v-if="tableData.row.meansBook.checkStatus == 1">（新增）审批中</div>
+                                <div v-if="tableData.row.meansBook.checkStatus == 2" style="color: #5daf34;">（新增）审批通过</div>
+                                <div v-if="tableData.row.meansBook.checkStatus == 3" style="color: red;">（新增）审批驳回</div>
+                            </div>
+                            <div v-if="tableData.row.roveType == 2">
+                                <div v-if="tableData.row.meansBook.checkUpdate == 0">未修改</div>
+                                <div v-if="tableData.row.meansBook.checkUpdate == 1">（修改）审批中</div>
+                                <div v-if="tableData.row.meansBook.checkUpdate == 2" style="color: #5daf34;">（修改）审批通过</div>
+                                <div v-if="tableData.row.meansBook.checkUpdate == 3" style="color: red;">（修改）审批驳回</div>
+                            </div>
+                            <div v-if="tableData.row.roveType == 3">
+                                <div v-if="tableData.row.meansBook.checkDel == 0">未修改</div>
+                                <div v-if="tableData.row.meansBook.checkDel == 1">（删除）审批中</div>
+                                <div v-if="tableData.row.meansBook.checkDel == 2" style="color: #5daf34;">（删除）审批通过</div>
+                                <div v-if="tableData.row.meansBook.checkDel == 3" style="color: red;">（删除）审批驳回</div>
+                            </div>
+                        </template>
+                    </el-table-column>
                     <el-table-column
                             fixed="right"
                             label="操作"
                     >
-                        <template slot-scope="scope">
-                            <el-button  type="text" size="small">通过</el-button>
-                            <el-button  type="text" size="small">驳回</el-button>
+                        <template slot-scope="tableData">
+                            <div v-if="sysAuthAdmin == ''">
+                                <div>
+                                    <el-button  type="text" size="small" style="color: #999;">通过</el-button>
+                                    <el-button  type="text" size="small" style="color: #999;">驳回</el-button>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <div v-if="tableData.row.status == 0">
+                                    <el-button  type="text" size="small" @click="zcSuccess(tableData.row)">通过</el-button>
+                                    <el-button  type="text" size="small" @click="zcBack(tableData.row)">驳回</el-button>
+                                </div>
+                                <div v-else>
+                                    <el-button  type="text" size="small" style="color: #999;">通过</el-button>
+                                    <el-button  type="text" size="small" style="color: #999;">驳回</el-button>
+                                </div>
+                            </div>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -83,13 +132,14 @@
             <el-row style="margin-top: 48px;text-align: right" class="pagination">
                 <el-pagination
                         background
+                        :current-page.sync="pageNum"
+                        :hide-on-single-page='pageType'
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
-                        :current-page="currentPage4"
-                        :page-sizes="[10, 20, 30, 40]"
-                        :page-size="10"
+                        :page-size="pageSize"
+                        :page-sizes="pageSizesList"
                         layout=" prev, pager, next, sizes,jumper"
-                        :total="400">
+                        :total="total">
                 </el-pagination>
             </el-row>
             <!--<el-dialog-->
@@ -100,21 +150,19 @@
                 <!--<assets-infor :type="type" ></assets-infor>-->
             <!--</el-dialog>-->
             <!--资产详情查看-->
-            <assets-kan :AssetsKanVisible="AssetsKanVisible"  @changeShow="showAssetsKan" ref="AssetsKanRef"></assets-kan>
         </div>
 
         <!--资产管理员-->
-        <div v-if="user == 2">
+        <div v-if="user == '提交人'">
             <el-row>
                 <el-form ref="form" >
                     <el-col class="sort" :span="9">
                         <el-form-item label="资产审批管理：">
-                            <el-radio-group v-model="tabPosition2" style="margin-bottom: 30px;">
-                                <el-radio-button label="top">全部</el-radio-button>
-                                <el-radio-button label="left">未审批</el-radio-button>
-                                <el-radio-button label="left1">审批中</el-radio-button>
-                                <el-radio-button label="left2">已通过</el-radio-button>
-                                <el-radio-button label="left3">未通过</el-radio-button>
+                            <el-radio-group v-model="tabPosition2" style="margin-bottom: 30px;" @change="typeChange2">
+                                <el-radio-button label="-1">全部</el-radio-button>
+                                <el-radio-button label="0">审批中</el-radio-button>
+                                <el-radio-button label="1">已审批</el-radio-button>
+                                <el-radio-button label="2">未通过</el-radio-button>
                             </el-radio-group>
                         </el-form-item>
                     </el-col>
@@ -148,30 +196,66 @@
                         ref="multipleTable"
                         :data="tableData2"
                         tooltip-effect="dark"
+                        :key="toggleIndex"
                         style="width: 100%"
                         @selection-change="handleSelectionChange">
                     <el-table-column type="selection" width="55"></el-table-column>
-                    <el-table-column  prop="date1" label="序号"></el-table-column>
-                    <el-table-column prop="date2" label="审批类型"></el-table-column>
-                    <el-table-column prop="date3" label="提交人/单位"></el-table-column>
-                    <el-table-column prop="date4" label="提交时间"></el-table-column>
-                    <el-table-column
-                            label="变更详情"
-                    >
-                        <template slot-scope="scope">
-                            <el-button @click="ZCdetail" type="text" size="small">详情</el-button>
+                    <el-table-column  type="index" label="序号"></el-table-column>
+                    <el-table-column prop="meansBook.assetCode" label="资产编号"></el-table-column>
+                    <el-table-column prop="meansBook.assetUser" label="产权人"></el-table-column>
+                    <el-table-column prop="meansBook.houseAddress" label="房屋坐落"></el-table-column>
+                    <el-table-column prop="meansBook.assetCode" label="提交时间">
+                        <template slot-scope="tableData2">
+                            {{tableData2.row.createTime | dateFormat}}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="date6" label="审批状态"></el-table-column>
-                    <el-table-column prop="date7" label="备注"></el-table-column>
+                    <el-table-column
+                            label="详情"
+                    >
+                        <template slot-scope="tableData2">
+                            <el-button  @click="detail(tableData2.$index,tableData2.row,'sp')" type="text" size="small">详情</el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="date6" label="审批状态">
+                        <template slot-scope="tableData2">
+                            <div v-if="tableData2.row.roveType == 1">
+                                <div v-if="tableData2.row.meansBook.checkStatus == 1">（新增）审批中</div>
+                                <div v-if="tableData2.row.meansBook.checkStatus == 2" style="color: #5daf34;">（新增）审批通过</div>
+                                <div v-if="tableData2.row.meansBook.checkStatus == 3" style="color: red;">（新增）审批驳回</div>
+                            </div>
+                            <div v-if="tableData2.row.roveType == 2">
+                                <div v-if="tableData2.row.meansBook.checkUpdate == 1">（修改）审批中</div>
+                                <div v-if="tableData2.row.meansBook.checkUpdate == 2" style="color: #5daf34;">（修改）审批通过</div>
+                                <div v-if="tableData2.row.meansBook.checkUpdate == 3" style="color: red;">（修改）审批驳回</div>
+                            </div>
+                            <div v-if="tableData2.row.roveType == 3">
+                                <div v-if="tableData2.row.meansBook.checkDel == 1">（删除）审批中</div>
+                                <div v-if="tableData2.row.meansBook.checkDel == 2" style="color: #5daf34;">（删除）审批通过</div>
+                                <div v-if="tableData2.row.meansBook.checkDel == 3" style="color: red;">（删除）审批驳回</div>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="meansBook.remark" label="备注"></el-table-column>
                     <el-table-column
                             fixed="right"
                             label="操作"
                     >
-                        <template slot-scope="scope">
-                            <el-button  type="text" size="small">修改</el-button>
-                            <el-button  type="text" size="small">撤销</el-button>
-                            <el-button  type="text" size="small">催办</el-button>
+                        <template slot-scope="tableData2">
+                               <div v-if="tableData2.row.meansBook.checkStatus == 2 || tableData2.row.meansBook.checkStatus == 3 ||
+                               tableData2.row.meansBook.checkUpdate == 2 || tableData2.row.meansBook.checkUpdate == 3 ||
+                               tableData2.row.meansBook.checkDel == 2 || tableData2.row.meansBook.checkDel == 3
+
+">
+                                   <el-button  type="text" size="small" style="color: #999;">修改</el-button>
+                                   <el-button  type="text" size="small" style="color: #999;">撤销</el-button>
+                                   <el-button  type="text" size="small" style="color: #999;">催办</el-button>
+                               </div>
+                            <div v-else>
+
+                                <el-button  type="text" size="small" @click="dialogUpdates(tableData2.$index,tableData2.row)">修改</el-button>
+                                <el-button  type="text" size="small" @click="cexiao(tableData2.row)">撤销</el-button>
+                                <el-button  type="text" size="small" @click="cui(tableData2.row)">催办</el-button>
+                            </div>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -179,13 +263,14 @@
             <el-row style="margin-top: 48px;text-align: right" class="pagination">
                 <el-pagination
                         background
+                        :current-page.sync="pageNum"
+                        :hide-on-single-page='pageType'
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
-                        :current-page="currentPage4"
-                        :page-sizes="[10, 20, 30, 40]"
-                        :page-size="10"
+                        :page-size="pageSize"
+                        :page-sizes="pageSizesList"
                         layout=" prev, pager, next, sizes,jumper"
-                        :total="400">
+                        :total="total">
                 </el-pagination>
             </el-row>
             <el-dialog
@@ -197,7 +282,7 @@
             </el-dialog>
         </div>
         <!--物业-->
-        <div v-if="user == 3">
+        <div v-if="user == '物业审批人'">
             <el-row>
                 <el-form ref="form" >
                     <el-col class="sort" :span="9">
@@ -269,7 +354,7 @@
                             label="问题详情"
                     >
                         <template slot-scope="scope">
-                            <el-button  type="text" size="small" @click="detail">详情</el-button>
+                            <el-button  type="text" size="small" @click="detail2">详情</el-button>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -299,11 +384,16 @@
             <!--巡检问题详情-->
             <assets-infor-wuye :dialogKan="dialogKan"  @changeShow="showdialogKan" ref="dialogKanRef"></assets-infor-wuye>
         </div>
+
+        <!--资产详情查看-->
+        <assets-kan :AssetsKanVisible="AssetsKanVisible"  @changeShow="showAssetsKan" ref="AssetsKanRef"></assets-kan>
+        <!--资产修改-->
+        <assets-infor :dialogUpdate="dialogUpdate" @child-event="newInforUpdate"  @changeShow="showdialogUpdate" ref="dialogUpdateRef"></assets-infor>
     </div>
 </template>
 
 <script>
-    import AssetsInfor from '@/components/information/AssetsInfor'
+    import AssetsInfor from '@/components/assets/AssetsInfor'
     import AssetsInforManager from '@/components/information/AssetsInforManager'
     import AssetsInforWuye from '@/components/information/AssetsInforWuye'
     import AssetsKan from '@/components/assets/AssetsKan'
@@ -311,8 +401,12 @@
         name: 'login',
         data () {
             return {
+                sysAuthAdmin:sessionStorage.getItem('authStr'),
+                dialogUpdate: false,
+                toggleIndex:0,
+                userType:sessionStorage.getItem('authStr'),
                 currentPage4: 4,
-                user:'1',
+                user:1,
                 input2:'',
                 options: [
                     {
@@ -335,28 +429,8 @@
                 value: '',
                 value1: '',
                 tableData: [
-                    {date1: '1',date2:'新增资产',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'已审批',date7:'',date8:'LT0001'},
-                    {date1: '2',date2:'信息更新',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'待审批',date7:'',date8:'LT0001'},
-                    {date1: '3',date2:'资产处置',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'审批中',date7:'',date8:'LT0001'},
-                    {date1: '4',date2:'资产维修',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'审批中',date7:'',date8:'LT0001'},
-                    {date1: '5',date2:'资产维修',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'已审批',date7:'',date8:'LT0001'},
-                    {date1: '6',date2:'资产维修',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'审批中',date7:'',date8:'LT0001'},
-                    {date1: '7',date2:'资产维修',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'已审批',date7:'',date8:'LT0001'},
-                    {date1: '8',date2:'资产维修',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'审批中',date7:'',date8:'LT0001'},
-                    {date1: '9',date2:'资产维修',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'已审批',date7:'',date8:'LT0001'},
-                    {date1: '10',date2:'资产维修',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'已审批',date7:'',date8:'LT0001'},
                 ],
                 tableData2: [
-                    {date1: '1',date2:'新增资产',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'已审批',date7:'',date8:'LT0001'},
-                    {date1: '2',date2:'信息更新',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'待审批',date7:'',date8:'LT0001'},
-                    {date1: '3',date2:'资产处置',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'审批中',date7:'',date8:'LT0001'},
-                    {date1: '4',date2:'资产维修',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'审批中',date7:'',date8:'LT0001'},
-                    {date1: '5',date2:'资产维修',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'已审批',date7:'',date8:'LT0001'},
-                    {date1: '6',date2:'资产维修',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'审批中',date7:'',date8:'LT0001'},
-                    {date1: '7',date2:'资产维修',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'已审批',date7:'',date8:'LT0001'},
-                    {date1: '8',date2:'资产维修',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'审批中',date7:'',date8:'LT0001'},
-                    {date1: '9',date2:'资产维修',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'已审批',date7:'',date8:'LT0001'},
-                    {date1: '10',date2:'资产维修',date3:'沈振国',date4:'2020-05-16 14:28',date5:'超管',date6:'已审批',date7:'',date8:'LT0001'},
                 ],
                 tableData3: [
                     {date1: '1',date2:'新增资产',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'寸池潭7号'},
@@ -382,20 +456,311 @@
                 type:'',
                 type2:'',
                 type3:'',
-                tabPosition: 'left',
-                tabPosition2: 'left',
-                tabPosition3:'1'
+                tabPosition: -1,
+                tabPosition2: '-1',
+                tabPosition3:'1',
+                pageNum:1,
+                pageSize:10,
+                total:1,
+                pageType:false,
+                pageSizesList: [10, 15, 20, 30, 50],
+                status:-1,
+                isAccount: true,
             }
         },
         components:{
             AssetsInfor,AssetsInforManager,AssetsInforWuye,AssetsKan
         },
         methods:{
+            // 催办
+            cui(data){
+                this.$axios({
+                    url: this.getAjax + '/admin/meansRoveAdmin/sth',
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    data:{
+                        'id':data.id,
+                    }
+                }).then(res => {
+                    this.$message({
+                        type: 'success',
+                        message: '已发送催办消息给管理员，请耐心等待!'
+                    });
+                    this.stjlist()
+                })
+            },
+            // 提交人撤销审批
+            cexiao(data){
+                var that = this;
+                this.$confirm('通过该项审批？', '审批提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$axios({
+                        url: this.getAjax + '/admin/meansRoveAdmin/undo',
+                        method: "post",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:{
+                            'id':data.id,
+                        }
+                    }).then(res => {
+                        this.$message({
+                            type: 'success',
+                            message: '撤销成功!'
+                        });
+                        this.stjlist()
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消！'
+                    });
+                });
+            },
+            // 批量审批
+            plsp(){
+                var sysAuthAdmin = this.sysAuthAdmin
+                if(sysAuthAdmin == ''){
+                    this.$message({
+                        message: '暂无权限！',
+                        type: 'warning'
+                    });
+                }else{
+
+                }
+            },
+            // 资产修改
+            dialogUpdates(index,data){
+                this.dialogUpdate = true
+                let param = data.id
+                this.$refs.dialogUpdateRef.detail(param)
+            },
+            newInforUpdate(data){
+                this.findList();
+            },
+            showdialogUpdate(data){
+                if(data === 'false'){
+                    this.dialogUpdate = false
+                }else{
+                    this.dialogUpdate = true
+                }
+            },
+            ZCtype(data){
+                this.status ='';
+                this.status = data;
+                this.splist();
+            },
+            zcSuccess(data) {
+                var that = this;
+                this.$confirm('通过该项审批？', '审批提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$axios({
+                    url: this.getAjax + '/admin/meansRoveAdmin/check',
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    data:{
+                        'id':data.id,
+                        'status':1,
+                    }
+                }).then(res => {
+                    this.$message({
+                    type: 'success',
+                    message: '审批成功!'
+                });
+
+            })
+            }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消审批！'
+                });
+            });
+            },
+            zcBack(data) {
+                var that = this;
+                this.$confirm('拒绝该项审批？', '审批提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$axios({
+                    url: this.getAjax + '/admin/meansRoveAdmin/check',
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    data:{
+                        'id':data.id,
+                        'status':2,
+                    }
+                }).then(res => {
+                    this.$message({
+                    type: 'success',
+                    message: '驳回成功!'
+                });
+
+            })
+            }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消审批！'
+                });
+            });
+            },
+            // 资产详情查看
+            detail(index,data,str){
+                this.AssetsKanVisible = true
+                let param = data.meansBook.id
+                this.$refs.AssetsKanRef.detail(param,str)
+            },
+            // 资产修改
+            dialogUpdates(index,data){
+                this.dialogUpdate = true
+                let param = data.id
+                this.$refs.dialogUpdateRef.detail(param)
+            },
+            showAssetsKan(data){
+                if(data === 'false'){
+                    this.AssetsKanVisible = false
+                }else{
+                    this.AssetsKanVisible = true
+                }
+            },
+            // 审批人审批列表
+            splist(){
+                var that = this;
+                this.toggleIndex = Math.random()
+                var data ={
+                    "pageNum": this.pageNum,
+                    "pageSize": this.pageSize,
+                    "status": this.status
+                }
+                this.$axios({
+                    url: this.getAjax + '/admin/meansRoveAdmin/findListCheck',
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    data:data
+                }).then(res => {
+                    if(res.data.code == '2004'){
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'warning'
+                    });
+                    this.$router.push('/')
+                }else{
+                    var list = res.data.data.list;
+                    that.tableData = '';
+                    that.tableData = list;
+                    that.total = res.data.data.total
+                    if(that.total<=1){
+                        that.pageType = false
+                    }
+                }
+            })
+            },
+            // 提交人审批列表
+            stjlist(){
+                var that = this;
+                this.toggleIndex = Math.random()
+                var data ={
+                    "pageNum": this.pageNum,
+                    "pageSize": this.pageSize,
+                    "status": this.status
+                }
+                this.$axios({
+                    url: this.getAjax + '/admin/meansRoveAdmin/findListOpen',
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    data:data
+                }).then(res => {
+                    if(res.data.code == '2004'){
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'warning'
+                    });
+                    this.$router.push('/')
+                }else{
+                    var list = res.data.data.list;
+                    that.tableData2 = '';
+                    that.tableData2 = list;
+                    that.total = res.data.data.total
+                    if(that.total<=1){
+                        that.pageType = false
+                    }
+                }
+            })
+            },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
+                this.pageSize = val
+                var userType = this.userType;
+                if(userType == ''){
+                    this.user = '超管';
+                    this.status = -1
+                    this.splist();
+                }else if(userType == 'zcxxlrjgx'){
+                    this.user = '提交人';
+                    this.status = -1
+                    this.stjlist();
+                }else if(userType == 'zcgxsp'){
+                    this.user = '审批人';
+                    this.status = -1
+                    this.splist();
+                }else if(userType == 'xjsb,xjyjsp,htgx'){
+                    this.user = '物业审批人';
+                    this.status = -1
+                    this.splist();
+                }else if(userType == 'xjsb,htgx'){
+                    this.user = '提交人';
+                    this.status = -1
+                    this.stjlist();
+                }
             },
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
+                var userType = this.userType;
+                this.pageNum = val
+                if(userType == ''){
+                    this.user = '超管';
+                    this.status = -1
+                    this.splist();
+                }else if(userType == 'zcxxlrjgx'){
+                    this.user = '提交人';
+                    this.status = -1
+                    this.stjlist();
+                }else if(userType == 'zcgxsp'){
+                    this.user = '审批人';
+                    this.status = -1
+                    this.splist();
+                }else if(userType == 'xjsb,xjyjsp,htgx'){
+                    this.user = '物业审批人';
+                    this.status = -1
+                    this.splist();
+                }else if(userType == 'xjsb,htgx'){
+                    this.user = '提交人';
+                    this.status = -1
+                    this.stjlist();
+                }
             },
             ZCdetail(){
                 this.AssetsKanVisible = true
@@ -410,6 +775,12 @@
             typeChange(val){
                 console.log(val)
                 this.user = val
+            },
+            typeChange2(val){
+                console.log(val)
+                this.status ='';
+                this.status = val
+                this.stjlist()
             },
             open(type) {
                 console.log(type)
@@ -428,7 +799,7 @@
             },
 
             // 巡检问题详情
-            detail(){
+            detail2(){
                 this.dialogKan = true
             },
             showdialogKan(data){
@@ -492,6 +863,31 @@
             }
         },
         created:function () {
+        },
+        mounted(){
+            var userType = this.userType;
+            if(userType == ''){
+                this.user = '超管';
+                this.status = -1
+                this.splist();
+            }else if(userType == 'zcxxlrjgx'){
+                this.user = '提交人';
+                this.status = -1
+                this.stjlist();
+            }else if(userType == 'zcgxsp'){
+                this.user = '审批人';
+                this.status = -1
+                this.splist();
+            }else if(userType == 'xjsb,xjyjsp,htgx'){
+                this.user = '物业审批人';
+                this.status = -1
+                this.splist();
+            }else if(userType == 'xjsb,htgx'){
+                this.user = '提交人';
+                this.status = -1
+                this.stjlist();
+            }
+
         }
     }
 </script>

@@ -15,10 +15,14 @@
                        >
                            <el-table-column type="selection" width="55"></el-table-column>
                            <el-table-column  type="index" label="序号"></el-table-column>
-                           <el-table-column prop="assetCode" label="删除原因"></el-table-column>
-                           <el-table-column prop="assetUserOri" label="删除人"></el-table-column>
-                           <el-table-column prop="houseAddress" label="删除时间"></el-table-column>
-                           <el-table-column prop="houseNature" label="删除备注"></el-table-column>
+                           <el-table-column prop="delReason" label="删除原因"></el-table-column>
+                           <el-table-column prop="delName" label="删除人"></el-table-column>
+                           <el-table-column prop="houseAddress" label="删除时间">
+                               <template slot-scope="tableData">
+                                   {{tableData.row.delTime | dateFormat}}
+                               </template>
+                           </el-table-column>
+                           <el-table-column prop="delRemark" label="删除备注"></el-table-column>
                            <el-table-column prop="landUse" label="资产编号"></el-table-column>
                            <el-table-column prop="landNature" label="产权人"></el-table-column>
                            <el-table-column prop="address7" label="房历史租聘情况">

@@ -74,6 +74,8 @@ export default {
                         type: 'success'
                     });
                     sessionStorage.setItem('token',data.token)
+                    sessionStorage.setItem('authStr',data.authStr)
+                    sessionStorage.setItem('userImg',JSON.stringify(data))
                     this.$router.push('/maps')
                 }else{
                     this.$message({

@@ -67,7 +67,8 @@
                         >
                             <template slot-scope="tableData" v-if="tableData.row.userName !=='admin'">
                                 <el-switch
-                                        v-model="value22"
+                                        v-model="tableData.row.status == 1?true:false"
+                                        @change="active(tableData.row)"
                                         active-color="#13ce66"
                                         inactive-color="#ff4949">
                                 </el-switch>
@@ -80,7 +81,7 @@
                             <template slot-scope="tableData">
                                 <el-button @click="handleClick(tableData.$index,tableData.row,'detail')" type="text" size="small">查看</el-button>
                                 <el-button @click="handleClick(tableData.$index,tableData.row,'edit')" type="text" size="small">编辑</el-button>
-                                <el-button @click="detClick(tableData.$index,tableData.row)" type="text" size="small">删除</el-button>
+                                <el-button @click="detClick(tableData.$index,tableData.row)" type="text" size="small">禁用</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -88,8 +89,12 @@
                 <el-row style="margin-top: 48px;text-align: right" class="pagination">
                     <el-pagination
                             background
+                            @current-change="currentchange"
+                            :current-page="pageData.pageNum"
+                            :page-size = "pageData.pageSize"
+                            :total = "pageData.total"
                             layout="prev, pager, next"
-                            :total="1000">
+                            >
                     </el-pagination>
                 </el-row>
             </el-col>
@@ -105,15 +110,14 @@
                         <div v-else>
                             <el-upload
                                     class="avatar-uploader"
-                                    action="https://jsonplaceholder.typicode.com/posts/"
+                                    action="http://39.100.95.204:2005/file/attachment/upload?type=asset"
                                     :show-file-list="false"
                                     :on-success="handleAvatarSuccess"
                                     :before-upload="beforeAvatarUpload">
-                                <img v-if="data.avatar" :src="data.avatar" class="avatar">
+                                <img v-if="urlImg" :src="urlImg" class="avatar">
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                             <div style="line-height: 30px;font-size: 16px;margin-right: 70px;">{{data.name}}</div>
-                            <div style="margin-right: 40px;"><el-button type="primary">上传头像</el-button></div>
                         </div>
                     </el-col>
                     <el-col :span="14" class="user">
@@ -142,7 +146,7 @@
                     </el-col>
                     <el-col :span="24" style="text-align: right;margin-top: 20px;">
                         <el-button type="primary" round @click="edit">保存</el-button>
-                        <el-button type="success" round @click="showDialog = false">取消</el-button>
+                        <el-button type="success" round @click="dialogVisibleAdd = false">取消</el-button>
                     </el-col>
                 </el-row>
             </div>
@@ -155,25 +159,23 @@
             <div class="user">
                 <el-row>
                     <el-col :span="7" style="text-align: right;padding-right: 20px;">
-                        <el-upload
-                                :class="num ==0?'UoloadSty':'disUoloadSty'"
-                                action="http://39.100.95.204:2005/file/attachment/upload?type=asse"
-                                list-type="picture-card"
-                                :limit="1"
-                                :on-success="uploadSuccess"
-                                :on-preview="handlePictureCardPreview"
-                                :on-remove="handleRemove">
-                            <i class="el-icon-plus"></i>
-                        </el-upload>
-                        <el-dialog :visible.sync="dialogVisible">
-                            <img width="100%" :src="dialogImageUrl" alt="">
-                        </el-dialog>
+                        <div>
+                            <el-upload
+                                    class="avatar-uploader"
+                                    action="http://39.100.95.204:2005/file/attachment/upload?type=asset"
+                                    :show-file-list="false"
+                                    :on-success="handleAvatarSuccess"
+                                    :before-upload="beforeAvatarUpload">
+                                <img v-if="urlImg" :src="urlImg" class="avatar">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
                             <div style="line-height: 30px;font-size: 16px;margin-right: 70px;">{{name}}</div>
+                        </div>
                     </el-col>
                     <el-col :span="14" class="user">
                         <ul>
                             <li>
-                                <div class="userLeft">ID</div><div class="userRight"><el-input v-model="id" placeholder="请输入内容" :disabled="disabled"></el-input></div>
+                                <!--<div class="userLeft">ID</div><div class="userRight"><el-input v-model="id" placeholder="请输入内容" :disabled="disabled"></el-input></div>-->
                                 <div class="userLeft">用户账户</div><div class="userRight"><el-input v-model="userName" placeholder="请输入内容"  :disabled="disabled"></el-input></div>
                                 <div class="userLeft">密码</div><div class="userRight"><el-input v-model="pwd" placeholder="请输入内容" :disabled="disabled"></el-input></div>
                                 <div class="userLeft">用户角色</div>
@@ -292,21 +294,72 @@
                 adminList:'',
                 adminListVal:'',
                 dialogImageUrl: '',
+                urlImg:'',
+                pageData:'',
+                pageNum:1
+
             }
         },
         components:{
             DateChart,AssetsInfor
         },
         methods:{
+            sizechange(data){
+                console.log(1)
+            },
+            currentchange(data){
+                console.log(2)
+                this.findList(data)
+            },
+            active(data){
+                console.log(data)
+                var status = data.status;
+                if(status == '1'){
+                    this.$message({
+                        message: '已经启用，无需再次开启！',
+                        type: 'warning'
+                    });
+                }else{
+                    var data = {'id':data.id}
+                    var that = this;
+                    that.$alert('确定启用该用户吗？', '启用', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            that.$axios({
+                                url: that.getAjax + '/admin/sysUserAdmin/recover',
+                                method: "post",
+                                headers: {
+                                    'Content-Type': 'application/json;charset=UTF-8',
+                                    'Token':sessionStorage.getItem('token')
+                                },
+                                data:data
+                            }).then(res => {
+                                if(res.data.code == '1001'){
+                                    that.$message({
+                                        message: '用户启用成功',
+                                        type: 'success'
+                                    });
+                                    that.findList(1);
+
+                                }else{
+                                    that.$message({
+                                        message: res.data.msg,
+                                        type: 'warning'
+                                    });
+                                }
+                            })
+                        }
+                    });
+                }
+            },
             assetUseChange(val){this.roleId = val;console.log(val)},
-            findList(){
+            findList(pageNum){
                 var that = this;
+                console.log(pageNum)
                 var data = {
-                    "pageNum": 1,
+                    "pageNum": pageNum,
                     "pageSize": 10,
-                    "roleId": "",
-                    "unit": "",
-                    "uNameUnit": ""
+
                 }
                 this.$axios({
                     url: this.getAjax + '/admin/sysUserAdmin/list',
@@ -319,6 +372,8 @@
                 }).then(res => {
                     if(res.data.code == '1001'){
                         this.tableData = res.data.data.list
+                    this.pageData = '';
+                    this.pageData = res.data.data
                     // for(var i=0;i<res.data.data.list.length;i++){
                     //     this.tableData[i].createTime = (this.tableData[i].createTime)
                     // }
@@ -341,6 +396,7 @@
                 console.log(123)
             },
             handleClick(index,data,type){
+                console.log(data)
                 var that = this;
                 if(type == 'edit'){
                     this.disabled = false
@@ -352,9 +408,13 @@
                 }
                 that.dialogVisibleAdd = true;
                 this.data = data;
+                this.urlImg = data.avatar
                 this.userType = type;
             },
             handleAvatarSuccess(res, file) {
+                console.log(res)
+                console.log(file)
+                this.urlImg = res.data[0]
                 this.imageUrl = URL.createObjectURL(file.raw);
             },
             beforeAvatarUpload(file) {
@@ -409,7 +469,7 @@
                     'name':this.name,
                     'mobile':this.mobile,
                     'unit':this.unit,
-                    'avatar':this.avatar,
+                    'avatar':this.urlImg,
                 }
                 var that = this;
                 this.$axios({
@@ -427,7 +487,7 @@
                         type: 'success'
                     });
                     this.dialogVisiblenewAdd = false
-                    that.findList();
+                    that.findList(1);
 
                 }else{
                     that.$message({
@@ -447,8 +507,9 @@
                     'name':this.data.name,
                     'mobile':this.data.mobile,
                     'unit':this.data.unit,
-                    'avatar':this.data.avatar,
+                    'avatar':this.urlImg
                 }
+                console.log(data)
                 var that = this;
                 this.$axios({
                     url: this.getAjax + '/admin/sysUserAdmin/saveOrUpdate',
@@ -465,7 +526,7 @@
                         type: 'success'
                     });
                     this.dialogVisibleAdd = false;
-                    that.findList();
+                    that.findList(1);
 
                 }else{
                     that.$message({
@@ -480,7 +541,7 @@
                 console.log(data)
                 var data = {'id':data.id}
                 var that = this;
-                that.$alert('确定删除该用户吗？', '删除', {
+                that.$alert('确定禁用该用户吗？', '禁用', {
                     confirmButtonText: '确定',
                     callback: action => {
                 that.$axios({
@@ -494,10 +555,10 @@
                 }).then(res => {
                     if(res.data.code == '1001'){
                     that.$message({
-                        message: '用户删除成功',
+                        message: '用户禁用成功',
                         type: 'success'
                     });
-                    that.findList();
+                    that.findList(1);
 
                 }else{
                     that.$message({
@@ -529,7 +590,7 @@
         created:function () {
         },
         mounted(){
-            this.findList();
+            this.findList(1);
             this.sysRoleAdmin();
         }
     }

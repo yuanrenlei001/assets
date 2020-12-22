@@ -46,9 +46,9 @@
                                 fixed="right"
                                 label="操作"
                         >
-                            <template slot-scope="scope">
-                                <el-button @click="edit" type="text" size="small">编辑</el-button>
-                                <el-button type="text" size="small">删除</el-button>
+                            <template slot-scope="tableData">
+                                <el-button @click="edit(tableData.row)" type="text" size="small">编辑</el-button>
+                                <el-button type="text" size="small" @click="delt(tableData.row)">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -71,36 +71,29 @@
                 <el-form ref="form" style="padding-left: 50px;">
                     <el-col :span="20">
                         <el-form-item label="角色名称：">
-                            <el-input v-model="input" placeholder="请输入内容"></el-input>
+                            <el-input v-model="name" placeholder="请输入内容"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="20">
-                        <el-form-item label="数据权限：">
-                            <el-select  v-model="value" placeholder="请选择">
-                                <el-option
-                                        v-for="item in options"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
-                                </el-option>
-                            </el-select>
+                        <el-form-item label="角色描述：">
+                            <el-input v-model="descStr" placeholder="请输入内容"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="20">
-                        <el-form-item label="功能权限：">
-                            <el-select  v-model="value" placeholder="请选择">
+                        <el-form-item label="权限选择：">
+                            <el-select v-model="value1" multiple placeholder="请选择" @change="sysRoleAdmin">
                                 <el-option
                                         v-for="item in options"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
                                 </el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
                     <el-col :span="20" style="text-align: right;margin-top: 50px;">
-                        <el-button type="primary">确定</el-button>
-                        <el-button type="success">取消</el-button>
+                        <el-button type="primary" @click="add2">确定</el-button>
+                        <el-button type="success" @click="canel">取消</el-button>
                     </el-col>
                 </el-form>
             </el-row>
@@ -109,48 +102,36 @@
                 class="fixed"
                 :title="title +'角色权限设置'"
                 :visible.sync="dialogVisibleAdd2"
-                width="80%">
-            <el-row class="tables" style="margin-top: 20px;">
-                数据权限：
-                <el-table
-                        border
-                        ref="multipleTable"
-                        :data="tableData"
-                        tooltip-effect="dark"
-                        style="width: 100%"
-                        @selection-change="handleSelectionChange">
-                    <el-table-column  prop="date" label="权限名称"></el-table-column>
-                    <el-table-column prop="name" label="权限说明"></el-table-column>
-                    <el-table-column
-                            fixed="right"
-                            label="操作"
-                    >
-                        <template slot-scope="scope">
-                            <el-checkbox v-model="checked"></el-checkbox>
-                        </template>
-                    </el-table-column>
-                </el-table>
-            </el-row>
-            <el-row class="tables" style="margin-top: 20px;">
-                功能权限：
-                <el-table
-                        ref="multipleTable"
-                        :data="tableData"
-                        border
-                        tooltip-effect="dark"
-                        style="width: 100%"
-                        @selection-change="handleSelectionChange">
-                    <el-table-column  prop="date" label="权限名称"></el-table-column>
-                    <el-table-column prop="name" label="权限说明"></el-table-column>
-                    <el-table-column
-                            fixed="right"
-                            label="操作"
-                    >
-                        <template slot-scope="scope">
-                            <el-checkbox v-model="checked"></el-checkbox>
-                        </template>
-                    </el-table-column>
-                </el-table>
+                width="35%">
+            <el-row>
+                <el-form ref="form" style="padding-left: 50px;">
+                    <el-col :span="20">
+                        <el-form-item label="角色名称：">
+                            <el-input v-model="name" placeholder="请输入内容"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="20">
+                        <el-form-item label="角色描述：">
+                            <el-input v-model="descStr" placeholder="请输入内容"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="20">
+                        <el-form-item label="权限选择：">
+                            <el-select v-model="value1" multiple placeholder="请选择" @change="sysRoleAdmin">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="20" style="text-align: right;margin-top: 50px;">
+                        <el-button type="primary" @click="add3">确定</el-button>
+                        <el-button type="success" @click="canel">取消</el-button>
+                    </el-col>
+                </el-form>
             </el-row>
         </el-dialog>
     </div>
@@ -165,36 +146,15 @@
             return {
                 checked:true,
                 input2:'',
+                name:'',
+                value1:'',
+                descStr:'',
                 options: [
-                    {
-                        value: '选项1',
-                        label: '黄金糕'
-                    }, {
-                        value: '选项2',
-                        label: '双皮奶'
-                    }, {
-                        value: '选项3',
-                        label: '蚵仔煎'
-                    }, {
-                        value: '选项4',
-                        label: '龙须面'
-                    }, {
-                        value: '选项5',
-                        label: '北京烤鸭'
-                    }
                 ],
                 value: '',
                 value22: '',
                 tableData: [
-                    {
-                        date: '2016-05-03',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        date: '2016-05-02',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }
+
                 ],
                 multipleSelection: [],
                 parentMessage: '我是来自父组件的消息',
@@ -204,13 +164,131 @@
                 title:'admin',
                 type:'',
                 imageUrl: '',
-                input:''
+                input:'',
+                authDataIds:'',
+                listAuthData:'',
+                id:''
             }
         },
         components:{
             DateChart,AssetsInfor
         },
         methods:{
+            delt(){
+                this.$message({
+                    message: '角色暂不支持删除',
+                    type: 'warning'
+                });
+            },
+            add2(){
+                var data = {
+                    'id':null,
+                    'name':this.name,
+                    'descStr':this.descStr,
+                    'authDataIds':this.authDataIds,
+                }
+                if(this.name == ''){
+                    this.$message({
+                        message: '角色名称不能为空',
+                        type: 'warning'
+                    });
+                }else if(this.descStr == ''){
+                    this.$message({
+                        message: '角色描述不能为空',
+                        type: 'warning'
+                    });
+                }else if(this.authDataIds == ''){
+                    this.$message({
+                        message: '权限选择不能为空',
+                        type: 'warning'
+                    });
+                }else{
+                    this.$axios({
+                        url: this.getAjax + '/admin/sysRoleAdmin/saveOrUpdate',
+                        method: "post",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:data
+                    }).then(res => {
+                        if(res.data.code == '2004'){
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'warning'
+                        });
+                        this.$router.push('/')
+                    }else{
+                        this.$message({
+                            message: '成功',
+                            type: 'warning'
+                        });
+                        this.findList();
+                        this.dialogVisibleAdd = false;
+                    }
+                })
+                }
+                console.log(data)
+
+            },
+            add3(){
+                var data = {
+                    'id':this.id,
+                    'name':this.name,
+                    'descStr':this.descStr,
+                    'authDataIds':this.authDataIds,
+                }
+                console.log(data)
+                if(this.name == ''){
+                    this.$message({
+                        message: '角色名称不能为空',
+                        type: 'warning'
+                    });
+                }else if(this.descStr == ''){
+                    this.$message({
+                        message: '角色描述不能为空',
+                        type: 'warning'
+                    });
+                }else if(this.authDataIds == ''){
+                    this.$message({
+                        message: '权限选择不能为空',
+                        type: 'warning'
+                    });
+                }else{
+                    this.$axios({
+                        url: this.getAjax + '/admin/sysRoleAdmin/saveOrUpdate',
+                        method: "post",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:data
+                    }).then(res => {
+                        if(res.data.code == '2004'){
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'warning'
+                        });
+                        this.$router.push('/')
+                    }else{
+                        this.$message({
+                            message: '成功',
+                            type: 'warning'
+                        });
+                        this.findList();
+                        this.dialogVisibleAdd = false;
+                        this.dialogVisibleAdd2 = false;
+                    }
+                })
+                }
+            },
+            canel(){
+                this.dialogVisibleAdd = false;
+                this.dialogVisibleAdd2 = false;
+            },
+            sysRoleAdmin(data){
+                this.authDataIds = data;
+            },
             // 获取角色列表
             findList(){
                 var that = this;
@@ -233,14 +311,49 @@
                 }else{
                     var list = res.data.data;
                     this.tableData = list
+                    // var list = res.data.data.listAuthData;
                     // var arr = [];
-                    // for(var i=0;i<list.length;i++){
+                    // for(var i=0;i<list[i].length;i++){
                     //     var obj = {};
                     //     obj['value'] = list[i].id
-                    //     obj['id'] = list[i].id
                     //     obj['label'] = list[i].name
-                    //     that.RoleAdmin.push(obj)
+                    //     arr.push(obj)
+                    //     console.log(obj)
                     // }
+                    // this.options = arr
+                }
+            })
+            },
+            findLists(){
+                var that = this;
+                this.$axios({
+                    url: this.getAjax + '/admin/sysAuthAdmin/findList',
+                    method: "get",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    data:{}
+                }).then(res => {
+
+                    if(res.data.code == '2004'){
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'warning'
+                    });
+                    this.$router.push('/')
+                }else{
+                    var list = res.data.data.listAuthData;
+                    this.listAuthData = list;
+                    // var arr = [];
+                    // for(var i=0;i<list[i].length;i++){
+                    //     console.log(123)
+                    //     var obj = {};
+                    //     obj['value'] = list[i].id
+                    //     obj['label'] = list[i].name
+                    //     arr.push(obj)
+                    // }
+                    that.options = list
                 }
             })
             },
@@ -260,7 +373,15 @@
             add(){
                 this.dialogVisibleAdd = true
             },
-            edit(){
+            edit(data){
+                console.log(data)
+                this.name = data.name;
+                this.id = data.id;
+                this.descStr = data.descStr;
+                this.name = data.name;
+                this.name = data.name;
+                this.value1 = data.authDataIds;
+                this.authDataIds = data.authDataIds;
                 this.dialogVisibleAdd2 = true
             },
             handleAvatarSuccess(res, file) {
@@ -283,6 +404,7 @@
         },
         mounted(){
             this.findList();
+            this.findLists();
         }
     }
 </script>
@@ -331,7 +453,7 @@
     .rightS {position: relative;}
     .btns {position: absolute;top:-10px;right:-68px;}
     .btns2 {position: absolute;top:0;right:-55px;}
-    .tables>>>th{padding: 0;height:80px;background: #eee;font-size: 24px;font-weight: normal;color: #333;text-align: center;}
+    .tables>>>th{padding: 0;height:80px;background: #eee;font-size: 16px;font-weight: normal;color: #333;text-align: center;}
     .tables>>>.el-table {border: 1px dotted #eee;}
     .tables>>>.el-table__row td{padding: 0;height:50px;text-align: center;color: #333;}
     .pagination>>>.el-pagination.is-background .btn-next, .pagination>>>.el-pagination.is-background .btn-prev, .pagination>>>.el-pagination.is-background .el-pager li{width: 48px;height:48px;text-align: center;line-height: 48px;font-size: 18px;}
