@@ -2,26 +2,14 @@
     <div class="main">
         <el-row>
             <el-form ref="form" >
-                <el-col :span="4" class="sort">
-                    <el-form-item label="产权人：">
-                        <el-select  v-model="value" placeholder="请选择" style="margin-left: 25px;">
-                            <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
                 <el-col class="sort" :span="4">
                     <el-form-item label="房屋性质：">
-                        <el-select  v-model="value" placeholder="请选择">
+                        <el-select  v-model="houseNatureval" placeholder="请选择" @change="houseNaturevals">
                             <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
+                                    v-for="item in houseNature"
+                                    :key="item.label"
                                     :label="item.label"
-                                    :value="item.value">
+                                    :value="item.label">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -38,23 +26,21 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col class="sort" :span="4">
-                    <el-form-item label="办证情况：">
-                        <el-select  v-model="value" placeholder="请选择">
+                <el-col :span="4" class="sort">
+                    <el-form-item label="土地用途：">
+                        <el-select  v-model="landNatureval" placeholder="请选择" style="margin-left: 9px;" @change="landNaturevals">
                             <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
+                                    v-for="item in landNature"
+                                    :key="item.label"
                                     :label="item.label"
-                                    :value="item.value">
+                                    :value="item.label">
                             </el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5" class="rightS">
-                    <el-input
-                            placeholder="请输入资产编号或房屋坐落"
-                            prefix-icon="el-icon-search"
-                            v-model="input2">
+                <el-col :span="9" class="rightS">
+                    <el-input placeholder="请输入资产编号或房屋坐落" v-model="input2" class="input-with-select" style="width: 400px;">
+                        <el-button slot="append" icon="el-icon-search" @click="searchs"></el-button>
                     </el-input>
                     <div class="btns">
                         <el-button style="color: #fff;width: 180px;" @click="historys">历史删除记录</el-button>
@@ -64,18 +50,6 @@
         </el-row>
         <el-row>
             <el-form ref="form" >
-                <el-col :span="4" class="sort">
-                    <el-form-item label="土地用途：">
-                        <el-select  v-model="value" placeholder="请选择" style="margin-left: 9px;">
-                            <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
                 <el-col class="sort" :span="4">
                     <el-form-item label="土地性质：">
                         <el-select  v-model="value" placeholder="请选择">
@@ -90,19 +64,19 @@
                 </el-col>
                 <el-col class="sort" :span="4">
                     <el-form-item label="房屋现状：">
-                        <el-select  v-model="value" placeholder="请选择">
+                        <el-select  v-model="houseNowval" placeholder="请选择" @change="houseNowvals">
                             <el-option
-                                    v-for="item in options"
+                                    v-for="item in houseNows"
                                     :key="item.value"
                                     :label="item.label"
-                                    :value="item.value">
+                                    :value="item.label">
                             </el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
                 <el-col class="sort" :span="4">
                     <el-form-item label="标签：" style="margin-left: 33px;">
-                        <el-select  v-model="value" placeholder="请选择">
+                        <el-select  v-model="value" placeholder="请选择" style="margin-left: 7px;">
                             <el-option
                                     v-for="item in options"
                                     :key="item.value"
@@ -112,11 +86,11 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5" class="rightS">
+                <el-col :span="5" class="rightS" style="margin-left: 300px;">
                     <div class="btns2">
                         <el-button type="primary" @click="handleClickAdd">新增</el-button>
                         <el-button type="warning" @click="updateBatchs">批量修改</el-button>
-                        <el-button type="success" @click="dialogVisible = true">统计</el-button>
+                        <el-button type="success" @click="chars">统计</el-button>
                         <el-button type="danger" @click="findExportTitles">导出</el-button>
                     </div>
                 </el-col>
@@ -139,7 +113,7 @@
                 <el-table-column prop="landNature" label="土地性质"></el-table-column>
                 <el-table-column prop="realHouse" label="不动产证号"></el-table-column>
                 <el-table-column prop="houseNow" label="房屋现状"></el-table-column>
-                <el-table-column prop="address7" label="历史租聘情况">
+                <el-table-column prop="address7" label="历史租凭情况">
                     <template slot-scope="tableData">
                         <el-button @click="historyList(tableData.$index,tableData.row)" type="text" size="small">详情</el-button>
                     </template>
@@ -166,7 +140,7 @@
                 </el-table-column>
             </el-table>
         </el-row>
-        <el-row style="margin-top: 48px;text-align: right" class="pagination">
+        <el-row style="margin-top: 38px;text-align: right" class="pagination">
             <el-pagination
                     background
                     :current-page.sync="pageNum"
@@ -250,11 +224,19 @@
                             <div class="sp">
                                 <div>
                                     <div>发起人：</div>
-                                    <div v-for="item in approvalFindList.openRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                    <div v-for="item in approvalFindList.openRole">
+                                        <div v-for="items in item.users">
+                                            <img :src="items.avatar" alt=""><p>{{items.name}}</p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div>
                                     <div>审批人：</div>
-                                    <div v-for="item in approvalFindList.checkRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                    <div v-for="item in approvalFindList.checkRole">
+                                        <div v-for="items in item.users">
+                                            <img :src="items.avatar" alt=""><p>{{items.name}}</p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <!--<div  v-for="item in approvalFindList.openRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>-->
                                 <!--<div v-for="item in approvalFindList.checkRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>-->
@@ -268,7 +250,11 @@
                             <div class="sp">
                                 <div>
                                     <div>抄送人：</div>
-                                    <div v-for="item in approvalFindList.noticeRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                    <div v-for="item in approvalFindList.noticeRole">
+                                        <div v-for="items in item.users">
+                                            <img :src="items.avatar" alt=""><p>{{items.name}}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </el-form-item>
@@ -314,11 +300,19 @@
                                 <div class="sp">
                                     <div>
                                         <div>发起人：</div>
-                                        <div v-for="item in approvalFindList.openRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                        <div v-for="item in approvalFindList.openRole">
+                                            <div v-for="items in item.users">
+                                                <img :src="items.avatar" alt=""><p>{{items.name}}</p>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div>
                                         <div>审批人：</div>
-                                        <div v-for="item in approvalFindList.checkRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                        <div v-for="item in approvalFindList.checkRole">
+                                            <div v-for="items in item.users">
+                                                <img :src="items.avatar" alt=""><p>{{items.name}}</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </el-form-item>
@@ -329,7 +323,11 @@
                                 <div class="sp">
                                     <div>
                                         <div>抄送人：</div>
-                                        <div v-for="item in approvalFindList.noticeRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                        <div v-for="item in approvalFindList.noticeRole">
+                                            <div v-for="items in item.users">
+                                                <img :src="items.avatar" alt=""><p>{{items.name}}</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </el-form-item>
@@ -432,11 +430,19 @@
                             <div class="sp">
                                 <div >
                                     <div>发起人：</div>
-                                    <div v-for="item in approvalFindList.openRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                    <div v-for="item in approvalFindList.openRole">
+                                        <div v-for="items in item.users">
+                                            <img :src="items.avatar" alt=""><p>{{items.name}}</p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div>
                                     <div>审批人：</div>
-                                    <div v-for="item in approvalFindList.checkRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                    <div v-for="item in approvalFindList.checkRole">
+                                        <div v-for="items in item.users">
+                                            <img :src="items.avatar" alt=""><p>{{items.name}}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </el-form-item>
@@ -446,7 +452,11 @@
                         <el-form-item label="抄送：">
                             <div class="sp">
                                 <div>抄送人：</div>
-                                <div v-for="item in approvalFindList.noticeRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
+                                <div v-for="item in approvalFindList.noticeRole">
+                                    <div v-for="items in item.users">
+                                        <img :src="items.avatar" alt=""><p>{{items.name}}</p>
+                                    </div>
+                                </div>
                             </div>
                         </el-form-item>
 
@@ -464,7 +474,7 @@
                 :visible.sync="dialogVisible"
                 v-if="dialogVisible"
                 width="80%">
-            <date-chart @childEvent="parentMethod"></date-chart>
+            <date-chart @childEvent="parentMethod" ref="charsRef"></date-chart>
         </el-dialog>
 
         <!--历史租聘合同-->
@@ -551,6 +561,70 @@ export default {
   name: 'login',
   data () {
     return {
+        houseNature:[
+            {'label':'办公'},{'label':'参主'},{'label':'仓储'},{'label':'工业厂房'},{'label':'公房'},
+            {'label':'集体'},{'label':'其他'},{'label':'全民'},{'label':'商业'},{'label':'私房'},
+            {'label':'未登记认定'},{'label':'住宅'},{'label':'住宅/仓储'},{'label':'住宅/工业厂房'}
+            ],
+        houseNatureval:'',
+        landNature:[
+            {'label':'仓储出让'},{'label':'仓储划拨'},{'label':'工业出让'},{'label':'工业划拨'},{'label':'商业出让'},
+            {'label':'商业划拨'},{'label':'住宅出让'},{'label':'住宅划拨'},{'label':'综合划拨'},
+        ],
+        landNatureval:'',
+        houseNows:[
+            {'label':'1.73'},{'label':'2.12'},{'label':'2.16'},{'label':'2.28'},{'label':'2.63'},
+            {'label':'2.64'},{'label':'2.73'},{'label':'2.75'},{'label':'2.85'},{'label':'2.86'},
+            {'label':'2.97'},{'label':'2.98'},{'label':'3'},{'label':'3.01'},{'label':'3.17'},
+            {'label':'3.41'},{'label':'3.48'},{'label':'3.69'},{'label':'3.7'},{'label':'3.72'},
+            {'label':'3.73'},{'label':'3.8'},{'label':'3.9'},{'label':'4.14'},{'label':'4.2'},
+            {'label':'4.26'},{'label':'4.49'},{'label':'4.62'},{'label':'4.66'},{'label':'4.72'},
+            {'label':'4.73'},{'label':'4.77'},{'label':'5.08'},{'label':'5.13'},{'label':'5.15'},
+            {'label':'5.24'},{'label':'5.29'},{'label':'5.31'},{'label':'5.38'},{'label':'5.42'},
+            {'label':'5.51'},{'label':'5.54'},{'label':'5.6'},{'label':'5.69'},{'label':'5.71'},
+            {'label':'5.77'},{'label':'5.81'},{'label':'5.82'},{'label':'5.86'},{'label':'5.94'},
+            {'label':'5.95'},{'label':'6'},{'label':'6.01'},{'label':'6.05'},{'label':'6.06'},
+            {'label':'6.08'},{'label':'6.12'},{'label':'6.14'},{'label':'6.16'},{'label':'6.17'},
+            {'label':'6.24'},{'label':'6.25'},{'label':'6.36'},{'label':'6.47'},{'label':'6.5'},
+            {'label':'6.55'},{'label':'6.58'},{'label':'6.63'},{'label':'6.64'},{'label':'6.72'},
+            {'label':'6.77'},{'label':'6.78'},{'label':'6.79'},{'label':'6.89'},{'label':'6.91'},
+            {'label':'7.02'},{'label':'7.05'},{'label':'7.13'},{'label':'7.22'},{'label':'7.32'},
+            {'label':'7.46'},{'label':'7.51'},{'label':'7.52'},{'label':'7.53'},{'label':'7.54'},
+            {'label':'7.68'},{'label':'7.8'},{'label':'7.9'},{'label':'7.99'},{'label':'8.09'},
+            {'label':'8.16'},{'label':'8.41'},{'label':'8.51'},{'label':'8.52'},{'label':'8.57'},
+            {'label':'8.6'},{'label':'8.8'},{'label':'9.23'},{'label':'9.37'},{'label':'9.45'},
+            {'label':'9.6'},{'label':'9.73'},{'label':'9.82'},{'label':'9.91'},{'label':'10.03'},
+            {'label':'10.36'},{'label':'10.43'},{'label':'10.56'},{'label':'10.64'},{'label':'10.67'},
+            {'label':'10.79'},{'label':'10.84'},{'label':'10.92'},{'label':'10.94'},{'label':'11.08'},
+            {'label':'11.17'},{'label':'11.2'},{'label':'11.25'},{'label':'11.34'},{'label':'11.42'},
+            {'label':'11.48'},{'label':'11.72'},{'label':'11.76'},{'label':'11.86'},{'label':'11.96'},
+            {'label':'12.54'},{'label':'12.95'},{'label':'12.97'},{'label':'12.99'},{'label':'13.12'},
+            {'label':'13.2'},{'label':'13.37'},{'label':'13.69'},{'label':'13.87'},{'label':'13.89'},
+            {'label':'14.12'},{'label':'14.26'},{'label':'14.38'},{'label':'14.59'},{'label':'14.82'},
+            {'label':'14.91'},{'label':'14.92'},{'label':'15.07'},{'label':'15.17'},{'label':'15.48'},
+            {'label':'15.51'},{'label':'15.86'},{'label':'16.11'},{'label':'16.33'},{'label':'16.59'},
+            {'label':'16.63'},{'label':'16.93'},{'label':'17.42'},{'label':'19.16'},{'label':'19.49'},
+            {'label':'21.12'},{'label':'21.32'},{'label':'21.67'},{'label':'22.26'},{'label':'22.34'},
+            {'label':'22.4'},{'label':'22.68'},{'label':'23.02'},{'label':'23.47'},{'label':'23.6'},
+            {'label':'23.66'},{'label':'23.8'},{'label':'23.99'},{'label':'24.56'},{'label':'25.52'},
+            {'label':'25.72'},{'label':'25.8'},{'label':'25.9'},{'label':'26.53'},{'label':'26.76'},
+            {'label':'30.84'},{'label':'31.59'},{'label':'31.96'},{'label':'56.02'},{'label':'0'},
+            {'label':'爱咖啡、猫的天空之城'},{'label':'百间楼河东47号名宿项目'},{'label':'篱梳坊、葫芦、手工瓷画、麻手工'},{'label':'厕所'},{'label':'拆除重建（厕所）'},
+            {'label':'拆迁过渡用房'},{'label':'出借'},{'label':'出租'},{'label':'丹丹手工茶饼'},{'label':'德茂弄酒店建造中'},
+            {'label':'都市聚落酒店及水晶晶文创园'},{'label':'二楼雅婷精舍、一楼云锦丝绸仓库'},{'label':'房屋已重建'},{'label':'西风服店'},{'label':'干洗店、千浔一人煲、足浴、香山桥古镇饭店'},
+            {'label':'工艺制品、休闲茶舍'},{'label':'红鼎酒店'},{'label':'借用工程'},{'label':'金宅修缮'},{'label':'囧囧奶茶、古朴奶茶'},
+            {'label':'空置'},{'label':'空置（小莲庄酒店）'},{'label':'空置（原杭州建筑工程有限公司）'},{'label':'库房、店铺 部分和东大街81号对调'},{'label':'老干部活动中心'},
+            {'label':'旅游协会'},{'label':'绿松石书吧'},{'label':'猫小院'},{'label':'煤失弄精品酒店建造中'},{'label':'木锤酥'},
+            {'label':'南浔难寻'},{'label':'三户占用'},{'label':'桑果酒'},{'label':'社区用房'},{'label':'诗域浔味'},
+            {'label':'糖艺坊'},{'label':'特产商行'},{'label':'天堂伞、民族服、诸老大粽子'},{'label':'天下湖品'},{'label':'天元尚品'},
+            {'label':'未找到'},{'label':'文房四宝'},{'label':'吴越丝绸'},{'label':'现环卫所办公大楼'},{'label':'现丝行隶停车场'},
+            {'label':'现为贻德广场（已拆除）'},{'label':'现象门街主入口（已拆除）'},{'label':'祥和糕点店'},{'label':'项目拆除'},{'label':'消防警务室'},
+            {'label':'小小饭店厨房'},{'label':'浔蹄'},{'label':'一户占用'},{'label':'怡德广场'},{'label':'宜兴紫砂'},
+            {'label':'已拆除'},{'label':'逸香轩'},{'label':'营销公司使用'},{'label':'颖园饭店'},{'label':'永为笔庄'},
+            {'label':'员工宿舍'},{'label':'原小莲庄宾馆'},{'label':'云栖灡亭会议室'},{'label':'运河酒店及运河名宿建造中'},{'label':'闸口仓库'},
+            {'label':'占用'},{'label':'真味斋'},{'label':'众里寻他'},{'label':'自用'},{'label':'空白'},
+        ],
+        houseNowval:'',
         sysAuthAdmin:sessionStorage.getItem('authStr'),
         checkAll: false,
         checkedCities: [],
@@ -613,13 +687,51 @@ export default {
         realLand:'',//土地证
         hisytortableData:[],
         dialogVisibleKanwy:false,
-        formDatas:''
+        formDatas:'',
+        search:{
+                "pageNum": 1,
+              "pageSize": 10,
+              "assetUser": "",
+              "houseNature": '',
+              "assetUse": "",
+              "landUse": "",
+              "landNature":'',
+              "houseNow": '',
+              "label": "",
+              "search": ""
+      },
+        realEstateAttachUrl:'',
+        realHouseAttachUrl:'',
+        realLandAttachUrl:'',
     }
   },
     components:{
         DateChart,AssetsInfor,NewInfor,NewAdd,AssetsKan,AddOrUpdate,history,AssetsKanwy
     },
     methods:{
+      chars(){
+          this.dialogVisible =true;
+          sessionStorage.setItem('total',this.total)
+      },
+        searchs(val){
+            this.search['search'] = this.input2
+            this.list(this.search)
+        },
+        houseNaturevals(val){
+            this.houseNatureval = val;
+            this.search['houseNature'] = val
+            this.list(this.search)
+        },
+        landNaturevals(val){
+            this.landNatureval = val;
+            this.search['landNature'] = val
+            this.list(this.search)
+            },
+        houseNowvals(val){
+            this.houseNowval = val;
+            this.search['houseNow'] = val
+            this.list(this.search)
+        },
       // 获取导出列表
         findExportTitles(){
             this.findExportTitle = true
@@ -778,11 +890,11 @@ export default {
             var data = {
                 'assetUser':this.assetUser,
                 'realHouse':this.realHouse,
-                'realHouseAttach':this.realHouseAttach[0].url,
+                'realHouseAttach':this.realHouseAttachUrl,
                 'realLand':this.realLand,
-                'realLandAttach':this.realLandAttach[0].url,
+                'realLandAttach':this.realLandAttachUrl,
                 'realEstate':this.realEstate,
-                'realEstateAttach':this.realEstateAttach[0].url,
+                'realEstateAttach':this.realEstateAttachUrl,
                 'houseNow':this.houseNowVal,
                 'ids':ids
             }
@@ -799,7 +911,7 @@ export default {
                 if(res.data.code == '1001'){
                 this.$message.success('批量修改成功！');
                 this.updateBatch = false;
-                    this.list();
+                    this.list(this.search);
             }else{
                 this.$message({
                     message: res.data.msg,
@@ -813,20 +925,9 @@ export default {
             this.updateBatch = false;
         },
       // 查询详情列表
-        list(){
+        list(search){
             var that = this;
-            var data ={
-                "pageNum": this.pageNum,
-                "pageSize": this.pageSize,
-                "assetUser": "",
-                "houseNature": "",
-                "assetUse": "",
-                "landUse": "",
-                "landNature": "",
-                "houseNow": "",
-                "label": "",
-                "search": ""
-            }
+            var data =search
             this.$axios({
                 url: this.getAjax + '/admin/meansAdmin/findList',
                 method: "post",
@@ -874,6 +975,7 @@ export default {
                         }
                     }
                     that.approvalFindList = arr
+                    console.log(arr)
             }else{
                 this.$message({
                     message: res.data.msg,
@@ -931,6 +1033,7 @@ export default {
         handleSuccess(res,file){
             console.log(res)
             this.realEstateAttach.push({'url':res.data[0],'name':file.name})
+            this.realEstateAttachUrl = this.realEstateAttach[0].url
             console.log(this.realEstateAttach)
         },
         handlePreview(file) {
@@ -957,6 +1060,7 @@ export default {
         },
         realHouseAttachSuccess(res,file){
             this.realHouseAttach.push({'url':res.data[0],'name':file.name})
+            this.realHouseAttachUrl = this.realHouseAttach[0].url
         },
         // 土地证
         realLandAttachRemove(file, fileList) {
@@ -973,6 +1077,7 @@ export default {
         },
         realLandAttachSuccess(res,file){
             this.realLandAttach.push({'url':res.data[0],'name':file.name})
+            this.realLandAttachUrl = this.realLandAttach[0].url
         },
         handleAvatarSuccess(res, file) {
             this.imageUrl = URL.createObjectURL(file.raw);
@@ -987,11 +1092,13 @@ export default {
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
             this.pageSize = val
-            this.list()
+            this.search['pageSize'] = val
+            this.list(this.search)
         },
         handleCurrentChange(val) {
             this.pageNum = val
-            this.list()
+            this.search['pageNum'] = val
+            this.list(this.search)
         },
         open() {
             var data = {
@@ -1207,7 +1314,8 @@ export default {
     created:function () {
     },
     mounted(){
-        this.list();
+      console.log(this.search)
+        this.list(this.search);
         this.books = []
         // this.findList();
     }

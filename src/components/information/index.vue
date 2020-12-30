@@ -574,13 +574,14 @@
                     data:{
                         'id':data.id,
                         'status':1,
+                        "remark":""
                     }
                 }).then(res => {
                     this.$message({
                     type: 'success',
                     message: '审批成功!'
                 });
-
+                this.splist();
             })
             }).catch(() => {
                     this.$message({
@@ -591,35 +592,35 @@
             },
             zcBack(data) {
                 var that = this;
-                this.$confirm('拒绝该项审批？', '审批提示', {
+                this.$prompt('拒绝该项审批？请输入驳回理由！', '审批提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
+                }).then(({ value }) => {
                     this.$axios({
-                    url: this.getAjax + '/admin/meansRoveAdmin/check',
-                    method: "post",
-                    headers: {
-                        'Content-Type': 'application/json;charset=UTF-8',
-                        'Token':sessionStorage.getItem('token')
-                    },
-                    data:{
-                        'id':data.id,
-                        'status':2,
-                    }
-                }).then(res => {
+                        url: this.getAjax + '/admin/meansRoveAdmin/check',
+                        method: "post",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:{
+                            'id':data.id,
+                            'status':2,
+                            "remark":value
+                        }
+                    }).then(res => {
+                        this.$message({
+                            type: 'success',
+                            message: '驳回成功!'
+                        });
+                        this.splist();
+                    })
+                }).catch(() => {
                     this.$message({
-                    type: 'success',
-                    message: '驳回成功!'
+                        type: 'info',
+                        message: '取消驳回！'
+                    });
                 });
-
-            })
-            }).catch(() => {
-                    this.$message({
-                    type: 'info',
-                    message: '已取消审批！'
-                });
-            });
             },
             // 资产详情查看
             detail(index,data,str){
@@ -895,6 +896,7 @@
     .el-input {width: 200px;}
     .el-form-item__label {font-size: 16px;color: #333;}
     .el-dialog {background-color: #f2f2f2;}
+    .el-message-box  .el-input {width: 370px;}
 </style>
 <style scoped>
     .main {padding:20px 43px;}
@@ -913,5 +915,6 @@
     .pagination>>>.el-pagination.is-background .el-pager li:not(.disabled).active {background-color:rgba(75,116,255,.62)}
     .main>>>.el-input--mini .el-input__inner {height:48px;line-height: 48px;}
     .main>>>.el-pagination__editor.el-input .el-input__inner {height:48px;line-height: 48px;}
+
 </style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

@@ -78,7 +78,7 @@
                         </el-col>
                         <el-col :span="24" style="position: relative;">
                             <el-form-item label="审批人：" style="margin-left: 48px;" v-for='(item,index) in books'  :key="item.id">
-                                <el-select  v-model="books[index].id" placeholder="请选择" style="margin-left: 25px;" @change="houseNowChange3(item.id)">
+                                <el-select  v-model="books[index].label" placeholder="请选择" style="margin-left: 25px;" @change="houseNowChange3(item.id)">
                                     <el-option
                                             v-for="item in RoleAdmin"
                                             :key="item.value"
@@ -215,6 +215,7 @@
                     arr.push(obj)
                 }
                 this.books = arr
+                console.log(arr)
                 var noticeRole = data.noticeRole;
                 var arr2 = [];
                 for(var i=0;i<noticeRole.length;i++){
@@ -371,6 +372,7 @@
                         data[i].value = testColData.value;
                     }
                 }
+                console.log(data)
             },
             houseNowChange4(id){
                 this.booksid2 = id

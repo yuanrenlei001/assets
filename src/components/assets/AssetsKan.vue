@@ -6,490 +6,205 @@
                        @close="handleClose"
                        width="700px">
                <el-row>
-                   <el-form ref="form" v-if="tmp">
+                   <el-form ref="form">
                        <el-col :span="24">
                            <el-form-item label="产权名：">
-                               <el-input v-model="tmp.assetCode" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.assetCode?tmp.assetCode:meansBook.assetCode" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col :span="24">
                            <el-form-item label="产权人：">
-                               <el-input v-model="tmp.assetUser" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.assetUser?tmp.assetUser:meansBook.assetUser" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col :span="24">
                            <el-form-item label="房屋坐落：">
-                               <el-input v-model="tmp.houseAddress" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.houseAddress?tmp.houseAddress:meansBook.houseAddress" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col :span="24">
                            <el-form-item label="原使用产权人：">
-                               <el-input v-model="tmp.assetUserOri" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.assetUserOri?tmp.assetUserOri:meansBook.assetUserOri" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col  :span="24">
                            <el-form-item label="房屋性质：" >
-                               <el-select  v-model="tmp.houseNature" placeholder="请选择" :disabled="disabled">
-                                   <el-option
-                                           v-for="item in options"
-                                           :key="item.value"
-                                           :label="item.label"
-                                           :value="item.value">
-                                   </el-option>
-                               </el-select>
+                               <el-input v-model="tmp&&tmp.houseNature?tmp.houseNature:meansBook.houseNature" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col  :span="24">
                            <el-form-item label="房屋结构：" >
-                               <el-select  v-model="tmp.houseStructure" placeholder="请选择" :disabled="disabled">
-                                   <el-option
-                                           v-for="item in options"
-                                           :key="item.value"
-                                           :label="item.label"
-                                           :value="item.value">
-                                   </el-option>
-                               </el-select>
+                               <el-input v-model="tmp&&tmp.houseStructure?tmp.houseStructure:meansBook.houseStructure" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col :span="24">
                            <el-form-item label="未登记建筑面积：">
-                               <el-input v-model="tmp.noCheckinArea" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.noCheckinArea?tmp.noCheckinArea:meansBook.noCheckinArea+' m²'" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col :span="24">
                            <el-form-item label="房屋建筑面积：">
-                               <el-input v-model="tmp.houseArea" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.landArea?tmp.landArea:meansBook.landArea+' m²'" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col  :span="24">
                            <el-form-item label="产权用途：" >
-                               <el-select  v-model="tmp.assetUse" placeholder="请选择" :disabled="disabled">
-                                   <el-option
-                                           v-for="item in options"
-                                           :key="item.value"
-                                           :label="item.label"
-                                           :value="item.value">
-                                   </el-option>
-                               </el-select>
+                               <el-input v-model="tmp&&tmp.assetUse?tmp.assetUse:meansBook.assetUse" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col :span="24">
                            <el-form-item label="土地面积：">
-                               <el-input v-model="tmp.landArea" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.landArea?tmp.landArea:meansBook.landArea+' m²'" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col  :span="24">
                            <el-form-item label="土地用途：" >
-                               <el-select  v-model="tmp.landUse" placeholder="请选择" :disabled="disabled">
-                                   <el-option
-                                           v-for="item in options"
-                                           :key="item.value"
-                                           :label="item.label"
-                                           :value="item.value">
-                                   </el-option>
-                               </el-select>
+                               <el-input v-model="tmp&&tmp.landUse?tmp.landUse:meansBook.landUse" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col  :span="24">
                            <el-form-item label="土地性质：" >
-                               <el-select  v-model="tmp.landNature" placeholder="请选择" :disabled="disabled">
-                                   <el-option
-                                           v-for="item in options"
-                                           :key="item.value"
-                                           :label="item.label"
-                                           :value="item.value">
-                                   </el-option>
-                               </el-select>
+                               <el-input v-model="tmp&&tmp.landNature?tmp.landNature:meansBook.landNature" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col :span="24">
                            <el-form-item label="不动产证：">
-                               <el-input v-model="tmp.realEstate" placeholder="请输入内容" style="width: 200px;" :disabled="disabled"></el-input>
-                                   <img class="meansBookImg"  :src="meansBook.realEstateAttach" alt="">
+                               <el-input v-model="tmp&&tmp.realEstate?tmp.realEstate:meansBook.realEstate" placeholder="" style="width: 200px;" :disabled="disabled"></el-input>
+                               <img class="meansBookImg"  :src="tmp&&tmp.realEstateAttach?tmp.realEstateAttach:meansBook.realEstateAttach" alt="">
                            </el-form-item>
                        </el-col>
                        <el-col :span="24">
                            <el-form-item label="房产证：">
-                               <el-input v-model="tmp.realHouse" placeholder="请输入内容" style="width: 200px;" :disabled="disabled"></el-input>
-                               <img class="meansBookImg"  :src="meansBook.realHouseAttach" alt="">
+                               <el-input v-model="tmp&&tmp.realHouse?tmp.realHouse:meansBook.realHouse" placeholder="请输入内容" style="width: 200px;" :disabled="disabled"></el-input>
+                               <img class="meansBookImg"  :src="tmp&&tmp.realHouseAttach?tmp.realHouseAttach:meansBook.realHouseAttach" alt="">
                            </el-form-item>
                        </el-col>
                        <el-col :span="24">
                            <el-form-item label="土地证：">
-                               <el-input v-model="tmp.realLand" placeholder="请输入内容" style="width: 200px;" :disabled="disabled"></el-input>
-                               <img class="meansBookImg"  :src="meansBook.realLandAttach" alt="">
+                               <el-input v-model="tmp&&tmp.realLand?tmp.realLand:meansBook.realLand" placeholder="请输入内容" style="width: 200px;" :disabled="disabled"></el-input>
+                               <img class="meansBookImg"  :src="tmp&&tmp.realLandAttach?tmp.realLandAttach:meansBook.realLandAttach" alt="">
                            </el-form-item>
                        </el-col>
                        <el-col :span="24">
                            <el-form-item label="协议金额：">
-                               <el-input v-model="tmp.dealAmount" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.dealAmount?tmp.dealAmount:meansBook.dealAmount+' m²'" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col  :span="24">
                            <el-form-item label="房屋现状：" >
-                               <el-select  v-model="tmp.houseNow" placeholder="请选择" :disabled="disabled">
-                                   <el-option
-                                           v-for="item in options"
-                                           :key="item.value"
-                                           :label="item.label"
-                                           :value="item.value">
-                                   </el-option>
-                               </el-select>
+                               <el-input v-model="tmp&&tmp.houseNow?tmp.houseNow:meansBook.houseNow" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col :span="24">
                            <el-form-item label="房屋档案编号：">
-                               <el-input v-model="tmp.houseNo" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.houseNo?tmp.houseNo:meansBook.houseNo" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col  :span="24">
                            <el-form-item label="未登记建筑：" >
-                               <el-select  v-model="tmp.noCheckin" placeholder="请选择" :disabled="disabled">
-                                   <el-option
-                                           v-for="item in options"
-                                           :key="item.value"
-                                           :label="item.label"
-                                           :value="item.value">
-                                   </el-option>
-                               </el-select>
+                               <el-input v-model="tmp&&tmp.noCheckin?tmp.noCheckin:meansBook.noCheckin" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
-                       <!--<el-col :span="24">-->
-                           <!--<el-form-item label="标签：">-->
-                               <!--<el-input v-model="meansBook.label" placeholder="请输入内容" :disabled="disabled"></el-input>-->
-                           <!--</el-form-item>-->
-                       <!--</el-col>-->
                        <el-col :span="24">
                            <el-form-item label="备注：">
-                               <el-input v-model="tmp.remark" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.remark?tmp.remark:meansBook.remark" placeholder="" :disabled="disabled"></el-input>
                            </el-form-item>
                        </el-col>
                        <el-col :span="24" class="phone">
                            <el-form-item label="照片：">
-                               <img :src="tmp.pic" alt="" style="width: 100px; height: 100px">
+                               <img :src="tmp&&tmp.pic?tmp.pic:meansBook.pic" alt="" style="width: 100px; height: 100px">
                            </el-form-item>
                        </el-col>
                        <el-col class="table" :span="24" style="text-align: center;margin-top: 20px;">
                            <el-col :span="9">
                                水&nbsp;&nbsp;&nbsp;&nbsp;户名：
-                               <el-input v-model="tmp.accNameWater" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.accNameWater?tmp.accNameWater:meansBook.accNameWater" placeholder="" :disabled="disabled"></el-input>
                            </el-col>
                            <el-col :span="7">
                                户号
-                               <el-input v-model="tmp.accNoWater" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.accNoWater?tmp.accNoWater:meansBook.accNoWater" placeholder="" :disabled="disabled"></el-input>
                            </el-col>
                            <el-col :span="8">
                                缴款方式
-                               <el-input v-model="tmp.accTypeWater" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.accTypeWater?tmp.accTypeWater:meansBook.accTypeWater" placeholder="" :disabled="disabled"></el-input>
                            </el-col>
 
                        </el-col>
                        <el-col class="table" :span="24" style="text-align: center;margin-top: 20px;">
                            <el-col :span="9">
                                电&nbsp;&nbsp;&nbsp;&nbsp;户名：
-                               <el-input v-model="tmp.accNameElec" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.accNameElec?tmp.accNameElec:meansBook.accNameElec" placeholder="" :disabled="disabled"></el-input>
                            </el-col>
                            <el-col :span="7">
                                户号
-                               <el-input v-model="tmp.accNoElec" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.accNoElec?tmp.accNoElec:meansBook.accNoElec" placeholder="" :disabled="disabled"></el-input>
                            </el-col>
                            <el-col :span="8">
                                缴款方式
-                               <el-input v-model="tmp.accTypeElec" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.accTypeElec?tmp.accTypeElec:meansBook.accTypeElec" placeholder="" :disabled="disabled"></el-input>
                            </el-col>
 
                        </el-col>
                        <el-col class="table" :span="24" style="text-align: center;margin-top: 20px;">
                            <el-col :span="9">
                                燃气&nbsp;&nbsp;户名：
-                               <el-input v-model="tmp.accNameGas" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.accNameGas?tmp.accNameGas:meansBook.accNameGas" placeholder="" :disabled="disabled"></el-input>
                            </el-col>
                            <el-col :span="7">
                                户号
-                               <el-input v-model="tmp.accNoGas" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.accNoGas?tmp.accNoGas:meansBook.accNoGas" placeholder="" :disabled="disabled"></el-input>
                            </el-col>
                            <el-col :span="8">
                                缴款方式
-                               <el-input v-model="tmp.accTypeGas" placeholder="请输入内容" :disabled="disabled"></el-input>
+                               <el-input v-model="tmp&&tmp.accTypeGas?tmp.accTypeGas:meansBook.accTypeGas" placeholder="" :disabled="disabled"></el-input>
                            </el-col>
                            <el-col :span="24" style="position: relative;margin: 0;">
                                <div class="map"></div>
                            </el-col>
-                           <div v-if="typesss == 'sp'"  >
-                               <div style="font-size: 30px;margin: 20px 0;">审批流程：</div>
-                                   <el-col :span="24">
-                                       <el-form-item label="审批：">
-                                           <div class="sp">
-                                               <div>
-                                                   <div>发起人：</div>
-                                                   <div v-for="item in approvalFindList.openRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
-                                               </div>
-                                               <div>
-                                                   <div>审批人：</div>
-                                                   <div v-for="item in approvalFindList.checkRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
-                                               </div>
-                                               <!--<div  v-for="item in approvalFindList.openRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>-->
-                                               <!--<div v-for="item in approvalFindList.checkRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>-->
-                                               <!--<span class="hr"></span>-->
-                                           </div>
-                                       </el-form-item>
+                           <!--<div v-if="typesss == 'sp'"  >-->
+                               <!--<div style="font-size: 30px;margin: 20px 0;">审批流程：</div>-->
+                               <!--<el-col :span="24">-->
+                                   <!--<el-form-item label="审批：">-->
+                                       <!--<div class="sp">-->
+                                           <!--<div>-->
+                                               <!--<div>发起人：</div>-->
+                                               <!--<div v-for="item in approvalFindList.openRole">-->
+                                                   <!--<div v-for="items in item.users">-->
+                                                       <!--<img :src="items.avatar" alt=""><p>{{items.name}}</p>-->
+                                                   <!--</div>-->
+                                               <!--</div>-->
+                                           <!--</div>-->
+                                           <!--<div>-->
+                                               <!--<div>审批人：</div>-->
+                                               <!--<div v-for="item in approvalFindList.checkRole">-->
+                                                   <!--<div v-for="items in item.users">-->
+                                                       <!--<img :src="items.avatar" alt=""><p>{{items.name}}</p>-->
+                                                   <!--</div>-->
+                                               <!--</div>-->
+                                           <!--</div>-->
+                                           <!--&lt;!&ndash;<div  v-for="item in approvalFindList.openRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>&ndash;&gt;-->
+                                           <!--&lt;!&ndash;<div v-for="item in approvalFindList.checkRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>&ndash;&gt;-->
+                                           <!--&lt;!&ndash;<span class="hr"></span>&ndash;&gt;-->
+                                       <!--</div>-->
+                                   <!--</el-form-item>-->
 
-                                   </el-col>
-                                   <el-col :span="24">
-                                       <el-form-item label="抄送：">
-                                           <div class="sp">
-                                               <div>
-                                                   <div>抄送人：</div>
-                                                   <div v-for="item in approvalFindList.noticeRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
-                                               </div>
-                                           </div>
-                                       </el-form-item>
+                               <!--</el-col>-->
+                               <!--<el-col :span="24">-->
+                                   <!--<el-form-item label="抄送：">-->
+                                       <!--<div class="sp">-->
+                                           <!--<div>-->
+                                               <!--<div>抄送人：</div>-->
+                                               <!--<div v-for="item in approvalFindList.noticeRole">-->
+                                                   <!--<div v-for="items in item.users">-->
+                                                       <!--<img :src="items.avatar" alt=""><p>{{items.name}}</p>-->
+                                                   <!--</div>-->
+                                               <!--</div>-->
+                                           <!--</div>-->
+                                       <!--</div>-->
+                                   <!--</el-form-item>-->
 
-                                   </el-col>
-                           </div>
-                       </el-col>
-                   </el-form>
-                   <el-form ref="form" v-else>
-                       <el-col :span="24">
-                           <el-form-item label="产权名：">
-                               <el-input v-model="meansBook.assetCode" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-form-item>
-                       </el-col>
-                       <el-col :span="24">
-                           <el-form-item label="产权人：">
-                               <el-input v-model="meansBook.assetUser" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-form-item>
-                       </el-col>
-                       <el-col :span="24">
-                           <el-form-item label="房屋坐落：">
-                               <el-input v-model="meansBook.houseAddress" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-form-item>
-                       </el-col>
-                       <el-col :span="24">
-                           <el-form-item label="原使用产权人：">
-                               <el-input v-model="meansBook.assetUserOri" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-form-item>
-                       </el-col>
-                       <el-col  :span="24">
-                           <el-form-item label="房屋性质：" >
-                               <el-select  v-model="meansBook.houseNature" placeholder="请选择" :disabled="disabled">
-                                   <el-option
-                                           v-for="item in options"
-                                           :key="item.value"
-                                           :label="item.label"
-                                           :value="item.value">
-                                   </el-option>
-                               </el-select>
-                           </el-form-item>
-                       </el-col>
-                       <el-col  :span="24">
-                           <el-form-item label="房屋结构：" >
-                               <el-select  v-model="meansBook.houseStructure" placeholder="请选择" :disabled="disabled">
-                                   <el-option
-                                           v-for="item in options"
-                                           :key="item.value"
-                                           :label="item.label"
-                                           :value="item.value">
-                                   </el-option>
-                               </el-select>
-                           </el-form-item>
-                       </el-col>
-                       <el-col :span="24">
-                           <el-form-item label="未登记建筑面积：">
-                               <el-input v-model="meansBook.noCheckinArea" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-form-item>
-                       </el-col>
-                       <el-col :span="24">
-                           <el-form-item label="房屋建筑面积：">
-                               <el-input v-model="meansBook.landArea" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-form-item>
-                       </el-col>
-                       <el-col  :span="24">
-                           <el-form-item label="产权用途：" >
-                               <el-select  v-model="meansBook.assetUse" placeholder="请选择" :disabled="disabled">
-                                   <el-option
-                                           v-for="item in options"
-                                           :key="item.value"
-                                           :label="item.label"
-                                           :value="item.value">
-                                   </el-option>
-                               </el-select>
-                           </el-form-item>
-                       </el-col>
-                       <el-col :span="24">
-                           <el-form-item label="土地面积：">
-                               <el-input v-model="meansBook.landArea" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-form-item>
-                       </el-col>
-                       <el-col  :span="24">
-                           <el-form-item label="土地用途：" >
-                               <el-select  v-model="meansBook.landUse" placeholder="请选择" :disabled="disabled">
-                                   <el-option
-                                           v-for="item in options"
-                                           :key="item.value"
-                                           :label="item.label"
-                                           :value="item.value">
-                                   </el-option>
-                               </el-select>
-                           </el-form-item>
-                       </el-col>
-                       <el-col  :span="24">
-                           <el-form-item label="土地性质：" >
-                               <el-select  v-model="meansBook.landNature" placeholder="请选择" :disabled="disabled">
-                                   <el-option
-                                           v-for="item in options"
-                                           :key="item.value"
-                                           :label="item.label"
-                                           :value="item.value">
-                                   </el-option>
-                               </el-select>
-                           </el-form-item>
-                       </el-col>
-                       <el-col :span="24">
-                           <el-form-item label="不动产证：">
-                               <el-input v-model="meansBook.realEstate" placeholder="请输入内容" style="width: 200px;" :disabled="disabled"></el-input>
-                               <img class="meansBookImg"  :src="meansBook.realEstateAttach" alt="">
-                           </el-form-item>
-                       </el-col>
-                       <el-col :span="24">
-                           <el-form-item label="房产证：">
-                               <el-input v-model="meansBook.realHouse" placeholder="请输入内容" style="width: 200px;" :disabled="disabled"></el-input>
-                               <img class="meansBookImg"  :src="meansBook.realHouseAttach" alt="">
-                           </el-form-item>
-                       </el-col>
-                       <el-col :span="24">
-                           <el-form-item label="土地证：">
-                               <el-input v-model="meansBook.realLand" placeholder="请输入内容" style="width: 200px;" :disabled="disabled"></el-input>
-                               <img class="meansBookImg"  :src="meansBook.realLandAttach" alt="">
-                           </el-form-item>
-                       </el-col>
-                       <el-col :span="24">
-                           <el-form-item label="协议金额：">
-                               <el-input v-model="meansBook.dealAmount" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-form-item>
-                       </el-col>
-                       <el-col  :span="24">
-                           <el-form-item label="房屋现状：" >
-                               <el-select  v-model="meansBook.houseNow" placeholder="请选择" :disabled="disabled">
-                                   <el-option
-                                           v-for="item in options"
-                                           :key="item.value"
-                                           :label="item.label"
-                                           :value="item.value">
-                                   </el-option>
-                               </el-select>
-                           </el-form-item>
-                       </el-col>
-                       <el-col :span="24">
-                           <el-form-item label="房屋档案编号：">
-                               <el-input v-model="meansBook.houseNo" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-form-item>
-                       </el-col>
-                       <el-col  :span="24">
-                           <el-form-item label="未登记建筑：" >
-                               <el-select  v-model="meansBook.noCheckin" placeholder="请选择" :disabled="disabled">
-                                   <el-option
-                                           v-for="item in options"
-                                           :key="item.value"
-                                           :label="item.label"
-                                           :value="item.value">
-                                   </el-option>
-                               </el-select>
-                           </el-form-item>
-                       </el-col>
-                       <!--<el-col :span="24">-->
-                       <!--<el-form-item label="标签：">-->
-                       <!--<el-input v-model="meansBook.label" placeholder="请输入内容" :disabled="disabled"></el-input>-->
-                       <!--</el-form-item>-->
-                       <!--</el-col>-->
-                       <el-col :span="24">
-                           <el-form-item label="备注：">
-                               <el-input v-model="meansBook.remark" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-form-item>
-                       </el-col>
-                       <el-col :span="24" class="phone">
-                           <el-form-item label="照片：">
-                               <img :src="meansBook.pic" alt="" style="width: 100px; height: 100px">
-                           </el-form-item>
-                       </el-col>
-                       <el-col class="table" :span="24" style="text-align: center;margin-top: 20px;">
-                           <el-col :span="9">
-                               水&nbsp;&nbsp;&nbsp;&nbsp;户名：
-                               <el-input v-model="meansBook.accNameWater" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-col>
-                           <el-col :span="7">
-                               户号
-                               <el-input v-model="meansBook.accNoWater" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-col>
-                           <el-col :span="8">
-                               缴款方式
-                               <el-input v-model="meansBook.accTypeWater" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-col>
-
-                       </el-col>
-                       <el-col class="table" :span="24" style="text-align: center;margin-top: 20px;">
-                           <el-col :span="9">
-                               电&nbsp;&nbsp;&nbsp;&nbsp;户名：
-                               <el-input v-model="meansBook.accNameElec" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-col>
-                           <el-col :span="7">
-                               户号
-                               <el-input v-model="meansBook.accNoElec" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-col>
-                           <el-col :span="8">
-                               缴款方式
-                               <el-input v-model="meansBook.accTypeElec" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-col>
-
-                       </el-col>
-                       <el-col class="table" :span="24" style="text-align: center;margin-top: 20px;">
-                           <el-col :span="9">
-                               燃气&nbsp;&nbsp;户名：
-                               <el-input v-model="meansBook.accNameGas" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-col>
-                           <el-col :span="7">
-                               户号
-                               <el-input v-model="meansBook.accNoGas" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-col>
-                           <el-col :span="8">
-                               缴款方式
-                               <el-input v-model="meansBook.accTypeGas" placeholder="请输入内容" :disabled="disabled"></el-input>
-                           </el-col>
-                           <el-col :span="24" style="position: relative;margin: 0;">
-                               <div class="map"></div>
-                           </el-col>
-                           <div v-if="typesss == 'sp'"  >
-                               <div style="font-size: 30px;margin: 20px 0;">审批流程：</div>
-                               <el-col :span="24">
-                                   <el-form-item label="审批：">
-                                       <div class="sp">
-                                           <div>
-                                               <div>发起人：</div>
-                                               <div v-for="item in approvalFindList.openRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
-                                           </div>
-                                           <div>
-                                               <div>审批人：</div>
-                                               <div v-for="item in approvalFindList.checkRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
-                                           </div>
-                                           <!--<div  v-for="item in approvalFindList.openRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>-->
-                                           <!--<div v-for="item in approvalFindList.checkRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>-->
-                                           <!--<span class="hr"></span>-->
-                                       </div>
-                                   </el-form-item>
-
-                               </el-col>
-                               <el-col :span="24">
-                                   <el-form-item label="抄送：">
-                                       <div class="sp">
-                                           <div>
-                                               <div>抄送人：</div>
-                                               <div v-for="item in approvalFindList.noticeRole[0].users"><img :src="item.avatar" alt=""><p>{{item.name}}</p></div>
-                                           </div>
-                                       </div>
-                                   </el-form-item>
-
-                               </el-col>
-                           </div>
+                               <!--</el-col>-->
+                           <!--</div>-->
                        </el-col>
                    </el-form>
                </el-row>
@@ -509,7 +224,7 @@
         },
   data () {
     return {
-        meansBook:'',
+        meansBook:{'assetCode':123},
         showDialog:false,
         input:'',
         input01:'00125',
@@ -563,7 +278,7 @@
             name: 'food2.jpeg',
             url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         }],
-        tmp:null
+        tmp:null,
     }
   },
         components:{
@@ -620,6 +335,7 @@
                     this.meansBook = res.data.data.meansBook;
                     this.tmp = res.data.data.tmp
                     console.log(this.meansBook)
+                    console.log(this.tmp)
             }else{
                 this.$message({
                     message: res.data.msg,

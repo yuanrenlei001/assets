@@ -39,6 +39,18 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
+                    <el-col  :span="24">
+                        <el-form-item label=" * 房屋结构：" >
+                            <el-select  v-model="houseStructureVal" placeholder="请选择" :disabled="disabled" @change="houseStructureChange">
+                                <el-option
+                                        v-for="item in houseStructure"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.label">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
                     <!--<el-col  :span="24">-->
                     <!--<el-form-item label="房屋结构：" >-->
                     <!--<el-select  v-model="value" placeholder="请选择" :disabled="disabled">-->
@@ -295,6 +307,8 @@
         noCheckinVal:'',
         houseNow:[{value:'1',label:'房屋现状1'}, {value:'2',label:'房屋现状2'},],
         houseNowVal:'',
+        houseStructure:[{value:'1',label:'房屋结构1'}, {value:'2',label:'房屋结构2'},],
+        houseStructureVal:'',
         assetCode:'',//资产编号
         assetUser:'',//产权人
         houseAddress:'',//房屋坐落
@@ -368,6 +382,7 @@
                 'assetUserOri':this.assetUserOri,
                 'houseNature':this.houseNatureVal,
                 'noCheckinArea':this.noCheckinArea,
+                'houseStructure':this.houseStructureVal,
                 'houseArea':this.houseArea,
                 'assetUse':this.assetUseVal,
                 'landArea':this.landArea,
@@ -477,6 +492,7 @@
         },
         houseNatureChange(val){console.log(val)},
         assetUseChange(val){this.assetUseVal = val;},
+        houseStructureChange(val){this.houseStructureVal = val;},
         landUseChange(val){this.landUseVal = val;},
         landNatureChange(val){this.landNatureVal = val;},
         noCheckinChange(val){this.noCheckinVal = val;},

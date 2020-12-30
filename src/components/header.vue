@@ -90,7 +90,46 @@
                 </el-menu-item>
             </el-menu>
         </el-col>
-        <div class="news" v-if="news">12312</div>
+        <div class="news" v-if="news">
+            <div class="main" style="
+    padding: 20px 43px;">
+                <el-row class="tables" >
+                    <el-table
+                            ref="multipleTable"
+                            :data="tableData"
+                            tooltip-effect="dark"
+                            :key="toggleIndex"
+                            style="width: 100%"
+                    >
+                        <el-table-column  type="index" label="序号" width="100"></el-table-column>
+                        <el-table-column  label="消息类型">
+                            <template slot-scope="tableData">
+                                <div v-if="tableData.row.msgType == 'zcsp'">资产审批</div>
+                                <div v-if="tableData.row.msgType == 'ht'">合同提示</div>
+                                <div v-if="tableData.row.msgType == 'xjsp'">巡检审批</div>
+                                <div v-if="tableData.row.msgType == 'xjfk'">巡检反馈</div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="data1" label="时间">
+                            <template slot-scope="tableData">
+                                {{tableData.row.createTime | dateFormat}}
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                fixed="right"
+                                label="操作"
+                        >
+                            <template slot-scope="tableData">
+                                <div>
+                                    <el-button  type="text" size="small"  @click="gourl(tableData.row)">查看</el-button>
+                                </div>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-row>
+            </div>
+
+        </div>
     </div>
 </template>
 
@@ -112,6 +151,7 @@ export default {
             name:'maps',
             tabs:'',
             news:false,
+            tableData: [],
         }
     },
     components:{
@@ -119,6 +159,39 @@ export default {
     computed: {
     },
     methods: {
+        gourl(data){
+            // assets
+            // property
+            console.log(data)
+            this.$emit('update:active','information')
+            this.name = 'information';
+            this.tabs = false;
+            this.new = false;
+            this.news = false;
+        },
+        list(){
+            var that = this;
+            this.toggleIndex = Math.random()
+            this.$axios({
+                url: this.getAjax + '/admin/messageAdmin/findMessage',
+                method: "get",
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    'Token':sessionStorage.getItem('token')
+                },
+                data:{}
+            }).then(res => {
+                if(res.data.code == '2004'){
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'warning'
+                    });
+                    this.$router.push('/')
+                }else{
+                    this.tableData = res.data.data
+                }
+            })
+        },
         handleCommand(command){
             if(command == 'setDialogInfo'){
                 this.setDialogInfo();
@@ -129,23 +202,31 @@ export default {
         },
         newss(){
             console.log(1)
-            // this.$router.push('/news')
-            this.tabs = false;
-            this.new = true;
-            this.name = '';
+            this.news = true;
             this.$emit('update:active','news')
+            this.name = 'news';
+            this.tabs = false;
+            this.new = false;
+            // this.$router.push('/news')
+            // this.tabs = false;
+            // this.new = true;
+            // this.name = '';
+            // this.$emit('update:active','news')
         },
         handleSelect(key,keyPath,title) {
+            console.log(key)
             this.$emit('update:active',key)
             this.name = key;
             this.tabs = false;
             this.new = false;
+            this.news = false;
         },
         handleSelect2(key,keyPath,title) {
             this.$emit('update:active',key)
             this.name = key;
             this.tabs = true;
             this.new = false;
+            this.news = false;
         },
         showInfoList() {
             // console.log('下来菜单')
@@ -178,15 +259,20 @@ export default {
             this.$emit('update:active','approval')
             this.name = 'approval';
             this.new = false;
+            this.news = false;
 
         }
 
     },
     mounted() {
+      this.list();
     },
 }
 </script>
 <style scoped>
+    .tables>>>th{padding: 0;height:80px;background: #eee;font-size: 16px;font-weight: normal;color: #333;text-align: center;}
+    .tables>>>.el-table {border: 1px dotted #eee;}
+    .tables>>>.el-table__row td{padding: 0;height:50px;text-align: center;color: #333;}
     .tabSort>>>.el-menu--horizontal>.el-menu-item {
         line-height: 40px;height:20px;font-size: 20px;
     }

@@ -55,8 +55,8 @@ export default {
         }
         console.log(new L.TileLayer)
         //
-        var ign = new L.TileLayer.WMTS("http://yfb.zjtoprs.com:18080/geoserver/gwc/service/wmts", {
-            layer: "test:geotif", //图层名称
+        var ign = new L.TileLayer.WMTS("http://zjtoprs.f3322.net:18080/geoserver/gwc/service/wmts", {
+            layer:"nanxun_jbjbMaps", //图层名称
             tilematrixSet: "EPSG:4326", //GeoServer使用的网格名称
             width: 20,
             height: 20,
@@ -65,6 +65,18 @@ export default {
             minZoom: 10,
             matrixIds: matrixIds,
         })
+        var marker = L.marker([51.5, -0.09]).addTo(map);
+        var circle = L.circle([51.508, -0.11], {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: 500
+        }).addTo(map);
+        var polygon = L.polygon([
+            [51.509, -0.08],
+            [51.503, -0.06],
+            [51.51, -0.047]
+        ]).addTo(map);
         map.addLayer(ign);
         setTimeout(function () {
             map.invalidateSize(true);

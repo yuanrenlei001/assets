@@ -1,39 +1,39 @@
 <template>
     <div class="main">
-        <el-row class="tables" >
-            <el-table
-                    ref="multipleTable"
-                    :data="tableData"
-                    tooltip-effect="dark"
-                    :key="toggleIndex"
-                    style="width: 100%"
-                    >
-                <el-table-column  type="index" label="序号" width="100"></el-table-column>
-                <el-table-column  label="消息类型">
-                    <template slot-scope="tableData">
-                        <div v-if="tableData.row.msgType == 'zcsp'">资产审批</div>
-                        <div v-if="tableData.row.msgType == 'ht'">合同提示</div>
-                        <div v-if="tableData.row.msgType == 'xjsp'">巡检审批</div>
-                        <div v-if="tableData.row.msgType == 'xjfk'">巡检反馈</div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="data1" label="时间">
-                    <template slot-scope="tableData">
-                        {{tableData.row.createTime | dateFormat}}
-                    </template>
-                </el-table-column>
-                <el-table-column
-                        fixed="right"
-                        label="操作"
-                >
-                    <template slot-scope="tableData">
-                        <div>
-                            <el-button  type="text" size="small" >查看</el-button>
-                        </div>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </el-row>
+        <!--<el-row class="tables" >-->
+            <!--<el-table-->
+                    <!--ref="multipleTable"-->
+                    <!--:data="tableData"-->
+                    <!--tooltip-effect="dark"-->
+                    <!--:key="toggleIndex"-->
+                    <!--style="width: 100%"-->
+                    <!--&gt;-->
+                <!--<el-table-column  type="index" label="序号" width="100"></el-table-column>-->
+                <!--<el-table-column  label="消息类型">-->
+                    <!--<template slot-scope="tableData">-->
+                        <!--<div v-if="tableData.row.msgType == 'zcsp'">资产审批</div>-->
+                        <!--<div v-if="tableData.row.msgType == 'ht'">合同提示</div>-->
+                        <!--<div v-if="tableData.row.msgType == 'xjsp'">巡检审批</div>-->
+                        <!--<div v-if="tableData.row.msgType == 'xjfk'">巡检反馈</div>-->
+                    <!--</template>-->
+                <!--</el-table-column>-->
+                <!--<el-table-column prop="data1" label="时间">-->
+                    <!--<template slot-scope="tableData">-->
+                        <!--{{tableData.row.createTime | dateFormat}}-->
+                    <!--</template>-->
+                <!--</el-table-column>-->
+                <!--<el-table-column-->
+                        <!--fixed="right"-->
+                        <!--label="操作"-->
+                <!--&gt;-->
+                    <!--<template slot-scope="tableData">-->
+                        <!--<div>-->
+                            <!--<el-button  type="text" size="small"  @click="gourl(tableData.row)">查看</el-button>-->
+                        <!--</div>-->
+                    <!--</template>-->
+                <!--</el-table-column>-->
+            <!--</el-table>-->
+        <!--</el-row>-->
     </div>
 </template>
 
@@ -42,6 +42,7 @@
     import AssetsInfor from '@/components/assets/AssetsInfor'
     export default {
         name: 'login',
+
         data () {
             return {
                 input2:'',
@@ -78,13 +79,23 @@
                 imageUrl: '',
                 input:'',
                 toggleIndex:'',
-                lists:''
+                lists:'',
+                name:'maps',
+                tabs:'',
+                news:false,
             }
         },
         components:{
             DateChart,AssetsInfor
         },
         methods:{
+            gourl(data){
+                console.log(data)
+                this.$emit('update:active','property')
+                this.name = 'property';
+                this.tabs = false;
+                this.new = false;
+            },
             // 消息列表
             list(){
                 var that = this;
