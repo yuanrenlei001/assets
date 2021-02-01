@@ -192,7 +192,6 @@
         height: 178px;
         display: block;
     }
-    .el-input {width: 200px;}
     .el-form-item__label {font-size: 16px;color: #333;}
 </style>
 <style scoped>

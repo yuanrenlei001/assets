@@ -1,12 +1,13 @@
 <template>
     <div class="main">
-        <el-row>
-            <el-col :span="22" :offset="2">
-                <el-row>
-                    <el-form ref="form" >
-                        <el-col class="sort" :span="6">
-                            <el-form-item label="用户角色：">
-                                <el-select  v-model="adminListVal" placeholder="请选择">
+        <el-row style="margin-left: 160px;" class="yhgl">
+            <el-col :span="24">
+                <el-row style="margin-bottom: 26px;">
+                    <el-form ref="form" :lg="24">
+                        <el-col  :lg="18">
+                            <el-col :lg="4"><div class="topLeft">用户角色：</div></el-col>
+                            <el-col :lg="16">
+                                <el-select  v-model="adminListVal" placeholder="请选择" @change="adminLis">
                                     <el-option
                                             v-for="item in adminList"
                                             :key="item.value"
@@ -14,40 +15,71 @@
                                             :value="item.value">
                                     </el-option>
                                 </el-select>
-                            </el-form-item>
+                            </el-col>
+                            <!--<el-form-item label="用户角色：">-->
+                                <!--<el-select  v-model="adminListVal" placeholder="请选择" @change="adminLis">-->
+                                    <!--<el-option-->
+                                            <!--v-for="item in adminList"-->
+                                            <!--:key="item.value"-->
+                                            <!--:label="item.label"-->
+                                            <!--:value="item.value">-->
+                                    <!--</el-option>-->
+                                <!--</el-select>-->
+                            <!--</el-form-item>-->
                         </el-col>
-                        <el-col class="sort" :span="6">
-                            <el-form-item label="所属单位：">
-                                <el-select  v-model="value" placeholder="请选择">
-                                    <el-option
-                                            v-for="item in options"
-                                            :key="item.value"
-                                            :label="item.label"
-                                            :value="item.value">
-                                    </el-option>
-                                </el-select>
-                            </el-form-item>
+                        <el-col  :lg="6">
+                            <el-col :lg="16">
+                                <div class="btns2">
+                                    <!--<el-button type="success" >查询</el-button>-->
+                                    <el-button type="primary" @click="handleClickNew">新增</el-button>
+                                    <el-button type="danger" @click="daochu">导出</el-button>
+                                </div>
+                            </el-col>
+                            <!--<el-form-item label="用户角色：">-->
+                            <!--<el-select  v-model="adminListVal" placeholder="请选择" @change="adminLis">-->
+                            <!--<el-option-->
+                            <!--v-for="item in adminList"-->
+                            <!--:key="item.value"-->
+                            <!--:label="item.label"-->
+                            <!--:value="item.value">-->
+                            <!--</el-option>-->
+                            <!--</el-select>-->
+                            <!--</el-form-item>-->
                         </el-col>
-                        <el-col class="sort" :span="6">
-                                <el-input
-                                        placeholder="请输入内容"
-                                        prefix-icon="el-icon-search"
-                                        v-model="input2">
-                                </el-input>
-                        </el-col>
-                        <el-col :span="4" class="rightS">
-                            <div class="btns2">
-                                <el-button type="success" >查询</el-button>
-                                <el-button type="primary" @click="handleClickNew">新增</el-button>
-                                <el-button type="danger">导出</el-button>
-                            </div>
-                        </el-col>
+                        <!--<el-col class="sort" :span="6">-->
+                            <!--<el-form-item label="所属单位：">-->
+                                <!--<el-select  v-model="value" placeholder="请选择">-->
+                                    <!--<el-option-->
+                                            <!--v-for="item in options"-->
+                                            <!--:key="item.value"-->
+                                            <!--:label="item.label"-->
+                                            <!--:value="item.value">-->
+                                    <!--</el-option>-->
+                                <!--</el-select>-->
+                            <!--</el-form-item>-->
+                        <!--</el-col>-->
+                        <!--<el-col class="sort" :span="6">-->
+                                <!--<el-input-->
+                                        <!--placeholder="请输入内容"-->
+                                        <!--prefix-icon="el-icon-search"-->
+                                        <!--v-model="input2">-->
+                                <!--</el-input>-->
+                        <!--</el-col>-->
+
+                        <!--<el-col  class="rightS">-->
+                            <!--<div class="btns2">-->
+                                <!--&lt;!&ndash;<el-button type="success" >查询</el-button>&ndash;&gt;-->
+                                <!--<el-button type="primary" @click="handleClickNew">新增</el-button>-->
+                                <!--<el-button type="danger" @click="daochu">导出</el-button>-->
+                            <!--</div>-->
+                        <!--</el-col>-->
                     </el-form>
                 </el-row>
-                <el-row class="tables" style="margin-top: 20px;">
+                <el-row class="tables" style="margin-top: 0px;">
                     <el-table
                             ref="multipleTable"
                             :data="tableData"
+                            :height="heighTable"
                             tooltip-effect="dark"
                             style="width: 100%"
                             @selection-change="handleSelectionChange">
@@ -102,8 +134,8 @@
         <el-dialog
                 :title="title"
                 :visible.sync="dialogVisibleAdd"
-                width="60%">
-            <div class="user">
+                width="1000px">
+            <div class="userss">
                 <el-row>
                     <el-col :span="7" style="text-align: right;padding-right: 20px;">
                         <img :src="data.avatar" alt="" style="width: 178px;height:178px;" v-if="userType == 'detail'">
@@ -120,12 +152,12 @@
                             <div style="line-height: 30px;font-size: 16px;margin-right: 70px;">{{data.name}}</div>
                         </div>
                     </el-col>
-                    <el-col :span="14" class="user">
+                    <el-col :span="14" class="userss">
                         <ul>
                             <li>
                                 <div class="userLeft">ID</div><div class="userRight"><el-input v-model="data.id" placeholder="请输入内容" :disabled="disabled"></el-input></div>
                                 <div class="userLeft">用户账户</div><div class="userRight"><el-input v-model="data.userName" placeholder="请输入内容"  :disabled="disabled"></el-input></div>
-                                <div class="userLeft">密码</div><div class="userRight"><el-input v-model="data.password" placeholder="请输入内容" :disabled="disabled"></el-input></div>
+                                <div class="userLeft">密码</div><div class="userRight"><el-input v-model="data.password" placeholder="请输入内容" type="password" :disabled="disabled"></el-input></div>
                                 <div class="userLeft">用户角色</div>
                                 <div class="userRight">
                                     <el-select  v-model="data.roleName" placeholder="请选择" :disabled="disabled" @change="assetUseChange">
@@ -140,7 +172,10 @@
                                 <div class="userLeft">姓名</div><div class="userRight"><el-input v-model="data.name" placeholder="请输入内容" :disabled="disabled"></el-input></div>
                                 <div class="userLeft">所属单位</div><div class="userRight"><el-input v-model="data.unit" placeholder="请输入内容" :disabled="disabled"></el-input></div>
                                 <div class="userLeft">联系电话</div><div class="userRight"><el-input v-model="data.mobile" placeholder="请输入内容" :disabled="disabled"></el-input></div>
-                                <div class="userLeft">注册时间</div><div class="userRight"><el-input v-model="data.createTime" placeholder="请输入内容" :disabled="disabled"></el-input></div>
+                                <div class="userLeft">注册时间</div><div class="userRight">
+                                {{data.createTime | dateFormat}}
+                                <!--<el-input v-model="data.createTime" placeholder="请输入内容" :disabled="disabled"></el-input>-->
+                            </div>
                             </li>
                         </ul>
                     </el-col>
@@ -155,8 +190,8 @@
                 :title="title"
                 class="add"
                 :visible.sync="dialogVisiblenewAdd"
-                width="60%">
-            <div class="user">
+                width="1000px">
+            <div class="userss">
                 <el-row>
                     <el-col :span="7" style="text-align: right;padding-right: 20px;">
                         <div>
@@ -172,12 +207,14 @@
                             <div style="line-height: 30px;font-size: 16px;margin-right: 70px;">{{name}}</div>
                         </div>
                     </el-col>
-                    <el-col :span="14" class="user">
+                    <el-col :span="14" class="userss">
                         <ul>
                             <li>
                                 <!--<div class="userLeft">ID</div><div class="userRight"><el-input v-model="id" placeholder="请输入内容" :disabled="disabled"></el-input></div>-->
                                 <div class="userLeft">用户账户</div><div class="userRight"><el-input v-model="userName" placeholder="请输入内容"  :disabled="disabled"></el-input></div>
-                                <div class="userLeft">密码</div><div class="userRight"><el-input v-model="pwd" placeholder="请输入内容" :disabled="disabled"></el-input></div>
+                                <div class="userLeft">密码</div><div class="userRight">
+                                <el-input  v-model="pwd" placeholder="请输入内容" :disabled="disabled"></el-input>
+                            </div>
                                 <div class="userLeft">用户角色</div>
                                 <div class="userRight">
                                     <el-select  v-model="roleName" placeholder="请选择" :disabled="disabled" @change="assetUseChange">
@@ -197,7 +234,7 @@
                     </el-col>
                     <el-col :span="24" style="text-align: right;margin-top: 20px;">
                         <el-button type="primary" round @click="open">新建</el-button>
-                        <el-button type="success" round @click="showDialog = false">取消</el-button>
+                        <el-button type="success" round @click="dialogVisiblenewAdd = false">取消</el-button>
                     </el-col>
                 </el-row>
             </div>
@@ -296,7 +333,8 @@
                 dialogImageUrl: '',
                 urlImg:'',
                 pageData:'',
-                pageNum:1
+                pageNum:1,
+                types:''
 
             }
         },
@@ -304,6 +342,45 @@
             DateChart,AssetsInfor
         },
         methods:{
+            daochu(){
+                var url =this.getAjax + '/admin/sysUserAdmin/listExport';
+                // this.formSubmit(url,this.formDatas)
+                this.$axios({
+                    url: url,
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    responseType: 'blob',
+                    data:new FormData()
+                }).then(res => {
+                    this.download(res.data);
+                })
+            },
+            download(data){
+                if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                    let blob = new Blob([data], {
+                        type: 'application/vnd.ms-excel'
+                    })
+                    window.navigator.msSaveOrOpenBlob(blob,
+                        new Date().getTime() + '.xlsxs')
+                } else {
+                    /* 火狐谷歌的文件下载方式 */
+                    var blob = new Blob([data])
+                    var downloadElement = document.createElement('a')
+                    var href = window.URL.createObjectURL(blob)
+                    downloadElement.href = href
+                    downloadElement.download = new Date().getTime() + '.xlsx'
+                    document.body.appendChild(downloadElement)
+                    downloadElement.click()
+                    document.body.removeChild(downloadElement)
+                    window.URL.revokeObjectURL(href)
+                }
+            },
+            adminLis(val){
+                this.findList(1,val);
+            },
             sizechange(data){
                 console.log(1)
             },
@@ -322,44 +399,50 @@
                 }else{
                     var data = {'id':data.id}
                     var that = this;
-                    that.$alert('确定启用该用户吗？', '启用', {
+                    this.$confirm('确定启用该用户吗?', '启用', {
                         confirmButtonText: '确定',
-                        callback: action => {
-                            that.$axios({
-                                url: that.getAjax + '/admin/sysUserAdmin/recover',
-                                method: "post",
-                                headers: {
-                                    'Content-Type': 'application/json;charset=UTF-8',
-                                    'Token':sessionStorage.getItem('token')
-                                },
-                                data:data
-                            }).then(res => {
-                                if(res.data.code == '1001'){
-                                    that.$message({
-                                        message: '用户启用成功',
-                                        type: 'success'
-                                    });
-                                    that.findList(1);
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        that.$axios({
+                            url: that.getAjax + '/admin/sysUserAdmin/recover',
+                            method: "post",
+                            headers: {
+                                'Content-Type': 'application/json;charset=UTF-8',
+                                'Token':sessionStorage.getItem('token')
+                            },
+                            data:data
+                        }).then(res => {
+                            if(res.data.code == '1001'){
+                                that.$message({
+                                    message: '用户启用成功',
+                                    type: 'success'
+                                });
+                                that.findList(1);
 
-                                }else{
-                                    that.$message({
-                                        message: res.data.msg,
-                                        type: 'warning'
-                                    });
-                                }
-                            })
-                        }
+                            }else{
+                                that.$message({
+                                    message: res.data.msg,
+                                    type: 'warning'
+                                });
+                            }
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消！'
+                        });
                     });
                 }
             },
             assetUseChange(val){this.roleId = val;console.log(val)},
-            findList(pageNum){
+            findList(pageNum,str){
                 var that = this;
                 console.log(pageNum)
                 var data = {
                     "pageNum": pageNum,
                     "pageSize": 10,
-
+                    "roleId":str
                 }
                 this.$axios({
                     url: this.getAjax + '/admin/sysUserAdmin/list',
@@ -396,20 +479,21 @@
                 console.log(123)
             },
             handleClick(index,data,type){
-                console.log(data)
                 var that = this;
                 if(type == 'edit'){
                     this.disabled = false
                     this.title = '信息编辑'
-
+                    this.types = 'edit'
                 }else {
                     this.disabled  = true
                     this.title = '查看用户'
+                    this.types = 'chakan'
                 }
                 that.dialogVisibleAdd = true;
                 this.data = data;
                 this.urlImg = data.avatar
                 this.userType = type;
+                console.log(this.types)
             },
             handleAvatarSuccess(res, file) {
                 console.log(res)
@@ -449,6 +533,9 @@
                         obj['label']=list[i].name
                         arr.push(obj)
                     }
+                    var p = {'value':'','label':'全部'}
+                        // unshift()
+                        arr.unshift(p)
                     this.adminList = arr
                     console.log()
                 }else{
@@ -541,34 +628,40 @@
                 console.log(data)
                 var data = {'id':data.id}
                 var that = this;
-                that.$alert('确定禁用该用户吗？', '禁用', {
+                this.$confirm('确定禁用该用户吗？', '禁用', {
                     confirmButtonText: '确定',
-                    callback: action => {
-                that.$axios({
-                    url: that.getAjax + '/admin/sysUserAdmin/delSysUser',
-                    method: "post",
-                    headers: {
-                        'Content-Type': 'application/json;charset=UTF-8',
-                        'Token':sessionStorage.getItem('token')
-                    },
-                    data:data
-                }).then(res => {
-                    if(res.data.code == '1001'){
-                    that.$message({
-                        message: '用户禁用成功',
-                        type: 'success'
-                    });
-                    that.findList(1);
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    that.$axios({
+                        url: that.getAjax + '/admin/sysUserAdmin/delSysUser',
+                        method: "post",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:data
+                    }).then(res => {
+                        if(res.data.code == '1001'){
+                            that.$message({
+                                message: '用户禁用成功',
+                                type: 'success'
+                            });
+                            that.findList(1);
 
-                }else{
-                    that.$message({
-                        message: res.data.msg,
-                        type: 'warning'
+                        }else{
+                            that.$message({
+                                message: res.data.msg,
+                                type: 'warning'
+                            });
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消！'
                     });
-                }
-            })
-            }
-            });
+                });
             },
             handleRemove(file, fileList) {
                 console.log(file, fileList);
@@ -588,9 +681,22 @@
             },
         },
         created:function () {
+            this.$nextTick(()=>{
+                var _h = window.screen.height;
+                console.log(_h)
+                if(_h == '768'){
+                    this.heighTable = _h*0.3
+                }else if(_h == '900'){
+                    this.heighTable = _h*0.4
+                }
+                else{
+                    this.heighTable = _h*0.5
+                }
+
+            })
         },
         mounted(){
-            this.findList(1);
+            this.findList(1,'');
             this.sysRoleAdmin();
         }
     }
@@ -625,16 +731,15 @@
         height: 178px;
         display: block;
     }
-    .el-input {width: 200px;}
     .el-form-item__label {font-size: 16px;color: #333;}
 </style>
 <style scoped>
-    .user>>>.el-input {width: 100%;border: transparent;}
-    .user>>>.el-input__inner {padding: 0;border: transparent;}
-    .user li {height:50px;line-height: 50px;}
-    .user li div {float:left;border: 1px solid rgba(153,153,153,.5);font-size: 20px;}
+    .userss>>>.el-input {width: 100%;border: transparent;}
+    .userss>>>.el-input__inner {padding: 0;border: transparent;}
+    .userss li {height:50px;line-height: 50px;}
+    .userss li div {float:left;border: 1px solid rgba(153,153,153,.5);font-size: 20px;}
     .userLeft {background: #eee;width: 170px;padding-right: 30px;text-align: right;}
-    .userRight {width: 400px;padding-left: 10px;border-left: none;}
+    .userRight {width: 300px;padding-left: 10px;border-left: none;}
     .main {padding: 43px;}
     .sort {margin-right: 28px;}
     .btns>>>.el-button{background-color:rgba(122, 149, 250, 0.74);width: 58px;height:58px;padding: 0;text-align: center;line-height: 58px;
@@ -643,7 +748,7 @@
     .btns>>>.el-menu--horizontal>.el-menu-item {color: #fff;}
     .rightS {position: relative;}
     .btns {position: absolute;top:-10px;right:-68px;}
-    .btns2 {position: absolute;top:0;right:-55px;}
+    .btns2 {position: absolute;top:0;right:0;}
     .tables>>>th{padding: 0;height:80px;background: #eee;font-size: 24px;font-weight: normal;color: #333;text-align: center;}
     .tables>>>.el-table {border: 1px dotted #eee;}
     .tables>>>.el-table__row td{padding: 0;height:50px;text-align: center;color: #333;}

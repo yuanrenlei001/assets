@@ -7,6 +7,7 @@ import axios from 'axios'
 import qs from 'qs'
 import echarts from 'echarts'
 import 'default-passive-events'
+import '@/assets/main.css'
 import App from './App'
 import router from './router'
 Vue.prototype.$echarts = echarts

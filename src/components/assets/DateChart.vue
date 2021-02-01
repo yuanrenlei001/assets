@@ -1,115 +1,209 @@
 <template>
-    <div class="count">
+    <div class="count kan">
         <el-row>
-            <el-form ref="form" >
-                <el-col class="sort" :span="5">
-                    <div class="sum">
-                        <div class="sumLeft"><el-button type="primary" icon="el-icon-s-finance" circle style="font-size: 30px;"></el-button></div>
-                        <div class="sumRight">
-                            <p>总资产（宗）</p>
-                            <p>{{total}}</p>
+            <el-form ref="form"  style="padding-top: 26px;">
+                <el-col :lg="24">
+                    <el-col  :lg="5">
+                        <div class="sum">
+                            <div class="sumLeft"><el-button type="primary" icon="el-icon-s-finance" circle style="font-size: 30px;"></el-button></div>
+                            <div class="sumRight">
+                                <p>总资产（宗）</p>
+                                <p>{{total}}</p>
+                            </div>
                         </div>
+                    </el-col>
+                    <div>
+                                <el-col  :lg="6">
+                                    <el-col :lg="11"><div class="textLeft wdminText">房屋性质：</div></el-col>
+                                    <el-col :lg="13">
+                                        <el-select  v-model="houseNatureval" placeholder="请选择">
+                                            <el-option
+                                                    v-for="item in houseNature"
+                                                    :key="item.value"
+                                                    :label="item.label"
+                                                    :value="item.label">
+                                            </el-option>
+                                        </el-select>
+                                    </el-col>
+                                    <!--<el-form-item label="房屋性质：">-->
+                                    <!--<el-select  v-model="houseNatureval" placeholder="请选择">-->
+                                    <!--<el-option-->
+                                    <!--v-for="item in houseNature"-->
+                                    <!--:key="item.value"-->
+                                    <!--:label="item.label"-->
+                                    <!--:value="item.label">-->
+                                    <!--</el-option>-->
+                                    <!--</el-select>-->
+                                    <!--</el-form-item>-->
+                                </el-col>
+                                <el-col :lg="6">
+                                    <el-col :lg="11"><div class="textLeft wdminText">产权用途：</div></el-col>
+                                    <el-col :lg="13">
+                                        <el-select  v-model="assetUseval" placeholder="请选择" @change = 'aaa'>
+                                            <el-option
+                                                    v-for="item in assetUse"
+                                                    :key="item.value"
+                                                    :label="item.label"
+                                                    :value="item.label">
+                                            </el-option>
+                                        </el-select>
+                                    </el-col>
+                                    <!--<el-form-item label="产权用途：">-->
+                                    <!--<el-select  v-model="assetUseval" placeholder="请选择" @change = 'aaa'>-->
+                                    <!--<el-option-->
+                                    <!--v-for="item in assetUse"-->
+                                    <!--:key="item.value"-->
+                                    <!--:label="item.label"-->
+                                    <!--:value="item.label">-->
+                                    <!--</el-option>-->
+                                    <!--</el-select>-->
+                                    <!--</el-form-item>-->
+                                </el-col>
+                                <el-col :lg="6">
+                                    <el-col :lg="11"><div class="textLeft wdminText">土地用途：</div></el-col>
+                                    <el-col :lg="13">
+                                        <el-select  v-model="landUseval" placeholder="请选择">
+                                            <el-option
+                                                    v-for="item in landUse"
+                                                    :key="item.value"
+                                                    :label="item.label"
+                                                    :value="item.label">
+                                            </el-option>
+                                        </el-select>
+                                    </el-col>
+                                    <!--<el-form-item label="土地用途：">-->
+                                    <!--<el-select  v-model="landUseval" placeholder="请选择">-->
+                                    <!--<el-option-->
+                                    <!--v-for="item in landUse"-->
+                                    <!--:key="item.value"-->
+                                    <!--:label="item.label"-->
+                                    <!--:value="item.label">-->
+                                    <!--</el-option>-->
+                                    <!--</el-select>-->
+                                    <!--</el-form-item>-->
+                                </el-col>
                     </div>
-                </el-col>
-                <el-col class="sort newSort" :span="6">
-                    <el-form-item label="房屋性质：">
-                        <el-select  v-model="houseNatureval" placeholder="请选择">
-                            <el-option
-                                    v-for="item in houseNature"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.label">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col class="sort newSort" :span="6">
-                    <el-form-item label="产权用途：">
-                        <el-select  v-model="value" placeholder="请选择">
-                            <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col class="sort newSort" :span="6">
-                    <el-form-item label="土地用途：">
-                        <el-select  v-model="landNatureval" placeholder="请选择">
-                            <el-option
-                                    v-for="item in landNature"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6" class="sort newSort">
-                    <el-form-item label="土地性质：">
-                        <el-select  v-model="value" placeholder="请选择">
-                            <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col class="sort newSort" :span="6">
-                    <el-form-item label="房屋现状：">
-                        <el-select  v-model="houseNowval" placeholder="请选择">
-                            <el-option
-                                    v-for="item in houseNows"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.label">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col class="sort newSort" :span="6">
-                    <el-form-item label="标签：">
-                        <el-select  v-model="value" placeholder="请选择">
-                            <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
+                        <div style="padding-top: 26px;margin-top: 26px;">
+                            <el-col :lg="6">
+                                <el-col :lg="11"><div class="textLeft wdminText">土地性质：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-select  v-model="landNatureval" placeholder="请选择">
+                                        <el-option
+                                                v-for="item in landNature"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="item.label">
+                                        </el-option>
+                                    </el-select>
+                                </el-col>
+                                <!--<el-form-item label="土地性质：">-->
+                                <!--<el-select  v-model="landNatureval" placeholder="请选择">-->
+                                <!--<el-option-->
+                                <!--v-for="item in landNature"-->
+                                <!--:key="item.value"-->
+                                <!--:label="item.label"-->
+                                <!--:value="item.label">-->
+                                <!--</el-option>-->
+                                <!--</el-select>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="6">
+                                <el-col :lg="11"><div class="textLeft wdminText">房屋现状：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-select  v-model="houseNowval" placeholder="请选择">
+                                        <el-option
+                                                v-for="item in houseNows"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="item.label">
+                                        </el-option>
+                                    </el-select>
+                                </el-col>
+                                <!--<el-form-item label="房屋现状：">-->
+                                <!--<el-select  v-model="houseNowval" placeholder="请选择">-->
+                                <!--<el-option-->
+                                <!--v-for="item in houseNows"-->
+                                <!--:key="item.value"-->
+                                <!--:label="item.label"-->
+                                <!--:value="item.label">-->
+                                <!--</el-option>-->
+                                <!--</el-select>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="6">
+                                <el-col :lg="11"><div class="textLeft wdminText">标签：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-select  v-model="value" placeholder="请选择">
+                                        <el-option
+                                                v-for="item in options"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="item.label">
+                                        </el-option>
+                                    </el-select>
+                                </el-col>
+                                <!--<el-form-item label="标签：">-->
+                                <!--<el-select  v-model="value" placeholder="请选择">-->
+                                <!--<el-option-->
+                                <!--v-for="item in options"-->
+                                <!--:key="item.value"-->
+                                <!--:label="item.label"-->
+                                <!--:value="item.label">-->
+                                <!--</el-option>-->
+                                <!--</el-select>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                        </div>
                 </el-col>
             </el-form>
         </el-row>
-        <el-row >
-            <el-col class="col" :span="7" >
-                <div class="charts" id="myChart" :style="{width: width, height: height}"></div>
-            </el-col>
-            <!--<el-col class="col" :span="7">-->
+        <div class="echarsAdd" style="padding: 0 15px;">
+            <el-row>
+                <el-col class="col" :lg="12" >
+                    <div style="margin: 20px;background: #e9e9eb;">
+                        <div class="charts" id="myChart" :style="{width: width, height: height}"></div>
+                    </div>
+                </el-col>
+                <!--<el-col class="col" :span="7">-->
                 <!--<div class="charts" id="myChart2" :style="{width: width, height: height}"></div>-->
-            <!--</el-col>-->
-            <el-col class="col" :span="7">
-                <div class="charts" id="myChart3" :style="{width: width, height: height}"></div>
-            </el-col>
-            <el-col class="col" :span="8">
-                <div class="charts" id="myChart7" :style="{width: width, height: height}"></div>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col class="col" :span="7">
-                <div class="charts" id="myChart4" :style="{width: width, height: height}"></div>
-            </el-col>
-            <el-col class="col" :span="7">
-                <div class="charts" id="myChart5" :style="{width: width, height: height}"></div>
-            </el-col>
-            <el-col class="col" :span="8">
-                <div class="charts" id="myChart6" :style="{width: width, height: height}"></div>
-            </el-col>
-        </el-row>
+                <!--</el-col>-->
+                <el-col class="col" :lg="12">
+                    <div style="margin: 20px;background: #e9e9eb;">
+                        <div class="charts" id="myChart3" :style="{width: width, height: height}"></div>
+                    </div>
+                </el-col>
+                <!--<el-col class="col" :lg="8">-->
+                    <!--<div class="charts" id="myChart7" :style="{width: width, height: height}"></div>-->
+                <!--</el-col>-->
+            </el-row>
+            <el-row>
+                <el-col class="col" :lg="12">
+                    <div style="margin: 20px;background: #e9e9eb;">
+                        <div class="charts" id="myChart7" :style="{width: width, height: height}"></div>
+                    </div>
+                </el-col>
+                <el-col class="col" :lg="12">
+                    <div style="margin: 20px;background: #e9e9eb;">
+                        <div class="charts" id="myChart4" :style="{width: width, height: height}"></div>
+                    </div>
+                </el-col>
+                <!--<el-col class="col" :lg="8">-->
+                <!--<div class="charts" id="myChart7" :style="{width: width, height: height}"></div>-->
+                <!--</el-col>-->
+            </el-row>
+            <el-row>
+                <el-col class="col" :lg="12">
+                    <div style="margin: 20px;background: #e9e9eb;">
+                        <div class="charts" id="myChart5" :style="{width: width, height: height}"></div>
+                    </div>
+                </el-col>
+                <el-col class="col" :lg="12">
+                    <div style="margin: 20px;background: #e9e9eb;">
+                        <div class="charts" id="myChart6" :style="{width: width, height: height}"></div>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
     </div>
 </template>
 
@@ -119,17 +213,26 @@ export default {
   data () {
     return {
         houseNature:[
-            {'label':'办公'},{'label':'参主'},{'label':'仓储'},{'label':'工业厂房'},{'label':'公房'},
+            {'label':'全部'},{'label':'办公'},{'label':'参主'},{'label':'仓储'},{'label':'工业厂房'},{'label':'公房'},
             {'label':'集体'},{'label':'其他'},{'label':'全民'},{'label':'商业'},{'label':'私房'},
             {'label':'未登记认定'},{'label':'住宅'},{'label':'住宅/仓储'},{'label':'住宅/工业厂房'}
         ],
         houseNatureval:'',
+        assetUse:[
+            {'label':'全部'},{'label':'公共设施'},{'label':'商业'},{'label':'住宅'}
+        ],
+        assetUseval:'',
         landNature:[
-            {'label':'仓储出让'},{'label':'仓储划拨'},{'label':'工业出让'},{'label':'工业划拨'},{'label':'商业出让'},
+            {'label':'全部'}, {'label':'仓储出让'},{'label':'仓储划拨'},{'label':'工业出让'},{'label':'工业划拨'},{'label':'商业出让'},
             {'label':'商业划拨'},{'label':'住宅出让'},{'label':'住宅划拨'},{'label':'综合划拨'},
         ],
         landNatureval:'',
+        landUse:[
+            {'label':'全部'},{'label':'仓储用途'},{'label':'城镇住宅用地'},{'label':'城镇住宅用地/住宅'},{'label':'公共设施用地'},{'label':'批发零售用地/商业'}
+        ],
+        landUseval:'',
         houseNows:[
+            {'label':'全部'},
             {'label':'1.73'},{'label':'2.12'},{'label':'2.16'},{'label':'2.28'},{'label':'2.63'},
             {'label':'2.64'},{'label':'2.73'},{'label':'2.75'},{'label':'2.85'},{'label':'2.86'},
             {'label':'2.97'},{'label':'2.98'},{'label':'3'},{'label':'3.01'},{'label':'3.17'},
@@ -217,26 +320,43 @@ export default {
             }
         ],
         multipleSelection: [],
-        width:'300px',
-        height:'300px',
+        // width:(document.body.clientWidth/4)+'px',
+        width:'100%',
+        height:'280px',
         listss:'',
         total:'',
+        arrName:'',
         echarts3_option:{
           title:{
               text:'房屋现状',
-                  subtext: '78%',
                   top:20,
                   textStyle: {
                   fontSize: 14,
                       color:'#999',
               }
           },
-          color:['#999','#33a4fb'],
-              legend: {
-              left: '50%',
-                  data: ['占用', '闲置'],
-                  bottom:0,
-          },
+            legend: {
+                icon: "circle",
+                orient: 'vertical',
+                left: '0',
+                data:[],
+                bottom: '0',
+                textStyle: {
+                    color: "#333"
+                },
+            },
+
+          color:['#FF8700', '#ffc300', '#00e473', '#009DFF'],
+            // legend: {
+            //     orient: 'vertical',
+            //     left: '50%',
+            //     data: ['占用', '闲置'],
+            //     bottom: 0,
+            //     textStyle: {
+            //         color: "#333"
+            //     },
+            //     itemGap: 20
+            // },
           tooltip: {
               trigger: 'item',
                   formatter: '{a} <br/>{b} : {c} ({d}%)'
@@ -245,6 +365,7 @@ export default {
               {
                   name: '访问来源',
                   type: 'pie',
+                  left:'60',
                   radius: ['50%', '70%'],
                   avoidLabelOverlap: false,
                   label: {
@@ -271,7 +392,6 @@ export default {
         echarts4_option:{
           title: {
               text:'产权用途',
-                  subtext: '78%',
                   top:20,
                   textStyle: {
                   fontSize: 14,
@@ -286,11 +406,11 @@ export default {
 
               {
                   indicator: [
-                      {text: '餐饮', max: 100},
-                      {text: '住宅', max: 100},
-                      {text: '商铺', max: 100},
-                      {text: '服务', max: 100},
-                      {text: '住宿', max: 100}
+                      {text: '餐饮'},
+                      {text: '住宅'},
+                      {text: '商铺'},
+                      {text: '服务'},
+                      {text: '住宿'}
                   ],
                   radius: 80,
                   center: ['50%', '60%'],
@@ -332,15 +452,17 @@ export default {
                 formatter: '{a} <br/>{b} : {c} ({d}%)'
             },
             legend: {
-                left: 'center',
+                orient: 'vertical',
+                left: 'left',
                 top: 'bottom',
-                data: ['住宅', '商铺', '服务', '酒店', '餐饮']
+                data: []
             },
             color:['#61a5e8','#7ecf51','#eecb5f','#c55a4c','#c78151'],
             series: [
                 {
                     name: '土地用途参数',
                     type: 'pie',
+                    left:'80',
                     radius: [20, 110],
                     center: ['50%', '50%'],
                     roseType: 'radius',
@@ -363,10 +485,210 @@ export default {
             ]
         },
         myChart5:'',
+        echarts_option:{
+            title: {
+                text: '土地性质',
+                top:20,
+                textStyle: {
+                    fontSize: 14,
+                    color:'#999',
+                }
+            },
+            color: ['#FF8700', '#ffc300', '#00e473', '#009DFF'],
+            grid: {
+                top: '15%',
+                bottom: '54%',
+                left: "30%",
+                containLabel: false
+            },
+            legend: {
+                icon: "circle",
+                orient: 'vertical',
+                right: '100',
+                data:[],
+                bottom: '0',
+                textStyle: {
+                    color: "#333"
+                },
+            },
+            yAxis: [{
+                type: 'category',
+                inverse: true,
+                axisLine: {
+                    show: false
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+
+                    interval: 0,
+                    inside: true,
+                    textStyle: {
+                        color: "#333",
+                        fontSize: 14,
+                        rich: {
+                            line: {
+                                width: 170,
+                                height: 10,
+                                // backgroundColor: {image: dashedPic}
+                            },
+                            name: {
+                                color: '#666',
+                                fontSize: 14,
+                            },
+                            bd: {
+                                color: '#ccc',
+                                padding: [0, 5],
+                                fontSize: 14,
+                            },
+                            percent:{
+                                color: '#333',
+                                fontSize: 14,
+                            },
+                            value: {
+                                color: '#333',
+                                fontSize: 16,
+                                fontWeight: 500,
+                                padding: [0, 0, 0, 20]
+                            },
+                            unit: {
+                                fontSize: 14
+                            }
+                        }
+                    },
+                    show: true
+                },
+                data: []
+            }],
+            xAxis: [{
+                show: false
+            }],
+            series: [
+                {
+                    name: '',
+                    type: 'pie',
+                    clockWise: true,
+                    hoverAnimation: false,
+                    radius: '',
+                    center: ["30%", "50%"],
+                    label: {
+                        show: false
+                    },
+                    data: []
+                }
+            ]
+        },
+        echarts7_option:{
+            title:{
+                text:'办证情况',
+                top:20,
+                textStyle: {
+                    fontSize: 14,
+                    color:'#999',
+                }
+            },
+            color:['#999','#33a4fb'],
+            legend: {
+                orient: 'vertical',
+                left: '0',
+                bottom:'0',
+                data: ['已办证', '未办证'],
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b} : {c} ({d}%)'
+            },
+            series: [
+                {
+                    name: '',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '30',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: [
+                        {value: 100, name: '已办证'},
+                        {value: 335, name: '未办证'},
+                    ]
+                }
+            ]
+        },
+        echarts6_option:{
+            title:{
+                text:'房屋类型',
+                top:20,
+                textStyle: {
+                    fontSize: 14,
+                    color:'#999',
+                }
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                top: '15%',
+                data: []
+            },
+            color: ['#61a5e8','#7ecf51','#eecb5f','#9570e5'],
+            grid: {
+                left: '50%',
+                right:'5%'
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    axisTick: {
+                        alignWithLabel: true
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {name: '公房', data: [20],type:'bar'},
+                {name: '参主', data: [20],type:'bar'},
+            ]
+        },
     }
   },
     watch: {
         //观察option的变化
+        echarts_option: {
+            handler(newVal, oldVal) {
+                console.log(this.myChart)
+                if (this.myChart) {
+                    if (newVal) {
+                        this.myChart.setOption(newVal);
+                    } else {
+                        this.myChart.setOption(oldVal);
+                    }
+                } else {
+                    this.init();
+                }
+            },
+            deep: true //对象内部属性的监听，关键。
+        },
         echarts3_option: {
             handler(newVal, oldVal) {
                 console.log(this.myChart3)
@@ -378,6 +700,20 @@ export default {
                     }
                 } else {
                     this.init3();
+                }
+            },
+            deep: true //对象内部属性的监听，关键。
+        },
+        echarts7_option: {
+            handler(newVal, oldVal) {
+                if (this.myChart7) {
+                    if (newVal) {
+                        this.myChart7.setOption(newVal);
+                    } else {
+                        this.myChart7.setOption(oldVal);
+                    }
+                } else {
+                    this.init7();
                 }
             },
             deep: true //对象内部属性的监听，关键。
@@ -410,8 +746,98 @@ export default {
             },
             deep: true //对象内部属性的监听，关键。
         },
+        echarts6_option: {
+            handler(newVal, oldVal) {
+                if (this.myChart6) {
+                    if (newVal) {
+                        this.myChart6.setOption(newVal);
+                    } else {
+                        this.myChart6.setOption(oldVal);
+                    }
+                } else {
+                    this.init6();
+                }
+            },
+            deep: true //对象内部属性的监听，关键。
+        },
     },
     methods:{
+        aaa(val){console.log(val)},
+        init(){
+            var that =this;
+            this.$axios({
+                url: this.getAjax + '/admin/meansAdmin/count',
+                method: "get",
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Token':sessionStorage.getItem('token')
+                },
+                data:{}
+            }).then(res => {
+                var datas = res.data.data.landNature
+                var arr = []
+                for(var i=0;i<datas.length;i++){
+                    var obj = {};
+                    obj['name'] = Object.keys(datas[i]).toString()
+                    obj['value'] = Object.values(datas[i]).toString()
+                    arr.push(obj)
+                }
+                var chartData = arr;
+                let arrName = [];
+                let arrValue = [];
+                let sum = 0;
+                let pieSeries = [],
+                    lineYAxis = [];
+
+// 数据处理
+                chartData.forEach((v, i) => {
+                    arrName.push(v.name);
+                    arrValue.push(v.value);
+                    sum = sum + parseInt(v.value);
+                })
+                this.arrName = arrName
+// 图表option整理
+                chartData.forEach((v, i) => {
+                    console.log(sum)
+                    pieSeries.push({
+                        name: v.name,
+                        type: 'pie',
+                        clockWise: true,
+                        hoverAnimation: false,
+                        radius: [65 - i * 15 + '%', 57 - i * 15 + '%'],
+                        center: ["30%", "50%"],
+                        label: {
+                            show: false
+                        },
+                        data: [
+                            {
+                            value: parseInt(v.value),
+                            name: v.name
+                        }, {
+                            value: sum-parseInt(v.value),
+                            name: '',
+                            itemStyle: {
+                                color: "rgba(0,0,0,0)"
+                            }
+                        }
+                        ]
+                    });
+
+                })
+                console.log(pieSeries)
+                this.echarts_option.legend.data=arrName;
+                this.echarts_option.yAxis[0].data=lineYAxis;
+                this.echarts_option.series=pieSeries;
+                // window.addEventListener("resize", () => {
+                //     that.echarts_option.resize();
+                // });
+                // setTimeout(function (){
+                //     window.onresize = function () {
+                //         this.echarts_option.resize();
+                //     }
+                // },200)
+            })
+        },
         init3(){
             this.$axios({
                 url: this.getAjax + '/admin/meansAdmin/count',
@@ -431,6 +857,7 @@ export default {
                     arr.push(obj)
                 }
                 this.echarts3_option.series[0].data=arr;
+                this.echarts3_option.legend.data=arr.name;
             })
         },
         init4(){
@@ -445,14 +872,33 @@ export default {
             }).then(res => {
                 var datas = res.data.data.landUse
                 var arr = []
+                var text = []
                 for(var i=0;i<datas.length;i++){
                     var obj = {};
-                    obj['name'] = Object.keys(datas[i]).toString()
-                    obj['value'] = Object.values(datas[i]).toString()
-                    arr.push(obj)
+                    var objs = {};
+                    if(Object.keys(datas[i]).toString() == ''){
+                        // obj['name'] = '空白'
+                        objs['text'] = '空白'
+                        objs['max'] = '3000'
+                        // obj['value'] = Object.values(datas[i]).toString()
+                    }else{
+                        // obj['name'] = Object.keys(datas[i]).toString()
+                        objs['text'] = Object.keys(datas[i]).toString()
+                        objs['max'] = '3000'
+                        // obj['value'] = Object.values(datas[i]).toString()
+                    }
+
+                    arr.push(Object.values(datas[i]).toString())
+                    text.push(objs)
                 }
-                console.log(arr)
-                this.echarts4_option.series[0].data=arr;
+                var app = [
+                    {
+                        'value':arr,
+                        'name':'产权用途',
+                    }
+                ]
+                this.echarts4_option.radar[0].indicator=text;
+                this.echarts4_option.series[0].data=app;
             })
         },
         init5(){
@@ -465,20 +911,26 @@ export default {
                 },
                 data:{}
             }).then(res => {
-                var datas = res.data.data.landNature
+                var datas = res.data.data.landUse
                 var arr = []
                 var address=[]
                 for(var i=0;i<datas.length;i++){
                     var obj = {};
-                    obj['name'] = Object.keys(datas[i]).toString()
-                    obj['name'] = Object.keys(datas[i]).toString()
-                    obj['value'] = Object.values(datas[i]).toString()
+                    if(Object.keys(datas[i]).toString() == ''){
+                        obj['name'] = '空白'
+                        obj['value'] = Object.values(datas[i]).toString()
+                        address.push('空白')
+                    }else{
+                        obj['value'] =  Object.values(datas[i]).toString()
+                        obj['name'] = Object.keys(datas[i]).toString()
+                        address.push(Object.keys(datas[i]).toString())
+                    }
                     arr.push(obj)
-                    address.push(Object.keys(datas[i]).toString())
                 }
                 console.log(arr)
-                this.echarts5_option.series[0].data=arr;
+                console.log(address)
                 this.echarts5_option.legend.data=address;
+                this.echarts5_option.series[0].data=arr;
             })
         },
         chart(){
@@ -496,12 +948,36 @@ export default {
                 console.log(this.list)
             })
         },
-      // 土地性质
-        drawLine(){
-            var that = this;
-            // 基于准备好的dom，初始化echarts实例
-            let myChart = this.$echarts.init(document.getElementById('myChart'));
-            let color = ['#FF8700', '#ffc300', '#00e473', '#009DFF'];
+        init7(){
+            this.$axios({
+                url: this.getAjax + '/admin/meansAdmin/count',
+                method: "get",
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Token':sessionStorage.getItem('token')
+                },
+                data:{}
+            }).then(res => {
+                var datas = res.data.data.realEstate
+                let num = 0;
+                for(var i=0;i<datas.length;i++){
+                    var obj = {};
+                    if(Object.keys(datas[i]) == ''){
+                        obj['name'] = '未办证'
+                        obj['value'] = Object.values(datas[i]).toString()
+                    }else{
+                         num = num + parseFloat(Object.values(datas[i]).toString())
+                    }
+
+                }
+                var arr = [
+                    {'name':'未办证','value':this.total - num},
+                    {'name':'已办证','value':num}
+                ]
+                this.echarts7_option.series[0].data=arr;
+            })
+        },
+        init6(){
             this.$axios({
                 url: this.getAjax + '/admin/meansAdmin/count',
                 method: "get",
@@ -513,152 +989,36 @@ export default {
             }).then(res => {
                 var datas = res.data.data.houseNature
                 var arr = []
+                var arrs = []
                 for(var i=0;i<datas.length;i++){
                     var obj = {};
-                    obj['name'] = Object.keys(datas[i]).toString()
-                    obj['value'] = Object.values(datas[i]).toString()
+                    var objs = {};
+                    if(Object.keys(datas[i]) == ''){
+                        obj['name'] = '空白'
+                        obj['data'] = [Object.values(datas[i]).toString()]
+                        obj['type'] = 'bar'
+                        arrs.push('空白')
+                    }else{
+                        obj['name'] = Object.keys(datas[i]).toString()
+                        obj['data'] = [Object.values(datas[i]).toString()]
+                        obj['type'] = 'bar'
+                        arrs.push(Object.keys(datas[i]).toString())
+                    }
                     arr.push(obj)
                 }
+                console.log(arrs)
+                // var arr = [
+                //     {'name':'未办证','value':this.total - num},
+                //     {'name':'已办证','value':num}
+                // ]
+                this.echarts6_option.legend.data=arrs;
+                this.echarts6_option.series=arr;
             })
-            let chartData = [{
-                name: "规划",
-                value: 153,
-                unit: '元'
-            },
-                {
-                    name: "租用",
-                    value: 242,
-                    unit: '元'
-                },
-                {
-                    name: "其他",
-                    value: 110,
-                    unit: '元'
-                }
-            ];
-            let arrName = [];
-            let arrValue = [];
-            let sum = 0;
-            let pieSeries = [],
-                lineYAxis = [];
-
-// 数据处理
-            chartData.forEach((v, i) => {
-                arrName.push(v.name);
-                arrValue.push(v.value);
-                sum = sum + v.value;
-            })
-
-// 图表option整理
-            chartData.forEach((v, i) => {
-                pieSeries.push({
-                    name: '学历',
-                    type: 'pie',
-                    clockWise: true,
-                    hoverAnimation: false,
-                    radius: [65 - i * 15 + '%', 57 - i * 15 + '%'],
-                    center: ["30%", "50%"],
-                    label: {
-                        show: false
-                    },
-                    data: [{
-                        value: v.value,
-                        name: v.name
-                    }, {
-                        value: sum - v.value,
-                        name: '',
-                        itemStyle: {
-                            color: "rgba(0,0,0,0)"
-                        }
-                    }]
-                });
-
-            })
-            // 绘制图表
-            myChart.setOption({
-                title: {
-                    text: '土地性质',
-                    top:20,
-                    textStyle: {
-                        fontSize: 14,
-                        color:'#999',
-                    }
-                },
-                color: color,
-                grid: {
-                    top: '15%',
-                    bottom: '54%',
-                    left: "30%",
-                    containLabel: false
-                },
-                legend: {
-                    icon: "circle",
-                    orient: 'horizontal',
-                    // x: 'left',
-                    data:['规划','租用','其他'],
-                    left: 10,
-                    bottom: 0,
-                    align: 'right',
-                    textStyle: {
-                        color: "#333"
-                    },
-                    itemGap: 20
-                },
-                yAxis: [{
-                    type: 'category',
-                    inverse: true,
-                    axisLine: {
-                        show: false
-                    },
-                    axisTick: {
-                        show: false
-                    },
-                    axisLabel: {
-
-                        interval: 0,
-                        inside: true,
-                        textStyle: {
-                            color: "#333",
-                            fontSize: 14,
-                            rich: {
-                                line: {
-                                    width: 170,
-                                    height: 10,
-                                    // backgroundColor: {image: dashedPic}
-                                },
-                                name: {
-                                    color: '#666',
-                                    fontSize: 14,
-                                },
-                                bd: {
-                                    color: '#ccc',
-                                    padding: [0, 5],
-                                    fontSize: 14,
-                                },
-                                percent:{
-                                    color: '#333',
-                                    fontSize: 14,
-                                },
-                                value: {
-                                    color: '#333',
-                                    fontSize: 16,
-                                    fontWeight: 500,
-                                    padding: [0, 0, 0, 20]
-                                },
-                                unit: {
-                                    fontSize: 14
-                                }
-                            }
-                        },
-                        show: true
-                    },
-                    data: lineYAxis
-                }],
-                xAxis: [{
-                    show: false
-                }],
-                series: pieSeries
-            });
+        },
+      // 土地性质
+        drawLine(){
+            this.myChart = this.$echarts.init(document.getElementById('myChart'));
+            this.myChart.setOption(this.echarts_option,true)
         },
         // 产权人
         drawLine2(){
@@ -719,54 +1079,8 @@ export default {
         // 房屋现状
         drawLine7(){
             // 基于准备好的dom，初始化echarts实例
-            let myChart7 = this.$echarts.init(document.getElementById('myChart7'));
-            myChart7.setOption({
-                title:{
-                    text:'办证情况',
-                    subtext: '78%',
-                    top:20,
-                    textStyle: {
-                        fontSize: 14,
-                        color:'#999',
-                    }
-                },
-                color:['#999','#33a4fb'],
-                legend: {
-                    left: '50%',
-                    data: ['已办证', '未办证'],
-                    bottom:0,
-                },
-                tooltip: {
-                    trigger: 'item',
-                    formatter: '{a} <br/>{b} : {c} ({d}%)'
-                },
-                series: [
-                    {
-                        name: '',
-                        type: 'pie',
-                        radius: ['50%', '70%'],
-                        avoidLabelOverlap: false,
-                        label: {
-                            show: false,
-                            position: 'center'
-                        },
-                        emphasis: {
-                            label: {
-                                show: true,
-                                fontSize: '30',
-                                fontWeight: 'bold'
-                            }
-                        },
-                        labelLine: {
-                            show: false
-                        },
-                        data: [
-                            {value: 100, name: '已办证'},
-                            {value: 335, name: '未办证'},
-                        ]
-                    }
-                ]
-            });
+            this.myChart7 = this.$echarts.init(document.getElementById('myChart7'));
+            this.myChart7.setOption(this.echarts7_option,true)
         },
         // 产权用途
         drawLine4(){
@@ -784,63 +1098,21 @@ export default {
         // 产权人
         drawLine6(){
             // 基于准备好的dom，初始化echarts实例
-            let myChart6 = this.$echarts.init(document.getElementById('myChart6'));
-            myChart6.setOption({
-                title:{
-                    text:'房屋类型',
-                    top:20,
-                    textStyle: {
-                        fontSize: 14,
-                        color:'#999',
-                    }
-                },
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-                    }
-                },
-                // legend: {
-                //     left: 'center',
-                //     top: 'bottom',
-                //     data: ['公房', '私房', '未登记建筑', '参主房']
-                // },
-                color: ['#61a5e8','#7ecf51','#eecb5f','#9570e5'],
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis: [
-                    {
-                        type: 'category',
-                        axisTick: {
-                            alignWithLabel: true
-                        }
-                    }
-                ],
-                yAxis: [
-                    {
-                        type: 'value'
-                    }
-                ],
-                series: [
-                    {name: '公房', data: [20],type:'bar'},
-                    {name: '私房', data: [30],type:'bar'},
-                    {name: '未登记建筑', data: [40],type:'bar'},
-                    {name: '参主房', data: [50],type:'bar'}
-                ]
-            });
+            this.myChart6 = this.$echarts.init(document.getElementById('myChart6'));
+            this.myChart6.setOption(this.echarts6_option,true)
         },
     },
     mounted(){
       this.total = sessionStorage.getItem('total')
         // this.chart();
-      this.drawLine();
+      // this.drawLine();
+      this.init();
       this.init3();
+      this.init7();
       this.init4();
       this.init5();
+      this.init6();
+      this.drawLine();
       // this.drawLine2();
       this.drawLine3();
       this.drawLine4();
@@ -854,13 +1126,13 @@ export default {
 }
 </script>
 <style scoped>
-    .count>>>.charts {position: relative;left:50%;margin-left: -150px;}
-    .count>>>.col {margin: 0 25px 25px 0;background: #fff;}
+    /*.count>>>.charts {position: relative;left:50%;margin-left: -150px;}*/
+    .count>>>.col {margin:0 0 20px 0;}
     .count .newSort>>>.el-input {width: 200px;}
     .count .newSort>>>.el-form-item__label {width: 40%;}
     .sum {height:100px;background: #fff;width: 90%;}
-    .sumLeft {float:left;line-height: 115px;margin-left: 48px;}
-    .sumRight {margin-left: 130px;padding-top: 20px;}
+    .sumLeft {float:left;line-height: 115px;margin-left: 15px;}
+    .sumRight {margin-left: 80px;padding-top: 20px;text-align: center;}
     .sumRight p:first-child {font-size: 16px;color: #666;}
     .sumRight p:last-child {font-size: 30px;color: #333;margin-top: 10px;}
 </style>

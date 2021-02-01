@@ -2,108 +2,44 @@
     <div class="count counts kan">
         <el-dialog
                 class="abow_dialog"
-                title="信息管理 > 物业巡检"
+                title="信息管理 > 物业巡检打卡"
                 :visible.sync="showDialog"
                 @close="handleClose"
                 width="1000px">
         <el-row>
-            <el-form ref="form" class="wyxjHight">
+            <el-form ref="form" class="wyxjHight" style="position: relative;">
                 <el-col :soan="24" style="padding-top: 26px;">
-                    <el-col :span="12">
-                        <el-col :lg="22">
-                            <el-col :lg="11"><div class="textLeft">资产编号：</div></el-col>
-                            <el-col :lg="13" style="position: relative;">
-                                <el-input style="width: 55%;" v-model="datas.meansBook.assetCode" placeholder="请输入内容" disabled="disabled"></el-input>
-                                <el-button style="position: absolute;top:0;right:0;" type="primary" @click="zcdetail(datas.meansBookId)">资产详情</el-button>
-                            </el-col>
-                            <!--<el-form-item label="资产编号：">-->
-                                <!--<el-input v-model="datas.meansBook.assetCode" placeholder="请输入内容" disabled="disabled"></el-input>-->
-                                <!--<el-button type="primary" @click="zcdetail(datas.meansBookId)">资产详情</el-button>-->
-                            <!--</el-form-item>-->
-                        </el-col>
-                        <el-col :lg="22">
-                            <el-col :lg="11"><div class="textLeft">资产坐落：</div></el-col>
-                            <el-col :lg="13">
-                                <el-input v-model="datas.meansBook.houseAddress" placeholder="请输入内容" disabled="disabled"></el-input>
-                            </el-col>
-                            <!--<el-form-item label="资产坐落：">-->
-                                <!--<el-input v-model="datas.meansBook.houseAddress" placeholder="请输入内容" disabled="disabled"></el-input>-->
-                            <!--</el-form-item>-->
-                        </el-col>
-                        <el-col :lg="22">
-                            <el-col :lg="11"><div class="textLeft">问题类型：</div></el-col>
-                            <el-col :lg="13">
-                                <el-input v-model="datas.question" placeholder="请输入内容" disabled="disabled"></el-input>
-                            </el-col>
-                            <!--<el-form-item label="问题类型：">-->
-                                <!--<el-input v-model="datas.question" placeholder="请输入内容" disabled="disabled"></el-input>-->
-                            <!--</el-form-item>-->
-                        </el-col>
-                        <el-col :lg="22" class="textears">
-                            <el-col :lg="11"><div class="textLeft">问题描述：</div></el-col>
-                            <el-col :lg="13">
-                                <el-input type="textarea" disabled="disabled" v-model="datas.content" ></el-input>
-                            </el-col>
-                            <!--<el-form-item label="问题描述：">-->
-                                <!--<el-input type="textarea" disabled="disabled" v-model="datas.content" style="width: 30%;"></el-input>-->
-                            <!--</el-form-item>-->
-                        </el-col>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-col :lg="22">
-                            <el-col :lg="11"><div class="textLeft">现场照片：</div></el-col>
-                            <el-col :lg="13">
-                                <el-image
-                                        style="width: 100px; height: 100px"
-                                        :src="url"
-                                        disabled="disabled"
-                                        :preview-src-list="srcList">
-                                </el-image>
-                            </el-col>
-                            <!--<el-form-item label="现场照片：（点击查看大图）">-->
-                                <!--<el-image-->
-                                        <!--style="width: 100px; height: 100px"-->
-                                        <!--:src="url"-->
-                                        <!--disabled="disabled"-->
-                                        <!--:preview-src-list="srcList">-->
-                                <!--</el-image>-->
-                            <!--</el-form-item>-->
-                        </el-col>
-                        <el-col :lg="22">
-                            <el-col :lg="11"><div class="textLeft">巡检人/单位：</div></el-col>
-                            <el-col :lg="13">
-                                <el-input v-model="datas.sysUser.name" placeholder="请输入内容" disabled="disabled"></el-input>
-                            </el-col>
-                            <!--<el-form-item label="巡检人/单位：">-->
-                                <!--<el-input v-model="datas.sysUser.name" placeholder="请输入内容" disabled="disabled"></el-input>-->
-                            <!--</el-form-item>-->
-                        </el-col>
-                        <el-col :lg="22">
-                            <el-col :lg="11"><div class="textLeft minText">巡检人联系电话：</div></el-col>
-                            <el-col :lg="13">
-                                <el-input v-model="datas.sysUser.mobile" placeholder="请输入内容" disabled="disabled"></el-input>
-                            </el-col>
-                            <!--<el-form-item label="巡检人联系电话：">-->
-                                <!--<el-input v-model="datas.sysUser.mobile" placeholder="请输入内容" disabled="disabled"></el-input>-->
-                            <!--</el-form-item>-->
-                        </el-col>
-                        <el-col :lg="22">
-                            <el-col :lg="11"><div class="textLeft">巡检人时间：</div></el-col>
-                            <el-col :lg="13" style="line-height: 40px;font-size: 24px;">
-                                {{datas.sysUser.createTime | dateFormat}}
-                            </el-col>
-                            <!--<el-form-item label="巡检人时间：">-->
-                                <!--{{datas.sysUser.createTime | dateFormat}}-->
-                                <!--&lt;!&ndash;<el-input v-model="" placeholder="请输入内容" disabled="disabled"></el-input>&ndash;&gt;-->
-                            <!--</el-form-item>-->
-                        </el-col>
-                    </el-col>
-                    <el-col :span="24" style="position: relative;margin: 0;"><div class="map" id="mapid" ref="mapsss"></div></el-col>
+                    <div  class="map" id="mapid" ref="mapsss"></div>
                 </el-col>
-                <el-col :span="23" style="text-align: right;margin: 40px 0;" v-if="datas.status == 0">
-                    <el-button type="primary" round @click="open('success',datas.id)">通过</el-button>
-                    <el-button type="success" round @click="open('cancel',datas.id)">驳回</el-button>
-                </el-col>
+                <div class="fixed">
+                    <el-row>
+                        <el-date-picker
+                                style="width: 100%;"
+                                v-model="value1"
+                                type="daterange"
+                                align="right"
+                                value-format="yyyy-MM-dd"
+                                unlink-panels
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                                >
+                        </el-date-picker>
+                    </el-row>
+                    <el-row class="tables" >
+                        <el-table
+                                ref="multipleTable"
+                                :data="tableData2"
+                                @row-click="clickTable"
+                                tooltip-effect="dark"
+                                style="width: 100%"
+                                >
+                            <el-table-column  type="index" label="序号"></el-table-column>
+                            <el-table-column width="200" prop="houseAddress" label="房屋坐落"></el-table-column>
+                            <el-table-column prop="date2" label="打卡次数"></el-table-column>
+                        </el-table>
+                    </el-row>
+                </div>
             </el-form>
         </el-row>
         </el-dialog>
@@ -113,17 +49,19 @@
 </template>
 
 <script>
+    import  icon01 from '../../assets/bj.png'
     import AssetsKans from '@/components/assets/AssetsKan'
     export default {
   name: 'login',
         props:{
-            dialogKan:{
+            dialogXj:{
                 type: Boolean,
                 default: false
             }
         },
   data () {
     return {
+        value1: [],
         map:null,
         _marker:null,
         AssetsKanVisible:false,
@@ -137,6 +75,18 @@
         srcList: [
             'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
             'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
+        ],
+        tableData2: [
+            {date1: '1',date2:'1',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'寸池潭7号'},
+            {date1: '2',date2:'3',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型2',date7:'',date8:'下塘东街7弄3号'},
+            {date1: '3',date2:'2',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型3',date7:'',date8:'爱勤弄11号'},
+            {date1: '4',date2:'8',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型4',date7:'',date8:'爱勤弄13号'},
+            {date1: '5',date2:'0',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄15号'},
+            {date1: '6',date2:'0',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄17号'},
+            {date1: '7',date2:'2',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄18号'},
+            {date1: '8',date2:'5',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄22号'},
+            {date1: '9',date2:'4',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄12号'},
+            {date1: '10',date2:'1',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄8号'},
         ],
         dialogVisible: false,
         options: [
@@ -161,7 +111,7 @@
         zoom: 10, // 地图的初始化级别，及放大比例
         multipleSelection: [],
         types:'',
-        datas:[{meansBook:{'assetCode':''}}],
+        datas:[{meansBook:{'assetCode':0}}],
         fileList: [{
             name: 'food.jpeg',
             url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
@@ -175,11 +125,100 @@
             AssetsKans
         },
     watch:{
-        dialogKan(oldVal,newVal){
-            this.showDialog = this.dialogKan
+        dialogXj(oldVal,newVal){
+            this.showDialog = this.dialogXj
         },
     },
     methods:{
+        clickTable(e,str){
+            console.log(e)
+            this.AssetsKanVisible = true;
+            let param = e.id
+            this.$refs.AssetsKanRef.detail(param,str)
+        },
+        list(type){
+            var that = this;
+            var type = type;
+            this.$axios({
+                url:  'https://nanxun.zjtoprs.com/api/com/comPlace/getAll?type='+type,
+                method: "get",
+                dataType: "json",
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                },
+                data:{}
+            })
+                .then(res => {
+                    if(this._marker){
+                        this.map.removeLayer(this._marker);
+                    }
+                    var tabStr = "";
+                    var my_spots = [];
+                    //点击地图上图标
+                    var list = res.data.data
+                    // this.show=false
+                    var strartIcon = L.icon({
+                        // https://nanxun.zjtoprs.com/minio/old-town/com/place/defaultStore.jpg
+                        iconUrl:icon01,
+                        iconSize: [25, 30],
+                    });
+                    var arr = [];
+                    for(var j=0;j<list.length;j++){
+                        //获取经纬度
+                        var lng = list[j].longitude;
+                        var lat = list[j].latitude;
+                        var layers = L.marker([lat,lng ],{icon:strartIcon,data:j+1,}).addTo(this.map)
+                            .bindPopup('<div id="'+ list[j].id+'" style="color: red;text-align: center;">资产坐落'+(j+1)+'</div>',{closeButton:false})
+                            .openPopup()
+                            .on("click", this.markerOnClick)
+                        arr.push(layers)
+                    }
+                    console.log(arr)
+                    this._marker = L.layerGroup(arr);
+                    this.map.addLayer(this._marker);
+                    this.map.setView([30.87258082, 120.4259491],16);
+                })
+        },
+        markerOnClick(e){
+            this.listZc(e.target.options.data);
+        },
+        listZc(e){
+            var that = this;
+            this.$axios({
+                url: this.getAjax + '/admin/meansAdmin/findList',
+                method: "post",
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    'Token':sessionStorage.getItem('token')
+                },
+                data:{
+                        "pageNum": e,
+                        "pageSize": 10,
+                        "assetUser": "",
+                        "houseNature": '',
+                        "assetUse": "",
+                        "landUse": "",
+                        "landNature":'',
+                        "houseNow": '',
+                        "label": "",
+                        "search": ""
+                }
+            }).then(res => {
+                if(res.data.code == '2004'){
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'warning'
+                    });
+                    this.$router.push('/')
+                }else{
+                    var list = res.data.data.list;
+                    for(var i=0;i<list.length;i++){
+                        list[i]['date2'] = i
+                    }
+                    this.tableData2 = list;
+                }
+            })
+        },
         zcdetail(id){
             this.AssetsKanVisible = true
             let param = id
@@ -192,11 +231,10 @@
                 this.AssetsKanVisible = true
             }
         },
-      detail(data){
-          console.log(data)
-          this.datas = data;
+        detail(data){
           var that =this;
           this.$nextTick(()=>{
+              this.list('景点');
               this.map = L.map(this.$refs['mapsss'], {
                   center: [30.88246, 120.427756],
                   zoom: 14,
@@ -232,20 +270,6 @@
                   that.map.invalidateSize(true);
               }, 10);
           })
-          this.$nextTick(()=>{
-              var _h = window.screen.height;
-              console.log(_h)
-              var demo = document.getElementsByClassName('wyxjHight');
-              if(_h == '768'){
-                  demo[0].style.height = _h*0.3 +'px'
-              }else if(_h == '900'){
-                  demo[0].style.height = _h*0.45 +'px'
-              }else{
-                  demo[0].style.height = _h*0.6 +'px'
-              }
-          })
-          this.url = data.attach.split(',')[0]
-          this.srcList = data.attach.split(',')
 
       },
         open(type,id) {
@@ -356,16 +380,15 @@
         this.$emit('childEvent', { name: 'zhangsan', age:  10 });
     },
     created:function () {
-
+        this.listZc(2);
     }
 }
 </script>
 <style scoped>
     .map {
-        height: 250px;
-        width:80%;
+        height: 78vh;
+        width:100%;
         position: relative;
-        left:10%;
         background: aliceblue;
     }
     .textears>>>.el-textarea__inner {height:200px;}
@@ -380,5 +403,14 @@
     .sumRight {margin-left: 130px;padding-top: 20px;}
     .sumRight p:first-child {font-size: 16px;color: #666;}
     .sumRight p:last-child {font-size: 30px;color: #333;margin-top: 10px;}
-
+    .fixed {width: 300px;position: absolute;top:55px;right:24px;z-index: 9999;height:500px;text-align: center;background: rgba(0,0,0,.2);}
+    .fixed th {
+        padding: 0;
+        background: #eee;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+    }
+    .fixed >>>.el-table th, .el-table tr {cursor: pointer;}
 </style>

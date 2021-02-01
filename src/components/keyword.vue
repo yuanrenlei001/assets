@@ -2,7 +2,7 @@
     <div class="main">
         <div class="body_count">
             <div class="login_count">
-                <div class="text01">国有资产管理系统</div>
+                <div class="text01">国有资产管理OA系统</div>
                 <div class="text02">湖州南浔旅游投资发展集团有限公司</div>
                 <div class="login_count_a">
                     <div id="all">
@@ -124,10 +124,10 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     .key {font-size: 14px;float:right;text-decoration: underline;margin-right: 10%;margin-top: 20px;color: #40E4E5;}
-    .text01 {font-size: 36px;width: 100%;text-align: center;color: #333;margin: 16px 0 ;}
+    .text01 {font-size: 30px;width: 100%;text-align: center;color: #324163;margin: 16px 0 ;}
     .text02 {font-size: 16px;width: 100%;text-align: center;color: #999;margin-bottom: 16px;}
     .main {
-        background: url(../assets/beijing1.png) no-repeat;
+        background: url(../assets/background.jpg) no-repeat;
         width: 100%;
         height: 100%;
         overflow: hidden;

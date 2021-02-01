@@ -1,7 +1,7 @@
 <template>
     <div class="main">
-        <el-row>
-            <el-col :span="22" :offset="2">
+        <el-row style="margin-left: 160px;">
+            <el-col :span="24" class="splcs">
                 <el-row class="tables" style="margin-top: 20px;">
                     <el-table
                             border
@@ -474,7 +474,6 @@
         height: 178px;
         display: block;
     }
-    .el-input {width: 200px;}
     .el-form-item__label {font-size: 16px;color: #333;}
 </style>
 <style scoped>

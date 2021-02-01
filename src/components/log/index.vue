@@ -1,12 +1,12 @@
 <template>
     <div class="main">
-        <el-row>
-            <el-col :span="22" :offset="2">
+        <el-row style="margin-left: 160px;">
+            <el-col :span="22" >
                 <el-row>
                     <el-form ref="form" >
                         <el-col class="sort" :span="6">
                             <el-form-item label="操作类型：">
-                                <el-select  v-model="value" placeholder="请选择">
+                                <el-select  v-model="value" placeholder="请选择" @change="selects">
                                     <el-option
                                             v-for="item in options"
                                             :key="item.value"
@@ -16,29 +16,29 @@
                                 </el-select>
                             </el-form-item>
                         </el-col>
-                        <el-col class="sort" :span="8">
-                            <el-form-item label="时间范围：">
-                                <el-date-picker
-                                        v-model="value1"
-                                        type="datetimerange"
-                                        range-separator="至"
-                                        start-placeholder="开始日期"
-                                        end-placeholder="结束日期">
-                                </el-date-picker>
-                            </el-form-item>
-                        </el-col>
-                        <el-col class="sort" :span="4">
-                            <el-input
-                                    placeholder="请输入内容"
-                                    prefix-icon="el-icon-search"
-                                    v-model="input2">
-                            </el-input>
-                        </el-col>
-                        <el-col :span="4" class="rightS">
+                        <!--<el-col class="sort" :span="8">-->
+                            <!--<el-form-item label="时间范围：">-->
+                                <!--<el-date-picker-->
+                                        <!--v-model="value1"-->
+                                        <!--type="datetimerange"-->
+                                        <!--range-separator="至"-->
+                                        <!--start-placeholder="开始日期"-->
+                                        <!--end-placeholder="结束日期">-->
+                                <!--</el-date-picker>-->
+                            <!--</el-form-item>-->
+                        <!--</el-col>-->
+                        <!--<el-col class="sort" :span="4">-->
+                            <!--<el-input-->
+                                    <!--placeholder="请输入内容"-->
+                                    <!--prefix-icon="el-icon-search"-->
+                                    <!--v-model="input2">-->
+                            <!--</el-input>-->
+                        <!--</el-col>-->
+                        <el-col :span="8" class="rightS">
                             <div class="btns2">
-                                <el-button type="success" >查询</el-button>
-                                <el-button type="primary" @click="handleClick('add')">清空</el-button>
-                                <el-button type="danger">导出</el-button>
+                                <!--<el-button type="success" >查询</el-button>-->
+                                <!--<el-button type="primary" @click="handleClick('add')">清空</el-button>-->
+                                <!--<el-button type="danger">导出</el-button>-->
                             </div>
                         </el-col>
                     </el-form>
@@ -48,22 +48,29 @@
                             ref="multipleTable"
                             :data="tableData"
                             tooltip-effect="dark"
+                            :height="heighTable"
                             style="width: 100%"
                             @selection-change="handleSelectionChange">
                         <el-table-column type="selection" width="55"></el-table-column>
-                        <el-table-column  prop="date" label="日志时间"></el-table-column>
-                        <el-table-column prop="name" label="终端设备"></el-table-column>
-                        <el-table-column prop="address" label="操作类型"></el-table-column>
-                        <el-table-column prop="name" label="操作人员"></el-table-column>
-                        <el-table-column prop="name" label="IP地址"></el-table-column>
-                        <el-table-column prop="name" label="内容"></el-table-column>
+                        <el-table-column label="日志时间">
+                            <template slot-scope="tableData">{{tableData.row.createTime | dateFormat}}</template>
+                        </el-table-column>
+                        <el-table-column prop="os" label="终端设备"></el-table-column>
+                        <el-table-column prop="handle" label="操作类型"></el-table-column>
+                        <el-table-column prop="userName" label="操作人员"></el-table-column>
+                        <el-table-column prop="ip" label="IP地址"></el-table-column>
+                        <el-table-column prop="content" label="内容"></el-table-column>
                     </el-table>
                 </el-row>
                 <el-row style="margin-top: 48px;text-align: right" class="pagination">
                     <el-pagination
                             background
+                            @current-change="currentchange"
+                            :current-page="pageData.pageNum"
+                            :page-size = "pageData.pageSize"
+                            :total = "pageData.total"
                             layout="prev, pager, next"
-                            :total="1000">
+                    >
                     </el-pagination>
                 </el-row>
             </el-col>
@@ -81,22 +88,17 @@
                 input2:'',
                 value1:'',
                 options: [
-                    {
-                        value: '选项1',
-                        label: '黄金糕'
-                    }, {
-                        value: '选项2',
-                        label: '双皮奶'
-                    }, {
-                        value: '选项3',
-                        label: '蚵仔煎'
-                    }, {
-                        value: '选项4',
-                        label: '龙须面'
-                    }, {
-                        value: '选项5',
-                        label: '北京烤鸭'
-                    }
+                    {value: '', label: '全部'},
+                    {value: '资产管理', label: '资产管理'},
+                    {value: '合同管理', label: '合同管理'},
+                    {value: '资产提交', label: '资产提交'},
+                    {value: '资产审批', label: '资产审批'},
+                    {value: '账号管理', label: '账号管理'},
+                    {value: '权限管理', label: '权限管理'},
+                    {value: '角色管理', label: '角色管理'},
+                    {value: '审批流程', label: '审批流程'},
+                    {value: '巡检上报', label: '巡检上报'},
+                    {value: '巡检审批', label: '巡检审批'},
                 ],
                 value: '',
                 value22: '',
@@ -138,13 +140,52 @@
                 title:'',
                 type:'',
                 imageUrl: '',
-                input:''
+                pageSize:'',
+                pageNum:1,
+                pageData:'',
+                heighTable:300
             }
         },
         components:{
             DateChart,AssetsInfor
         },
         methods:{
+            selects(val){
+                this.findList(1,val)
+            },
+            currentchange(data){
+                this.findList(data)
+            },
+            findList(pageNum,str,startTime,endTime){
+                var that = this;
+                var data = {
+                    "pageNum": pageNum,
+                    "pageSize": 10,
+                    "handle":str,
+                    "startTime":startTime,
+                    "endTime":endTime,
+                }
+                this.$axios({
+                    url: this.getAjax + '/admin/logHandleAdmin/findLogList',
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    data:data
+                }).then(res => {
+                    if(res.data.code == '1001'){
+                        this.tableData = res.data.data.list
+                        this.pageData = '';
+                        this.pageData = res.data.data
+                    }else{
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'warning'
+                        });
+                    }
+                })
+            },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
             },
@@ -185,7 +226,23 @@
                 return isJPG && isLt2M;
             }
         },
+        mounted(){
+            this.findList(1,'','','');
+        },
         created:function () {
+            this.$nextTick(()=>{
+                var _h = window.screen.height;
+                console.log(_h)
+                if(_h == '768'){
+                    this.heighTable = _h*0.3
+                }else if(_h == '900'){
+                    this.heighTable = _h*0.4
+                }
+                else{
+                    this.heighTable = _h*0.5
+                }
+
+            })
         }
     }
 </script>
@@ -214,7 +271,6 @@
         height: 178px;
         display: block;
     }
-    .el-input {width: 200px;}
     .el-form-item__label {font-size: 16px;color: #333;}
 </style>
 <style scoped>

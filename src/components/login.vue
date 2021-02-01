@@ -1,30 +1,58 @@
 <template>
     <div class="main">
-        <div class="body_count">
-            <div class="login_count">
-                <div class="text01">国有资产管理系统</div>
-                <div class="text02">湖州南浔旅游投资发展集团有限公司</div>
-                <div class="login_count_a">
-                    <div id="all">
-                        <ul id="card">
-                            <li class="active">
+        <div class="middle-box text-center loginscreen animated fadeInDown">
+            <div class="logo-box">
+                <img src="@/assets/logo-zc.png" class="login-logo">
+                <!--        <div class="blur-box"></div>-->
+            </div>
+            <div class="input-box">
+                <h3>国有资产管理系统OA系统</h3>
+                <div id="all">
+                    <ul id="card">
+                        <li class="active">
 
-                                <div class="login_bot_count">
-                                    <img src="@/assets/tubiao-07.png" alt="">
-                                    <input type="text"  placeholder="请输入用户名" v-model="account">
-                                </div>
-                                <div class="login_bot_count">
-                                    <img src="@/assets/tubiao-06.png" alt="">
-                                    <input type="password"  placeholder="请输入密码"  v-model="password">
-                                </div>
-                                <button class="login_button" @click="index">登录</button>
-                            </li>
-                        </ul>
-                    </div>
+                            <div class="login_bot_count">
+                                <img src="@/assets/tubiao-07.png" alt="">
+                                <input type="text"  placeholder="请输入用户名" v-model="account">
+                            </div>
+                            <div class="login_bot_count">
+                                <img src="@/assets/tubiao-06.png" alt="">
+                                <input type="password"  placeholder="请输入密码"  v-model="password">
+                            </div>
+                            <button class="login_button" @click="index">登录</button>
+                        </li>
+                    </ul>
                 </div>
                 <router-link to="/keyword" class="key">修改密码</router-link>
             </div>
         </div>
+        <div class="copyright">版权所有：湖州南浔旅游投资发展集团有限公司</div>
+        <p class="technical-support">技术支持:浙江中测新图地理信息技术有限公司</p>
+        <!--<div class="body_count">-->
+            <!--<div class="login_count">-->
+                <!--<div class="text01">国有资产管理系统</div>-->
+                <!--<div class="text02">湖州南浔旅游投资发展集团有限公司</div>-->
+                <!--<div class="login_count_a">-->
+                    <!--<div id="all">-->
+                        <!--<ul id="card">-->
+                            <!--<li class="active">-->
+
+                                <!--<div class="login_bot_count">-->
+                                    <!--<img src="@/assets/tubiao-07.png" alt="">-->
+                                    <!--<input type="text"  placeholder="请输入用户名" v-model="account">-->
+                                <!--</div>-->
+                                <!--<div class="login_bot_count">-->
+                                    <!--<img src="@/assets/tubiao-06.png" alt="">-->
+                                    <!--<input type="password"  placeholder="请输入密码"  v-model="password">-->
+                                <!--</div>-->
+                                <!--<button class="login_button" @click="index">登录</button>-->
+                            <!--</li>-->
+                        <!--</ul>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<router-link to="/keyword" class="key">修改密码</router-link>-->
+            <!--</div>-->
+        <!--</div>-->
     </div>
 </template>
 
@@ -97,11 +125,77 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .technical-support {
+        font-size: 16px;
+        color: #fff;
+        position: absolute;
+        bottom: 20px;
+        right: 40px;
+    }
+    .copyright {
+        position: absolute;
+        top: calc(50vh + 240px);
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 20px;
+        color: #fff;
+    }
+    .input-box {
+        padding: 0 54px;
+        background: #fff;
+    }
+    .input-box > h3 {
+        font-size: 20px;
+        color: #324163;
+        padding: 30px 0;
+        margin: 10px 0;
+        text-align: left;
+    }
+    .loginscreen {
+        width: 1000px !important;
+        height: 360px;
+        max-width: none;
+        display: flex;
+        padding: 0;
+        position: relative;
+        top: calc(50vh - 180px);
+        box-shadow: 0 4px 30px rgba(34,55,79,.6);
+        border-radius: 10px;
+        overflow: hidden;
+        margin: auto;
+    }
+    .loginscreen>div {width: 50%;}
+    .logo-box {
+        background: url(../assets/background.jpg) no-repeat;
+        background-size: 100% 100%;
+        display: -webkit-box;
+        -webkit-box-align: center;
+        -webkit-box-pack: center;
+        position: relative;
+    }
+    .logo-box::after {
+        content: "";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: inherit;
+        filter: blur(4px);
+        -webkit-filter: blur(4px);
+        z-index: 2;
+    }
+    .logo-box>img {
+        width: 160px;
+        height: 107px;
+        position: relative;
+        z-index: 99
+    }
     .key {font-size: 14px;float:right;text-decoration: underline;margin-right: 10%;margin-top: 20px;color: #40E4E5;}
     .text01 {font-size: 36px;width: 100%;text-align: center;color: #333;margin: 16px 0 ;}
     .text02 {font-size: 16px;width: 100%;text-align: center;color: #999;margin-bottom: 16px;}
  .main {
-     background: url(../assets/beijing1.png) no-repeat;
+     background: url(../assets/background.jpg) no-repeat;
      width: 100%;
      height: 100%;
      overflow: hidden;
@@ -146,7 +240,7 @@ export default {
      width: 100%
  }
  #all {
-     width: 80%;
+     width: 100%;
      margin: 0 auto 0
  }
  #option li {
@@ -189,7 +283,7 @@ export default {
  .login_bot_count > input {
      height: 35px;
      border: 0;
-     width: 80%
+     width: 92%
  }
  .login_bot_count > input::-webkit-input-placeholder {
      color: #dedede

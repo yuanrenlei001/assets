@@ -1,9 +1,10 @@
 <template>
     <div class="main">
-        <el-row>
-            <el-form ref="form" >
-                <el-col class="sort" :span="4">
-                    <el-form-item label="房屋性质：">
+        <el-row  style="margin-bottom: 11px;">
+            <el-form class="top" ref="form" :lg="24">
+                <el-col  :lg="5">
+                    <el-col :lg="8"><div class="topLeft">房屋性质：</div></el-col>
+                    <el-col :lg="16">
                         <el-select  v-model="houseNatureval" placeholder="请选择" @change="houseNaturevals">
                             <el-option
                                     v-for="item in houseNature"
@@ -12,23 +13,89 @@
                                     :value="item.label">
                             </el-option>
                         </el-select>
-                    </el-form-item>
+                    </el-col>
+                    <!--<el-form-item label="房屋性质：">-->
+                        <!--<el-select  v-model="houseNatureval" placeholder="请选择" @change="houseNaturevals">-->
+                            <!--<el-option-->
+                                    <!--v-for="item in houseNature"-->
+                                    <!--:key="item.label"-->
+                                    <!--:label="item.label"-->
+                                    <!--:value="item.label">-->
+                            <!--</el-option>-->
+                        <!--</el-select>-->
+                    <!--</el-form-item>-->
                 </el-col>
-                <el-col class="sort" :span="4">
-                    <el-form-item label="产权用途：">
-                        <el-select  v-model="value" placeholder="请选择">
+                <el-col  :lg="5">
+                    <el-col :lg="8"><div class="topLeft">产权用途：</div></el-col>
+                    <el-col :lg="16">
+                        <el-select  v-model="assetUseval" placeholder="请选择" @change="assetUsevals">
                             <el-option
-                                    v-for="item in options"
+                                    v-for="item in assetUse"
                                     :key="item.value"
                                     :label="item.label"
-                                    :value="item.value">
+                                    :value="item.label">
                             </el-option>
                         </el-select>
-                    </el-form-item>
+                    </el-col>
+                    <!--<el-form-item label="产权用途：">-->
+                        <!--<el-select  v-model="assetUseval" placeholder="请选择" @change="assetUsevals">-->
+                            <!--<el-option-->
+                                    <!--v-for="item in assetUse"-->
+                                    <!--:key="item.value"-->
+                                    <!--:label="item.label"-->
+                                    <!--:value="item.label">-->
+                            <!--</el-option>-->
+                        <!--</el-select>-->
+                    <!--</el-form-item>-->
                 </el-col>
-                <el-col :span="4" class="sort">
-                    <el-form-item label="土地用途：">
-                        <el-select  v-model="landNatureval" placeholder="请选择" style="margin-left: 9px;" @change="landNaturevals">
+                <el-col :lg="5">
+                    <el-col :lg="8"><div class="topLeft">土地用途：</div></el-col>
+                    <el-col :lg="16">
+                        <el-select  v-model="landUseval" placeholder="请选择" @change="landUsevals">
+                            <el-option
+                                    v-for="item in landUse"
+                                    :key="item.label"
+                                    :label="item.label"
+                                    :value="item.label">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <!--<el-form-item label="土地用途：">-->
+                        <!--<el-select  v-model="landUseval" placeholder="请选择" @change="landUsevals">-->
+                            <!--<el-option-->
+                                    <!--v-for="item in landUse"-->
+                                    <!--:key="item.label"-->
+                                    <!--:label="item.label"-->
+                                    <!--:value="item.label">-->
+                            <!--</el-option>-->
+                        <!--</el-select>-->
+                    <!--</el-form-item>-->
+                </el-col>
+                <el-col :lg="6">
+                    <el-col :lg="4" style="opacity: 0;">
+                        <div class="topLeft">土：</div>
+                    </el-col>
+                    <el-col :lg="20">
+                        <el-input placeholder="请输入资产编号或房屋坐落" v-model="input2" class="input-with-select">
+                            <el-button slot="append" icon="el-icon-search" @click="searchs"></el-button>
+                        </el-input>
+                    </el-col>
+                    <div class="btns">
+                        <el-button style="color: #fff;"  @click="historys">历史删除记录</el-button>
+                    </div>
+                    <!--</el-col>-->
+                    <!--<div class="btns">-->
+                        <!--<el-button style="color: #fff;" @click="historys">历史删除记录</el-button>-->
+                    <!--</div>-->
+                </el-col>
+            </el-form>
+        </el-row>
+        <el-row style="margin-bottom: 20px;">
+            <el-form class="top" ref="form" :lg="24">
+                <el-col :lg="5">
+                    <el-col :lg="8"><div class="topLeft">土地性质：</div></el-col>
+                    <el-col :lg="16">
+                        <el-select  v-model="landNatureval" placeholder="请选择" @change="landNaturevals">
                             <el-option
                                     v-for="item in landNature"
                                     :key="item.label"
@@ -36,34 +103,23 @@
                                     :value="item.label">
                             </el-option>
                         </el-select>
-                    </el-form-item>
+                    </el-col>
                 </el-col>
-                <el-col :span="9" class="rightS">
-                    <el-input placeholder="请输入资产编号或房屋坐落" v-model="input2" class="input-with-select" style="width: 400px;">
-                        <el-button slot="append" icon="el-icon-search" @click="searchs"></el-button>
-                    </el-input>
-                    <div class="btns">
-                        <el-button style="color: #fff;width: 180px;" @click="historys">历史删除记录</el-button>
-                    </div>
-                </el-col>
-            </el-form>
-        </el-row>
-        <el-row>
-            <el-form ref="form" >
-                <el-col class="sort" :span="4">
-                    <el-form-item label="土地性质：">
-                        <el-select  v-model="value" placeholder="请选择">
-                            <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col class="sort" :span="4">
-                    <el-form-item label="房屋现状：">
+                <!--<el-col class="sort" :span="4">-->
+                    <!--<el-form-item label="土地性质：">-->
+                        <!--<el-select  v-model="landNatureval" placeholder="请选择" @change="landNaturevals">-->
+                            <!--<el-option-->
+                                    <!--v-for="item in landNature"-->
+                                    <!--:key="item.label"-->
+                                    <!--:label="item.label"-->
+                                    <!--:value="item.label">-->
+                            <!--</el-option>-->
+                        <!--</el-select>-->
+                    <!--</el-form-item>-->
+                <!--</el-col>-->
+                <el-col :lg="5">
+                    <el-col :lg="8"><div class="topLeft">房屋现状：</div></el-col>
+                    <el-col :lg="16">
                         <el-select  v-model="houseNowval" placeholder="请选择" @change="houseNowvals">
                             <el-option
                                     v-for="item in houseNows"
@@ -72,11 +128,24 @@
                                     :value="item.label">
                             </el-option>
                         </el-select>
-                    </el-form-item>
+                    </el-col>
                 </el-col>
-                <el-col class="sort" :span="4">
-                    <el-form-item label="标签：" style="margin-left: 33px;">
-                        <el-select  v-model="value" placeholder="请选择" style="margin-left: 7px;">
+                <!--<el-col class="sort" :span="4">-->
+                    <!--<el-form-item label="房屋现状：">-->
+                        <!--<el-select  v-model="houseNowval" placeholder="请选择" @change="houseNowvals">-->
+                            <!--<el-option-->
+                                    <!--v-for="item in houseNows"-->
+                                    <!--:key="item.value"-->
+                                    <!--:label="item.label"-->
+                                    <!--:value="item.label">-->
+                            <!--</el-option>-->
+                        <!--</el-select>-->
+                    <!--</el-form-item>-->
+                <!--</el-col>-->
+                <el-col :lg="5">
+                    <el-col :lg="8"><div class="topLeft">标签：</div></el-col>
+                    <el-col :lg="16">
+                        <el-select  v-model="value" placeholder="请选择">
                             <el-option
                                     v-for="item in options"
                                     :key="item.value"
@@ -84,23 +153,49 @@
                                     :value="item.value">
                             </el-option>
                         </el-select>
-                    </el-form-item>
+                    </el-col>
                 </el-col>
-                <el-col :span="5" class="rightS" style="margin-left: 300px;">
+                <el-col :lg="8">
                     <div class="btns2">
                         <el-button type="primary" @click="handleClickAdd">新增</el-button>
                         <el-button type="warning" @click="updateBatchs">批量修改</el-button>
                         <el-button type="success" @click="chars">统计</el-button>
                         <el-button type="danger" @click="findExportTitles">导出</el-button>
                     </div>
+                    <!--<el-col :lg="6"><el-button type="primary" @click="handleClickAdd">新增</el-button></el-col>-->
+                    <!--<el-col :lg="6"><el-button type="warning" @click="updateBatchs">批量修改</el-button></el-col>-->
+                    <!--<el-col :lg="6"><el-button type="success" @click="chars">统计</el-button></el-col>-->
+                    <!--<el-col :lg="6"><el-button type="danger" @click="findExportTitles">导出</el-button></el-col>-->
                 </el-col>
+                <!--<el-col class="sort bqSort" :span="4" >-->
+                    <!--<el-form-item label="标签：">-->
+                        <!--<el-select  v-model="value" placeholder="请选择">-->
+                            <!--<el-option-->
+                                    <!--v-for="item in options"-->
+                                    <!--:key="item.value"-->
+                                    <!--:label="item.label"-->
+                                    <!--:value="item.value">-->
+                            <!--</el-option>-->
+                        <!--</el-select>-->
+                    <!--</el-form-item>-->
+                <!--</el-col>-->
+                <!--<el-col :lg="5">-->
+                    <!--<div class="btns2">-->
+                        <!--<el-button type="primary" @click="handleClickAdd">新增</el-button>-->
+                        <!--<el-button type="warning" @click="updateBatchs">批量修改</el-button>-->
+                        <!--<el-button type="success" @click="chars">统计</el-button>-->
+                        <!--<el-button type="danger" @click="findExportTitles">导出</el-button>-->
+                    <!--</div>-->
+                <!--</el-col>-->
             </el-form>
         </el-row>
         <el-row class="tables" >
             <el-table
                     ref="multipleTable"
                     :data="tableData"
+                    :height="heighTable"
                     tooltip-effect="dark"
+                    :fit="true"
                     style="width: 100%"
                     @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55"></el-table-column>
@@ -111,9 +206,9 @@
                 <el-table-column prop="houseNature" label="房屋性质"></el-table-column>
                 <el-table-column prop="landUse" label="土地用途"></el-table-column>
                 <el-table-column prop="landNature" label="土地性质"></el-table-column>
-                <el-table-column prop="realHouse" label="不动产证号"></el-table-column>
+                <el-table-column prop="realEstate" width="100"  label="不动产证号"></el-table-column>
                 <el-table-column prop="houseNow" label="房屋现状"></el-table-column>
-                <el-table-column prop="address7" label="历史租凭情况">
+                <el-table-column prop="address7"  width="150"  label="历史租凭情况">
                     <template slot-scope="tableData">
                         <el-button @click="historyList(tableData.$index,tableData.row)" type="text" size="small">详情</el-button>
                     </template>
@@ -160,10 +255,12 @@
         <assets-kan :msg="detailData"  :AssetsKanVisible="AssetsKanVisible"  @changeShow="showAssetsKan" ref="AssetsKanRef"></assets-kan>
         <!--资产新增-->
         <el-dialog
+                class="abow_dialog"
+                id="zcxz"
                 title="资产新增"
                 :visible.sync="NewAdd"
                 v-if="NewAdd"
-                width="550px">
+                width="600px">
             <div class="count">
                 <el-form ref="form" >
                     <el-row>
@@ -191,13 +288,15 @@
                                 <!--<el-input v-model="newAddinput" placeholder="" style="width: 300px;" ></el-input>-->
                                 <!--<el-button type="primary" @click="handleClickss()" style="margin-left: 20px;">填写</el-button>-->
                             <!--</div>-->
-                            <div style="margin-bottom: 12px;" v-if="books.length == 0">
-                                <el-input disabled v-model="input" placeholder="" style="width: 300px;" ></el-input>
-                                <el-button type="primary" @click="handleClickss" style="margin-left: 20px;">填写</el-button>
-                            </div>
-                            <div v-for='(item,index) in books' :id="'myid'+index" v-model="myValue[index]" style="margin-bottom: 12px;" v-else>
+                            <!--<div style="margin-bottom: 12px;" v-if="books.length == 0">-->
+                                <!--<el-input disabled v-model="input" placeholder="" style="width: 300px;" ></el-input>-->
+                                <!--<el-button type="primary" @click="handleClickss" style="margin-left: 20px;">填写</el-button>-->
+                                <!--<el-button type="primary" @click="handleClickss" style="margin-left: 20px;">清空</el-button>-->
+                            <!--</div>-->
+                            <div v-for='(item,index) in books' :id="'myid'+index" v-model="myValue[index]" style="margin-bottom: 12px;">
                                 <el-input disabled v-model="item.assetCode" placeholder="" style="width: 300px;" ></el-input>
-                                <el-button type="primary" @click="handleClickss" style="margin-left: 20px;">填写</el-button>
+                                <el-button type="primary" @click="handleClickss(index,item)" style="margin-left: 20px;">填写</el-button>
+                                <el-button type="primary" @click="del(index)" style="margin-left: 20px;">删除</el-button>
                             </div>
 
                         </el-col>
@@ -347,7 +446,7 @@
                 title="批量修改"
                 :visible.sync="updateBatch"
                 v-if="updateBatch"
-                class="counts"
+                class="counts plcounts"
                 width="700px">
             <div>
                 <el-row>
@@ -471,9 +570,13 @@
 
         <!--数据可视化弹窗-->
         <el-dialog
+                class="abow_dialog"
+                id="tj"
+                title="资产管理 > 图形统计"
+                @close="handleClose"
                 :visible.sync="dialogVisible"
                 v-if="dialogVisible"
-                width="80%">
+                width="1000px">
             <date-chart @childEvent="parentMethod" ref="charsRef"></date-chart>
         </el-dialog>
 
@@ -561,19 +664,20 @@ export default {
   name: 'login',
   data () {
     return {
+        heighTable:'300',
         houseNature:[
-            {'label':'办公'},{'label':'参主'},{'label':'仓储'},{'label':'工业厂房'},{'label':'公房'},
+            {'label':'全部'},{'label':'办公'},{'label':'参主'},{'label':'仓储'},{'label':'工业厂房'},{'label':'公房'},
             {'label':'集体'},{'label':'其他'},{'label':'全民'},{'label':'商业'},{'label':'私房'},
             {'label':'未登记认定'},{'label':'住宅'},{'label':'住宅/仓储'},{'label':'住宅/工业厂房'}
             ],
         houseNatureval:'',
         landNature:[
-            {'label':'仓储出让'},{'label':'仓储划拨'},{'label':'工业出让'},{'label':'工业划拨'},{'label':'商业出让'},
+            {'label':'全部'},{'label':'仓储出让'},{'label':'仓储划拨'},{'label':'工业出让'},{'label':'工业划拨'},{'label':'商业出让'},
             {'label':'商业划拨'},{'label':'住宅出让'},{'label':'住宅划拨'},{'label':'综合划拨'},
         ],
         landNatureval:'',
         houseNows:[
-            {'label':'1.73'},{'label':'2.12'},{'label':'2.16'},{'label':'2.28'},{'label':'2.63'},
+            {'label':'全部'},{'label':'1.73'},{'label':'2.12'},{'label':'2.16'},{'label':'2.28'},{'label':'2.63'},
             {'label':'2.64'},{'label':'2.73'},{'label':'2.75'},{'label':'2.85'},{'label':'2.86'},
             {'label':'2.97'},{'label':'2.98'},{'label':'3'},{'label':'3.01'},{'label':'3.17'},
             {'label':'3.41'},{'label':'3.48'},{'label':'3.69'},{'label':'3.7'},{'label':'3.72'},
@@ -625,6 +729,14 @@ export default {
             {'label':'占用'},{'label':'真味斋'},{'label':'众里寻他'},{'label':'自用'},{'label':'空白'},
         ],
         houseNowval:'',
+        assetUse:[
+            {'label':'全部'},{'label':'公共设施'},{'label':'商业'},{'label':'住宅'}
+        ],
+        assetUseval:'',
+        landUse:[
+            {'label':'全部'},{'label':'仓储用途'},{'label':'城镇住宅用地'},{'label':'城镇住宅用地/住宅'},{'label':'公共设施用地'},{'label':'批发零售用地/商业'}
+        ],
+        landUseval:'',
         sysAuthAdmin:sessionStorage.getItem('authStr'),
         checkAll: false,
         checkedCities: [],
@@ -672,7 +784,7 @@ export default {
         token:'',
         approvalFindList:[{openRole:{'user':''}},{checkRole:{'user':''}},{noticeRole:{'user':''}}],
         zcAdd:'',
-        books:[],
+        books:[{'id':''}],
         delId:'',
         delinput:'',
         updateBatch:false,
@@ -709,6 +821,20 @@ export default {
         DateChart,AssetsInfor,NewInfor,NewAdd,AssetsKan,AddOrUpdate,history,AssetsKanwy
     },
     methods:{
+        labelHead(h,{column,index}){
+            let l = column.label.length
+            let f = 16 //每个字大小，其实是每个字的比例值，大概会比字体大小差不多大一点，
+            column.minWidth = f*l //字大小乘个数即长度 ,注意不要加px像素，这里minWidth只是一个比例值，不是真正的长度
+            //然后将列标题放在一个div块中，注意块的宽度一定要100%，否则表格显示不完全
+            return h('div',{class:'table-head',style:{width:'100%'}},[column.label])
+
+        },
+        del(e){
+
+            var arr = this.books.splice(e, 1);
+
+            console.log(arr);
+        },
       chars(){
           this.dialogVisible =true;
           sessionStorage.setItem('total',this.total)
@@ -719,19 +845,53 @@ export default {
         },
         houseNaturevals(val){
             this.houseNatureval = val;
-            this.search['houseNature'] = val
+            if(val == '全部'){
+                this.search['houseNature'] = ''
+            }else{
+                this.search['houseNature'] = val
+            }
+
             this.list(this.search)
         },
         landNaturevals(val){
             this.landNatureval = val;
-            this.search['landNature'] = val
+            if(val == '全部'){
+                this.search['landNature'] = ''
+            }else{
+                this.search['landNature'] = val
+            }
             this.list(this.search)
             },
         houseNowvals(val){
             this.houseNowval = val;
-            this.search['houseNow'] = val
+            if(val == '全部'){
+                this.search['houseNow'] = ''
+            }else{
+                this.search['houseNow'] = val
+            }
             this.list(this.search)
         },
+        assetUsevals(val){
+            this.assetUseval = val;
+            if(val == '全部'){
+                this.search['assetUse'] = ''
+            }else{
+                this.search['assetUse'] = val
+            }
+
+            this.list(this.search)
+        },
+        landUsevals(val){
+            this.landUseval = val;
+            if(val == '全部'){
+                this.search['landUse'] = ''
+            }else{
+                this.search['landUse'] = val
+            }
+
+            this.list(this.search)
+        },
+
       // 获取导出列表
         findExportTitles(){
             this.findExportTitle = true
@@ -776,13 +936,27 @@ export default {
                 obj['key']=str[i].title
                 arr.push(obj)
             }
-            // var data = str
+            var list = this.multipleSelection;
+            var listArr = []
+            for(var j=0;j<list.length;j++){
+                listArr.push(list[j].id)
+            }
+            console.log(list)
+            var data = str
             var that = this;
             var formData = new FormData();
-            console.log(JSON.stringify(arr))
+            console.log(JSON.stringify(listArr))
             formData.append('exportTitle',JSON.stringify(arr))
+            formData.append('ids',JSON.stringify(listArr))
+            formData.append('houseNature',this.houseNatureval=='全部'?'':this.houseNatureval)
+            formData.append('assetUse',this.assetUseval=='全部'?'':this.assetUseval)
+            formData.append('landUse',this.landUseval=='全部'?'':this.landUseval)
+            formData.append('landNature',this.landNatureval=='全部'?'':this.landNatureval)
+            formData.append('houseNow',this.houseNowval=='全部'?'':this.houseNowval)
             this.formDatas = formData
-
+            for (var value of formData.values()) {
+                console.log(value);
+            }
         },
         daochu(){
             var url =this.getAjax + '/admin/meansAdmin/export';
@@ -797,7 +971,8 @@ export default {
                 responseType: 'blob',
                 data:this.formDatas
             }).then(res => {
-                this.download(res.data)
+                this.download(res.data);
+                this.findExportTitle = false;
             })
         },
         download(data){
@@ -984,14 +1159,15 @@ export default {
             }
         })
         },
-        newInforAdd(data){
+        newInforAdd(data,index){
             var _arr = this.books;
-            if(_arr.length == 0){
-                _arr.push(data)
-            }else{
-                var len = _arr.length-1
-                _arr[len] = data
-            }
+            console.log(index)
+            // if(_arr.length == 0){
+            //     _arr.push(data)
+            // }else{
+            //     var len = _arr.length-1
+                _arr[index] = data
+            // }
             console.log(_arr)
 
         },
@@ -1165,9 +1341,9 @@ export default {
             }
         },
         // 资产新增
-        handleClickss(){
+        handleClickss(index,item){
             this.dialogVisibleAdd = true
-
+            this.$refs.dialogVisibleAddRef.detail(index,item)
         },
         showdialogVisibleAdd(data){
             if(data === 'false'){
@@ -1206,14 +1382,21 @@ export default {
                 'books':this.books
             }
             var that = this;
+            var falg = true;
             console.log(data)
-            if(data.books.length>0){
+            for(var i=0;i<this.books.length;i++){
+                if(this.books[i].id == ''){
+                    falg = false
+                }
+            }
+
+            if(data.books.length>0 && falg){
                 this.$confirm('确认提交本次资产新增？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$alert('修改已提交，等待管理员审核', '提示', {
+                    this.$alert('已提交，等待管理员审核', '提示', {
                         callback: action => {
                             this.NewAdd = false;
                         }
@@ -1228,7 +1411,7 @@ export default {
                         data:data
                     }).then(res => {
                         if(res.data.code == '1001'){
-                            that.list();
+                            that.books = [{'id':''}];
                     }else{
                         this.$message({
                             message: res.data.msg,
@@ -1242,7 +1425,8 @@ export default {
                         message: '已取消删除'
                     });
                 });
-            }else{
+            }
+            else{
                 this.$message({
                     message: '请填写台账信息！',
                     type: 'warning'
@@ -1312,20 +1496,37 @@ export default {
         },
     },
     created:function () {
+        this.$nextTick(()=>{
+
+            var _h = window.screen.height;
+            console.log(_h)
+            // var demo = document.getElementsByClassName('newDetail');
+            if(_h == '768'){
+                this.heighTable = _h*0.3
+            }else if(_h == '900'){
+                this.heighTable = _h*0.45
+            }
+            else{
+                this.heighTable = _h*0.5
+            }
+
+        })
     },
     mounted(){
+        var that = this;
       console.log(this.search)
         this.list(this.search);
-        this.books = []
+        this.books = [{'id':''}]
         // this.findList();
     }
 }
 </script>
 <style>
-    .el-input {width: 200px;}
-    .el-form-item__label {font-size: 16px;color: #333;}
+    /*.el-input {width: 200px;}*/
+    /*.el-form-item__label {font-size: 16px;color: #333;}*/
     .el-dialog {background-color: #f2f2f2;}
     .el-step.is-horizontal .el-step__line {top:20px;}
+    .aaaaa {z-index: 99999!important;}
 </style>
 <style scoped>
     .filess>>>.el-upload-list{
@@ -1335,7 +1536,7 @@ export default {
     }
     .counts>>>.el-form-item__label {width: 30%;font-size: 14px;line-height: 40px;}
     .count>>>.el-form-item {margin-bottom: 5px;}
-    .count>>>.el-input {width: 400px;}
+    /*.count>>>.el-input {width: 400px;}*/
     .count>>>.el-upload--picture-card {width: 40px;height:40px;position: absolute;top:0;right:220px;}
     .count>>>.el-upload--picture-card i {width: 40px;height:40px;position: absolute;top:6px;left:0;}
     .count .phone>>>.el-upload--picture-card {width: 140px;height:140px;position: relative;right: inherit;}
@@ -1369,7 +1570,7 @@ export default {
     .files>>>.el-upload-list {width: 30%;margin-left: 33%;}
     .coordinate>>>.el-form-item__label {width: 25%;}
     .main {padding: 20px 43px;}
-    .sort {margin-right: 28px;}
+    /*.sort {margin-right: 28px;}*/
     .btns>>>.el-button{background-color:rgba(122, 149, 250, 0.74);width: 58px;height:58px;padding: 0;text-align: center;line-height: 58px;
         font-size: 18px;
     }
@@ -1378,8 +1579,8 @@ export default {
     .rightS>>>.el-input {width: 250px;}
     .main>>>.el-input--mini .el-input__inner {height:48px;line-height: 48px;}
     .main>>>.el-pagination__editor.el-input .el-input__inner {height:48px;line-height: 48px;}
-    .btns {position: absolute;top:-10px;right:-68px;}
-    .btns2 {position: absolute;top:0;right:-68px;}
+    .btns {position: absolute;top:0;right:0;}
+    .btns2 {position: absolute;top:0;right:0;}
     .tables>>>th{padding: 0;height:80px;background: #eee;font-size: 16px;color: #333;text-align: center;}
     .tables>>>.el-table {border: 1px dotted #eee;}
     .tables>>>.el-table__row td{padding: 0;height:50px;text-align: center;color: #333;}
@@ -1387,7 +1588,7 @@ export default {
     .pagination>>>.el-pagination.is-background .el-pager li:not(.disabled).active {background-color:rgba(75,116,255,.62)}
     .sp {width: 100%;position: relative;}
     .sp div {display: inline-block;text-align: center;position: relative;z-index: 2;font-size: 12px;margin-right: 5px;}
-    .sp img {width: 40px;height:40px;background-color: #fff;}
+    .sp img {width: 40px;height:40px;background-color: #fff;border-radius: 50%;}
     .sp p {width: 100%;text-align: center;line-height: normal;margin-top: -10px;font-size: 12px;color: #333;}
     .sp .hr {display: block;height:1px;width: 60%;z-index: 1;position: absolute;top:22px;left:110px;border-bottom: 3px dotted #333;}
     .sp .add {position: absolute;top:0;left:50%;font-size: 40px;color: #333;font-weight: bold;}

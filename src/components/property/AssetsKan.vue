@@ -1,128 +1,212 @@
 <template id="type">
-    <div class="count">
+    <div class="count kan" id="WY">
         <el-dialog
-                title="新增合同"
+                class="abow_dialog"
+                title="物业管理 > 物业合同详情"
                 :visible.sync="showDialog"
-                width="700px"
+                width="1000px"
                 @close="handleClose">
             <el-row>
-                <el-form ref="form" >
-                    <el-col v-if="str == 'zy'" :span="24" style="position: relative;">
-                        <el-form-item label="资产编号：" v-for='(item,index) in assetCode'>
-                            <el-input v-model="item.value" placeholder="请输入内容" disabled></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label="资产坐落：">
-                            <el-input v-model="houseAddr" disabled placeholder="请输入内容" ></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label="合同编号：">
-                            <el-input v-model="pactCode" disabled placeholder="请输入内容" ></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label="承租方：">
-                            <el-input v-model="tenant" disabled placeholder="请输入内容" ></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label="联系方式：">
-                            <el-input v-model="contact" disabled placeholder="请输入内容" ></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label="租金（元）：">
-                            <el-input v-model="rentAmount" disabled placeholder="请输入内容" ></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label="物业费（元）：">
-                            <el-input v-model="fee" disabled placeholder="请输入内容" ></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label="租约日期：">
-                            <el-date-picker
-                                    v-model="value1"
-                                    disabled
-                                    type="daterange"
-                                    value-format="yyyy-MM-dd"
-                                    @change="getTime"
-                                    range-separator="至"
-                                    start-placeholder="开始日期"
-                                    end-placeholder="结束日期">
-                            </el-date-picker>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label="店名：">
-                            <el-input v-model="tradeName" disabled placeholder="请输入内容" :disabled="disabled"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col  :span="24">
-                        <el-form-item label="业态：" >
-                            <el-select  v-model="formatsVal" disabled placeholder="请选择" :disabled="disabled" @change="formatsList">
-                                <el-option
-                                        v-for="item in formats"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.label">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label="保证金：">
-                            <el-input v-model="margin" disabled placeholder="请输入内容" :disabled="disabled"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label="备注：">
-                            <el-input v-model="remark" disabled placeholder="请输入内容" :disabled="disabled"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label="附件：">
-                                <img width="100%" style="width: 146px;height:146px;" :src="attach" alt="">
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <!--<el-form-item label="付租方式：">共计2笔，总金额20000元</el-form-item>-->
-                        <el-form-item label="付租方式："></el-form-item>
-                    </el-col>
-                    <el-col :span="24" class="pay" v-for='(item,index) in books2'>
-                        <el-col :span="10" style="position: relative;margin-bottom: 20px;">
-                            <div style="display: none;">{{item.num = index+1}}</div>
-                            <div style="position: absolute;top:15px;left:0;">第 {{index+1}} 笔</div>
-                            <el-date-picker style="margin-left: 60px;"
-                                            v-model="item.dateStr"
-                                            type="date"
+                <el-form ref="form" class="newKan wyKan">
+                    <el-col class="wyKanHeaght" :span="24" style="padding-top: 26px;">
+                        <el-col :lg="12">
+                            <el-col v-if="str == 'zy'" :lg="22" style="position: relative;">
+                                <div v-for='(item,index) in assetCode'>
+                                    <el-col :lg="11"><div class="textLeft">资产编号：</div></el-col>
+                                    <el-col :lg="13"><el-input v-model="item.value" placeholder="请输入内容" disabled></el-input></el-col>
+                                </div>
+
+                                <!--<el-form-item label="资产编号：" v-for='(item,index) in assetCode'>-->
+                                    <!--<el-input v-model="item.value" placeholder="请输入内容" disabled></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">资产坐落：</div></el-col>
+                                <el-col :lg="13"><el-input v-model="houseAddr" disabled placeholder="请输入内容" ></el-input></el-col>
+                                <!--<el-form-item label="资产坐落：">-->
+                                    <!--<el-input v-model="houseAddr" disabled placeholder="请输入内容" ></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">合同编号：</div></el-col>
+                                <el-col :lg="13"><el-input v-model="pactCode" disabled placeholder="请输入内容" ></el-input></el-col>
+                                <!--<el-form-item label="合同编号：">-->
+                                    <!--<el-input v-model="pactCode" disabled placeholder="请输入内容" ></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">承租方：</div></el-col>
+                                <el-col :lg="13"><el-input v-model="tenant" disabled placeholder="请输入内容" ></el-input></el-col>
+                                <!--<el-form-item label="承租方：">-->
+                                    <!--<el-input v-model="tenant" disabled placeholder="请输入内容" ></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">联系方式：</div></el-col>
+                                <el-col :lg="13"><el-input v-model="contact" disabled placeholder="请输入内容" ></el-input></el-col>
+                                <!--<el-form-item label="联系方式：">-->
+                                    <!--<el-input v-model="contact" disabled placeholder="请输入内容" ></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">租金（元）：</div></el-col>
+                                <el-col :lg="13"><el-input v-model="rentAmount" disabled placeholder="请输入内容" ></el-input></el-col>
+                                <!--<el-form-item label="租金（元）：">-->
+                                    <!--<el-input v-model="rentAmount" disabled placeholder="请输入内容" ></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">物业费（元）：</div></el-col>
+                                <el-col :lg="13"><el-input v-model="fee" disabled placeholder="请输入内容" ></el-input></el-col>
+                                <!--<el-form-item label="物业费（元）：">-->
+                                    <!--<el-input v-model="fee" disabled placeholder="请输入内容" ></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                        </el-col>
+                        <el-col :lg="12">
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">租约日期：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-date-picker
+                                            v-model="value1"
                                             disabled
-                                            @change="timeChange(item.dateStr)"
+                                            type="daterange"
                                             value-format="yyyy-MM-dd"
-                                            placeholder="选择日期">
-                            </el-date-picker>
+                                            @change="getTime"
+                                            range-separator="至"
+                                            start-placeholder="开始日期"
+                                            end-placeholder="结束日期">
+                                    </el-date-picker>
+                                </el-col>
+                                <!--<el-form-item label="租约日期：">-->
+                                    <!--<el-date-picker-->
+                                            <!--v-model="value1"-->
+                                            <!--disabled-->
+                                            <!--type="daterange"-->
+                                            <!--value-format="yyyy-MM-dd"-->
+                                            <!--@change="getTime"-->
+                                            <!--range-separator="至"-->
+                                            <!--start-placeholder="开始日期"-->
+                                            <!--end-placeholder="结束日期">-->
+                                    <!--</el-date-picker>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">店名：</div></el-col>
+                                <el-col :lg="13"><el-input v-model="tradeName" disabled placeholder="请输入内容" :disabled="disabled"></el-input></el-col>
+                                <!--<el-form-item label="店名：">-->
+                                    <!--<el-input v-model="tradeName" disabled placeholder="请输入内容" :disabled="disabled"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">业态：</div></el-col>
+                                <el-col :lg="13"><el-input v-model="formatsVal" disabled placeholder="请输入内容" ></el-input></el-col>
+                                <!--<el-form-item label="业态：" >-->
+                                    <!--<el-select  v-model="formatsVal" disabled placeholder="请选择" :disabled="disabled" @change="formatsList">-->
+                                        <!--<el-option-->
+                                                <!--v-for="item in formats"-->
+                                                <!--:key="item.value"-->
+                                                <!--:label="item.label"-->
+                                                <!--:value="item.label">-->
+                                        <!--</el-option>-->
+                                    <!--</el-select>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">保证金：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="margin" disabled placeholder="请输入内容" :disabled="disabled"></el-input>
+                                </el-col>
+                                <!--<el-form-item label="保证金：">-->
+                                    <!--<el-input v-model="margin" disabled placeholder="请输入内容" :disabled="disabled"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">备注：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="remark" disabled placeholder="请输入内容" :disabled="disabled"></el-input>
+                                </el-col>
+                                <!--<el-form-item label="备注：">-->
+                                    <!--<el-input v-model="remark" disabled placeholder="请输入内容" :disabled="disabled"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">附件：</div></el-col>
+                                <el-col :lg="13">
+                                    <div v-for="item in handlePic" @click="file(item.url)" style="width: 50%;margin-left: 25%;cursor: pointer;line-height: 40px;background: #eee;margin-bottom: 5px;padding-left: 15px;">{{item.name}}</div>
+                                </el-col>
+                                <!--<el-form-item label="附件：">-->
+                                    <!--<div v-for="item in handlePic" @click="file(item.url)" style="width: 50%;margin-left: 25%;cursor: pointer;line-height: 40px;background: #eee;margin-bottom: 5px;padding-left: 15px;">{{item.name}}</div>-->
+                                <!--</el-form-item>-->
+                            </el-col>
                         </el-col>
-                        <el-col :span="12">
-                            <el-select class="selecr"  v-model="item.rentType" placeholder="请选择" disabled @change="houseNowChange4(item.rentType)">
-                                <el-option
-                                        v-for="item in RoleAdmin"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.label">
-                                </el-option>
-                            </el-select>
-                            <span class="inputs"><el-input  v-model="item.rentAmount" disabled placeholder="请输入金额" ></el-input></span>
-                            <span class="inputs" v-if="item.payStatus == 1">正常</span>
-                            <span class="inputs" v-if="item.payStatus == 2">即将到期</span>
-                            <span class="inputs" v-if="item.payStatus == 3">已缴纳</span>
-                            <span class="inputs" v-if="item.payStatus == 4">已超期</span>
+                        <el-col :span="22">
+                            <el-col :lg="5"><div class="textLeft">付租方式：</div></el-col>
+                            <el-col :lg="19">
+                                <el-col :lg="20" class="pay" v-for='(item,index) in books2'>
+                                    <el-col :lg="10" style="position: relative;margin-bottom: 20px;">
+                                        <div style="display: none;">{{item.num = index+1}}</div>
+                                        <div style="position: absolute;top:15px;left:0;">第 {{index+1}} 笔</div>
+                                        <el-date-picker style="margin-left: 60px;width: 69% !important;"
+                                                        v-model="item.dateStr"
+                                                        type="date"
+                                                        disabled
+                                                        @change="timeChange(item.dateStr)"
+                                                        value-format="yyyy-MM-dd"
+                                                        placeholder="选择日期">
+                                        </el-date-picker>
+                                    </el-col>
+                                    <el-col :lg="14">
+                                        <el-select class="selecr" style="width: 40%;"  v-model="item.rentType" placeholder="请选择" disabled @change="houseNowChange4(item.rentType)">
+                                            <el-option
+                                                    v-for="item in RoleAdmin"
+                                                    :key="item.value"
+                                                    :label="item.label"
+                                                    :value="item.label">
+                                            </el-option>
+                                        </el-select>
+                                        <span class="inputs"><el-input   v-model="item.rentAmount" disabled placeholder="请输入金额" ></el-input></span>
+                                        <span>{{item.jkStatus}}</span>
+                                    </el-col>
+                                </el-col>
+                            </el-col>
                         </el-col>
-                    </el-col>
-                    <el-col style="text-align: right;">
-                        <el-button type="success" round @click="showDialog = false">取消</el-button>
+                        <el-col :span="23" style="text-align: right;margin: 40px 0;">
+                            <el-button type="success" round @click="showDialog = false">取消</el-button>
+                        </el-col>
+                        <!--<el-col :lg="22">-->
+                            <!--<el-col :span="24">-->
+                                <!--&lt;!&ndash;<el-form-item label="付租方式：">共计2笔，总金额20000元</el-form-item>&ndash;&gt;-->
+                                <!--<el-form-item label="付租方式："></el-form-item>-->
+                            <!--</el-col>-->
+                            <!--<el-col :span="24" class="pay" v-for='(item,index) in books2'>-->
+                                <!--<el-col :span="10" style="position: relative;margin-bottom: 20px;">-->
+                                    <!--<div style="display: none;">{{item.num = index+1}}</div>-->
+                                    <!--<div style="position: absolute;top:15px;left:0;">第 {{index+1}} 笔</div>-->
+                                    <!--<el-date-picker style="margin-left: 60px;"-->
+                                                    <!--v-model="item.dateStr"-->
+                                                    <!--type="date"-->
+                                                    <!--disabled-->
+                                                    <!--@change="timeChange(item.dateStr)"-->
+                                                    <!--value-format="yyyy-MM-dd"-->
+                                                    <!--placeholder="选择日期">-->
+                                    <!--</el-date-picker>-->
+                                <!--</el-col>-->
+                                <!--<el-col :span="12">-->
+                                    <!--<el-select class="selecr"  v-model="item.rentType" placeholder="请选择" disabled @change="houseNowChange4(item.rentType)">-->
+                                        <!--<el-option-->
+                                                <!--v-for="item in RoleAdmin"-->
+                                                <!--:key="item.value"-->
+                                                <!--:label="item.label"-->
+                                                <!--:value="item.label">-->
+                                        <!--</el-option>-->
+                                    <!--</el-select>-->
+                                    <!--<span class="inputs"><el-input  v-model="item.rentAmount" disabled placeholder="请输入金额" ></el-input></span>-->
+                                    <!--<span>{{item.jkStatus}}</span>-->
+                                <!--</el-col>-->
+                            <!--</el-col>-->
+                        <!--</el-col>-->
+
                     </el-col>
                 </el-form>
             </el-row>
@@ -141,6 +225,7 @@
         },
         data () {
             return {
+                handlePic:[],
                 houseAddr:'',
                 showDialog:false,
                 assetCode:[{value:null}],
@@ -167,7 +252,6 @@
                     {value:2,label:'物业'},
                 ],
                 remark:'',
-                attach:'',
                 input:'',
                 input2:'',
                 pic:[],//照片
@@ -207,7 +291,6 @@
                     url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
                 }],
                 showUpload:false,
-                showDialog:false,
                 times: [],
                 params:'',
                 id:'',
@@ -223,8 +306,10 @@
             },
         },
         methods:{
+            file(url){
+                window.open(url)
+            },
             detail(data,str){
-                console.log('***********')
                 this.id = data.id
                 this.str = str
                 var that = this;
@@ -250,13 +335,92 @@
                             // that.list();
                             var arr = [];
                             var ass= params.assetCode.split(',');
-                            for(var i=0;i<ass.length;i++){
+                            for(var z=0;z<ass.length;z++){
                                 var obj = {};
-                                obj['value'] = ass[i]
+                                obj['value'] = ass[z]
                                 arr.push(obj)
                             }
                             that.assetCode = arr
-                            that.attach = params.attach
+                            var img = params.attach.split(',');
+                            console.log(img)
+                            var file= []
+                            for(var x =0;x<img.length;x++){
+                                var obj4 = {}
+                                obj4['name']= img[x].split('#_#')[0]
+                                obj4['url']= img[x].split('#_#')[1]
+                                that.handlePic.push(obj4);
+                            }
+                            for(var j=0;j<params.propertyPayTypeList.length;j++){
+                                    var datas = params.propertyPayTypeList[j];
+                                    var time = params.propertyPayTypeList[j].dateStr;
+                                    var img = params.propertyPayTypeList[j].attach==''?null:params.propertyPayTypeList[j].attach;
+                                    var strtime = time.replace("/-/g", "/");//时间转换
+                                    var date1=new Date(strtime);
+                                    var date2=new Date();
+                                    if(date1<date2 && img){
+                                        params.propertyPayTypeList[j]['jkStatus'] ='已缴纳'
+                                    }else if(date1<date2 && (img==null)){
+                                        params.propertyPayTypeList[j]['jkStatus'] ='已超期'
+                                    }else{
+                                        var date = new Date();
+                                        var seperator1 = "-";
+                                        var year = date.getFullYear();
+                                        var month = date.getMonth() + 1;
+                                        var strDate = date.getDate();
+                                        if (month >= 1 && month <= 9) {
+                                            month = "0" + month;
+                                        }
+                                        if (strDate >= 0 && strDate <= 9) {
+                                            strDate = "0" + strDate;
+                                        }
+                                        var currentdate = year + seperator1 + month + seperator1 + strDate;
+                                        var arr1 = currentdate.split('-');
+                                        var arr2 = time.split('-');
+                                        arr1[1] = parseInt(arr1[1]);
+                                        arr1[2] = parseInt(arr1[2]);
+                                        arr2[1] = parseInt(arr2[1]);
+                                        arr2[2] = parseInt(arr2[2]);
+                                        var flag = true;
+                                        var type = '即将到期'
+                                        if(arr1[0] == arr2[0]){//同年
+                                            if(arr2[1]-arr1[1] > 3){ //月间隔超过3个月
+                                                flag = false;
+                                                params.propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                            }else if(arr2[1]-arr1[1] == 3){ //月相隔3个月，比较日
+                                                if(arr2[2] > arr1[2]){ //结束日期的日大于开始日期的日
+                                                    flag = false;
+                                                    params.propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                                }else{
+                                                    params.propertyPayTypeList[j]['jkStatus'] ='即将到期'
+                                                }
+                                            }else{
+                                                params.propertyPayTypeList[j]['jkStatus'] ='即将到期'
+                                            }
+                                        }else{ //不同年
+                                            if(arr2[0] - arr1[0] > 1){
+                                                params.propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                                flag = false;
+                                            }else if(arr2[0] - arr1[0] == 1){
+                                                if(arr1[1] < 10){ //开始年的月份小于10时，不需要跨年
+                                                    flag = false;
+                                                    params.propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                                }else if(arr1[1]+3-arr2[1] < 12){ //月相隔大于3个月
+                                                    flag = false;
+                                                    params.propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                                }else if(arr1[1]+3-arr2[1] == 12){ //月相隔3个月，比较日
+                                                    if(arr2[2] > arr1[2]){ //结束日期的日大于开始日期的日
+                                                        flag = false;
+                                                        params.propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                                    }else{
+                                                        params.propertyPayTypeList[j]['jkStatus'] ='即将到期'
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        // list[i].propertyPayTypeList[j]['jkStatus'] ='未来时间'
+                                    }
+                                }
+                            // that.attach = params.attach
                             that.houseAddr = params.houseAddr
                             that.pactCode = params.pactCode
                             that.tenant = params.tenant
@@ -271,10 +435,11 @@
                             that.value1 = [params.rentStart,params.rentEnd]
                             that.rentStart = params.rentStart
                             that.rentEnd = params.rentEnd
-                            console.log(that.params)
+                            console.log(params)
                         }
                     })
-                }else{
+                }
+                else{
                     this.$axios({
                         url: this.getAjax + '/admin/property/findDetails?id='+data.id,
                         method: "get",

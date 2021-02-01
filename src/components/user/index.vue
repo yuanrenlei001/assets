@@ -1,41 +1,41 @@
 <template>
     <div class="main">
-        <el-row>
-            <el-col :span="22" :offset="2">
+        <el-row style="margin-left: 160px;">
+            <el-col :span="22" >
                 <el-row>
                     <el-form ref="form" >
-                        <el-col class="sort" :span="6">
-                            <el-form-item label="角色名称：">
-                                <el-select  v-model="value" placeholder="请选择">
-                                    <el-option
-                                            v-for="item in options"
-                                            :key="item.value"
-                                            :label="item.label"
-                                            :value="item.value">
-                                    </el-option>
-                                </el-select>
+                        <el-col class="sort" :span="6" style="margin-bottom: 30px;">
+                            <el-form-item label=" ">
+                                <!--<el-select  v-model="value" placeholder="请选择">-->
+                                    <!--<el-option-->
+                                            <!--v-for="item in options"-->
+                                            <!--:key="item.value"-->
+                                            <!--:label="item.label"-->
+                                            <!--:value="item.value">-->
+                                    <!--</el-option>-->
+                                <!--</el-select>-->
                             </el-form-item>
                         </el-col>
-                        <el-col class="sort" :span="6">
-                            <el-input
-                                    placeholder="请输入内容"
-                                    prefix-icon="el-icon-search"
-                                    v-model="input2">
-                            </el-input>
-                        </el-col>
-                        <el-col :span="4" class="rightS">
+                        <!--<el-col class="sort" :span="6">-->
+                            <!--<el-input-->
+                                    <!--placeholder="请输入内容"-->
+                                    <!--prefix-icon="el-icon-search"-->
+                                    <!--v-model="input2">-->
+                            <!--</el-input>-->
+                        <!--</el-col>-->
+                        <el-col :span="16" class="rightS">
                             <div class="btns2">
-                                <el-button type="success" >查询</el-button>
                                 <el-button type="primary" @click="add">新增</el-button>
-                                <el-button type="danger">导出</el-button>
+                                <el-button type="danger" @click="daochu">导出</el-button>
                             </div>
                         </el-col>
                     </el-form>
                 </el-row>
-                <el-row class="tables" style="margin-top: 20px;">
+                <el-row class="tables" style="margin-top: 40px;">
                     <el-table
                             ref="multipleTable"
                             :data="tableData"
+                            :height="heighTable"
                             tooltip-effect="dark"
                             style="width: 100%"
                             @selection-change="handleSelectionChange">
@@ -144,6 +144,7 @@
         name: 'login',
         data () {
             return {
+                heighTable:300,
                 checked:true,
                 input2:'',
                 name:'',
@@ -174,6 +175,42 @@
             DateChart,AssetsInfor
         },
         methods:{
+            daochu(){
+                var url =this.getAjax + '/admin/sysRoleAdmin/export';
+                // this.formSubmit(url,this.formDatas)
+                this.$axios({
+                    url: url,
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    responseType: 'blob',
+                    data:new FormData()
+                }).then(res => {
+                    this.download(res.data);
+                })
+            },
+            download(data){
+                if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                    let blob = new Blob([data], {
+                        type: 'application/vnd.ms-excel'
+                    })
+                    window.navigator.msSaveOrOpenBlob(blob,
+                        new Date().getTime() + '.xlsxs')
+                } else {
+                    /* 火狐谷歌的文件下载方式 */
+                    var blob = new Blob([data])
+                    var downloadElement = document.createElement('a')
+                    var href = window.URL.createObjectURL(blob)
+                    downloadElement.href = href
+                    downloadElement.download = new Date().getTime() + '.xlsx'
+                    document.body.appendChild(downloadElement)
+                    downloadElement.click()
+                    document.body.removeChild(downloadElement)
+                    window.URL.revokeObjectURL(href)
+                }
+            },
             delt(){
                 this.$message({
                     message: '角色暂不支持删除',
@@ -401,6 +438,19 @@
             }
         },
         created:function () {
+            this.$nextTick(()=>{
+                var _h = window.screen.height;
+                console.log(_h)
+                if(_h == '768'){
+                    this.heighTable = _h*0.3
+                }else if(_h == '900'){
+                    this.heighTable = _h*0.4
+                }
+                else{
+                    this.heighTable = _h*0.5
+                }
+
+            })
         },
         mounted(){
             this.findList();
@@ -433,7 +483,6 @@
         height: 178px;
         display: block;
     }
-    .el-input {width: 200px;}
     .el-form-item__label {font-size: 16px;color: #333;}
 </style>
 <style scoped>
@@ -452,7 +501,7 @@
     .btns>>>.el-menu--horizontal>.el-menu-item {color: #fff;}
     .rightS {position: relative;}
     .btns {position: absolute;top:-10px;right:-68px;}
-    .btns2 {position: absolute;top:0;right:-55px;}
+    .btns2 {position: absolute;top:0;right:0;}
     .tables>>>th{padding: 0;height:80px;background: #eee;font-size: 16px;font-weight: normal;color: #333;text-align: center;}
     .tables>>>.el-table {border: 1px dotted #eee;}
     .tables>>>.el-table__row td{padding: 0;height:50px;text-align: center;color: #333;}

@@ -1,278 +1,554 @@
 <template id="type">
-    <div class="count">
+    <div class="count kan">
         <el-dialog
-                title="资产详情"
+                class="abow_dialog"
+                title="资产管理 > 资产新增"
                 :visible.sync="showDialog"
                 @close="handleClose"
-                width="700px">
+                width="1000px">
             <el-row>
-                <el-form ref="form" >
-                    <el-col :span="24">
-                        <el-form-item label=" * 资产编号：">
-                            <el-input v-model="assetCode" placeholder="请输入内容"></el-input>
-                        </el-form-item>
+                <el-form ref="form"  class="xzAdd">
+                    <el-col :lg="24" style="padding-top: 26px;">
+                        <el-col :span="12">
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">* 资产编号：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="assetCode" placeholder="例：LT0001" ></el-input>
+                                </el-col>
+                                <!--<el-form-item label=" * 资产编号：">-->
+                                    <!--<el-input v-model="assetCode" placeholder="例：LT0001" ></el-input> <span style="color: red;">必须LT开头</span>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft"> * 产权人：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="assetUser" placeholder="请输入内容" :disabled="disabled"></el-input>
+                                </el-col>
+                                <!--<el-form-item label=" * 产权人：">-->
+                                    <!--<el-input v-model="assetUser" placeholder="请输入内容" :disabled="disabled"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft minText"> 原使用产权人：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="assetUserOri" placeholder="请输入内容" :disabled="disabled"></el-input>
+                                </el-col>
+                                <!--<el-form-item label="原使用产权人：">-->
+                                <!--<el-input v-model="assetUserOri" placeholder="请输入内容" :disabled="disabled"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft"> * 房屋坐落：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="houseAddress" placeholder="请输入内容" :disabled="disabled"></el-input>
+                                </el-col>
+                                <!--<el-form-item label=" * 房屋坐落：">-->
+                                    <!--<el-input v-model="houseAddress" placeholder="请输入内容" :disabled="disabled"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col  :lg="22">
+                                <el-col :lg="11"><div class="textLeft">* 房屋性质：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-select  v-model="houseNatureVal" placeholder="请选择" :disabled="disabled" @change="houseNatureChange">
+                                        <el-option
+                                                v-for="item in houseNature"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="item.label">
+                                        </el-option>
+                                    </el-select>
+                                </el-col>
+                                <!--<el-form-item label=" * 房屋性质：" >-->
+                                    <!--<el-select  v-model="houseNatureVal" placeholder="请选择" :disabled="disabled" @change="houseNatureChange">-->
+                                        <!--<el-option-->
+                                                <!--v-for="item in houseNature"-->
+                                                <!--:key="item.value"-->
+                                                <!--:label="item.label"-->
+                                                <!--:value="item.label">-->
+                                        <!--</el-option>-->
+                                    <!--</el-select>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col  :lg="22">
+                                <el-col :lg="11"><div class="textLeft">* 房屋结构：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-select  v-model="houseStructureVal" placeholder="请选择" :disabled="disabled" @change="houseStructureChange">
+                                        <el-option
+                                                v-for="item in houseStructure"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="item.label">
+                                        </el-option>
+                                    </el-select>
+                                </el-col>
+                                <!--<el-form-item label=" * 房屋结构：" >-->
+                                    <!--<el-select  v-model="houseStructureVal" placeholder="请选择" :disabled="disabled" @change="houseStructureChange">-->
+                                        <!--<el-option-->
+                                                <!--v-for="item in houseStructure"-->
+                                                <!--:key="item.value"-->
+                                                <!--:label="item.label"-->
+                                                <!--:value="item.label">-->
+                                        <!--</el-option>-->
+                                    <!--</el-select>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col  :lg="22">
+                                <el-col :lg="11"><div class="textLeft">* 产权用途：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-select  v-model="assetUseVal" placeholder="请选择" :disabled="disabled" @change="assetUseChange">
+                                        <el-option
+                                                v-for="item in assetUse"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="item.label">
+                                        </el-option>
+                                    </el-select>
+                                </el-col>
+                                <!--<el-form-item label=" * 产权用途：" >-->
+                                    <!--<el-select  v-model="assetUseVal" placeholder="请选择" :disabled="disabled" @change="assetUseChange">-->
+                                        <!--<el-option-->
+                                                <!--v-for="item in assetUse"-->
+                                                <!--:key="item.value"-->
+                                                <!--:label="item.label"-->
+                                                <!--:value="item.label">-->
+                                        <!--</el-option>-->
+                                    <!--</el-select>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">* 土地面积 (m²)：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="landArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>
+                                </el-col>
+                                <!--<el-form-item label=" * 土地面积/m²：">-->
+                                    <!--<el-input v-model="landArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col  :lg="22">
+                                <el-col :lg="11"><div class="textLeft">* 土地用途：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-select  v-model="landUseVal" placeholder="请选择" :disabled="disabled" @change="landUseChange">
+                                        <el-option
+                                                v-for="item in landUse"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="item.label">
+                                        </el-option>
+                                    </el-select>
+                                </el-col>
+                                <!--<el-form-item label=" * 土地用途：" >-->
+                                    <!--<el-select  v-model="landUseVal" placeholder="请选择" :disabled="disabled" @change="landUseChange">-->
+                                        <!--<el-option-->
+                                                <!--v-for="item in landUse"-->
+                                                <!--:key="item.value"-->
+                                                <!--:label="item.label"-->
+                                                <!--:value="item.label">-->
+                                        <!--</el-option>-->
+                                    <!--</el-select>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col  :lg="22">
+                                <el-col :lg="11"><div class="textLeft">* 土地性质：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-select  v-model="landNatureVal" placeholder="请选择" :disabled="disabled" @change="landNatureChange">
+                                        <el-option
+                                                v-for="item in landNature"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="item.label">
+                                        </el-option>
+                                    </el-select>
+                                </el-col>
+                                <!--<el-form-item label=" * 土地性质：" >-->
+                                    <!--<el-select  v-model="landNatureVal" placeholder="请选择" :disabled="disabled" @change="landNatureChange">-->
+                                        <!--<el-option-->
+                                                <!--v-for="item in landNature"-->
+                                                <!--:key="item.value"-->
+                                                <!--:label="item.label"-->
+                                                <!--:value="item.label">-->
+                                        <!--</el-option>-->
+                                    <!--</el-select>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">不动产证：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="realEstate" placeholder="请输入内容"></el-input>
+                                </el-col>
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">不动产证附件：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-upload
+                                            class="upload-demo"
+                                            :action="upload()"
+                                            :on-remove="bdhandleRemove"
+                                            :on-success = 'handleSuccess'
+                                            multiple
+                                            :limit="3"
+                                            :file-list="realEstateAttach">
+                                        <el-button size="small" type="primary">点击上传</el-button>
+                                    </el-upload>
+                                </el-col>
+                                <!--<el-form-item label="不动产证附件：">-->
+                                <!--<el-upload-->
+                                <!--class="upload-demo"-->
+                                <!--:action="upload()"-->
+                                <!--:on-remove="bdhandleRemove"-->
+                                <!--:on-success = 'handleSuccess'-->
+                                <!--multiple-->
+                                <!--:limit="3"-->
+                                <!--:file-list="realEstateAttach">-->
+                                <!--<el-button size="small" type="primary">点击上传</el-button>-->
+                                <!--</el-upload>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">土地证：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="realLand" placeholder="请输入内容" ></el-input>
+                                </el-col>
+                                <!--<el-form-item label="土地证：">-->
+                                <!--<el-input v-model="realLand" placeholder="请输入内容" ></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">土地证附件：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-upload
+                                            class="upload-demo"
+                                            action="http://39.100.95.204:2005/file/attachment/upload?type=asset"
+                                            :on-remove="realLandAttachRemove"
+                                            :on-success = 'realLandAttachSuccess'
+                                            multiple
+                                            :limit="3"
+                                            :file-list="realLandAttach">
+                                        <el-button size="small" type="primary">点击上传</el-button>
+                                    </el-upload>
+                                </el-col>
+                                <!--<el-form-item label="土地证附件：">-->
+                                <!--<el-upload-->
+                                <!--class="upload-demo"-->
+                                <!--action="http://39.100.95.204:2005/file/attachment/upload?type=asset"-->
+                                <!--:on-remove="realLandAttachRemove"-->
+                                <!--:on-success = 'realLandAttachSuccess'-->
+                                <!--multiple-->
+                                <!--:limit="3"-->
+                                <!--:file-list="realLandAttach">-->
+                                <!--<el-button size="small" type="primary">点击上传</el-button>-->
+                                <!--</el-upload>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft wd">* 房屋建筑面积 (m²)：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="houseArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>
+                                </el-col>
+                                <!--<el-form-item label=" * 房屋建筑面积（m²）：">-->
+                                <!--<el-input v-model="houseArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">未登记建筑面积 (m²)：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="noCheckinArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>
+                                </el-col>
+                                <!--<el-form-item label="未登记建筑面积( m² )：">-->
+                                <!--<el-input v-model="noCheckinArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">合法住宅面积 (m²)：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="legalArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>
+                                </el-col>
+                                <!--<el-form-item label=" 合法住宅面积（m²）：">-->
+                                <!--<el-input v-model="legalArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">辅助用房面积 (m²)：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="assHouseArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>
+                                </el-col>
+                                <!--<el-form-item label=" 辅助用房面积（m²）：">-->
+                                <!--<el-input v-model="assHouseArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">协议金额：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="dealAmount" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>
+                                </el-col>
+                                <!--<el-form-item label="协议金额：">-->
+                                    <!--<el-input v-model="dealAmount" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">* 房屋现状：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-select  v-model="houseNowVal" placeholder="请选择" :disabled="disabled" @change="houseNowChange">
+                                        <el-option
+                                                v-for="item in houseNows"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="item.label">
+                                        </el-option>
+                                    </el-select>
+                                </el-col>
+                                <!--<el-form-item label=" * 房屋现状：" >-->
+                                    <!--<el-select  v-model="houseNowVal" placeholder="请选择" :disabled="disabled" @change="houseNowChange">-->
+                                        <!--<el-option-->
+                                                <!--v-for="item in houseNows"-->
+                                                <!--:key="item.value"-->
+                                                <!--:label="item.label"-->
+                                                <!--:value="item.label">-->
+                                        <!--</el-option>-->
+                                    <!--</el-select>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">房屋档案编号：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="houseNo" placeholder="请输入内容" :disabled="disabled"></el-input>
+                                </el-col>
+                                <!--<el-form-item label="房屋档案编号：">-->
+                                    <!--<el-input v-model="houseNo" placeholder="请输入内容" :disabled="disabled"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">标签：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="label" placeholder="请输入内容" :disabled="disabled"></el-input>
+                                </el-col>
+                                <!--<el-form-item label="标签：">-->
+                                    <!--<el-input v-model="label" placeholder="请输入内容" :disabled="disabled"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">备注：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="remark" placeholder="请输入内容" :disabled="disabled"></el-input>
+                                </el-col>
+                                <!--<el-form-item label="备注：">-->
+                                    <!--<el-input v-model="remark" placeholder="请输入内容" :disabled="disabled"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11" style="opacity: 0;"><div class="textLeft">房产证：</div></el-col>
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">房产证：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-input v-model="realHouse" placeholder="请输入内容"></el-input>
+                                </el-col>
+                                <!--<el-form-item label="房产证：">-->
+                                <!--<el-input v-model="realHouse" placeholder="请输入内容"></el-input>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="11"><div class="textLeft">房产证附件：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-upload
+                                            class="upload-demo"
+                                            action="http://39.100.95.204:2005/file/attachment/upload?type=asset"
+                                            :on-remove="realHouseAttachRemove"
+                                            :on-success = 'realHouseAttachSuccess'
+                                            :limit="3"
+                                            :file-list="realHouseAttach">
+                                        <el-button size="small" type="primary">点击上传</el-button>
+                                    </el-upload>
+                                </el-col>
+                                <!--<el-form-item label="房产证附件：">-->
+                                <!--<el-upload-->
+                                <!--class="upload-demo"-->
+                                <!--action="http://39.100.95.204:2005/file/attachment/upload?type=asset"-->
+                                <!--:on-remove="realHouseAttachRemove"-->
+                                <!--:on-success = 'realHouseAttachSuccess'-->
+                                <!--:limit="3"-->
+                                <!--:file-list="realHouseAttach">-->
+                                <!--<el-button size="small" type="primary">点击上传</el-button>-->
+                                <!--</el-upload>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                            <el-col :lg="22" class="phone">
+                                <el-col :lg="11"><div class="textLeft">照片：</div></el-col>
+                                <el-col :lg="13">
+                                    <el-upload
+                                            action="http://39.100.95.204:2005/file/attachment/upload?type=asset"
+                                            list-type="picture-card"
+                                            :on-preview="handlePictureCardPreview"
+                                            :on-success="phone"
+                                            :limit="3"
+                                            ref="upload"
+                                            :file-list="pic"
+                                            :class="{hide:showUpload}"
+                                            :on-remove="handleRemove">
+                                        <!--<i class="el-icon-plus"></i>-->
+                                    </el-upload>
+                                </el-col>
+                                <!--<el-form-item label="照片：">-->
+                                <!--<el-upload-->
+                                <!--action="http://39.100.95.204:2005/file/attachment/upload?type=asset"-->
+                                <!--list-type="picture-card"-->
+                                <!--:on-preview="handlePictureCardPreview"-->
+                                <!--:on-success="phone"-->
+                                <!--:limit="3"-->
+                                <!--ref="upload"-->
+                                <!--:file-list="pic"-->
+                                <!--:class="{hide:showUpload}"-->
+                                <!--:on-remove="handleRemove">-->
+                                <!--&lt;!&ndash;<i class="el-icon-plus"></i>&ndash;&gt;-->
+                                <!--</el-upload>-->
+                                <!--</el-form-item>-->
+                            </el-col>
+                        </el-col>
+                        <el-col :span="24">
+                            <el-col :lg="5"><div class="textLeft">水&nbsp;&nbsp;&nbsp;&nbsp;户名：</div></el-col>
+                            <el-col :lg="4"><el-input v-model="accNameWater" placeholder="请输入内容"></el-input></el-col>
+                            <el-col :lg="3"><div class="textLeft" style="text-align: center;margin-right: 0;">户号：</div></el-col>
+                            <el-col :lg="4"><el-input v-model="accNoWater" placeholder="请输入内容"></el-input></el-col>
+                            <el-col :lg="3"><div class="textLeft" style="text-align: center;margin-right: 0;">缴款方式：</div></el-col>
+                            <el-col :lg="4">
+                                <el-select  v-model="accTypeWater" placeholder="请选择" :disabled="disabled" @change="accTypeWaters">
+                                    <el-option
+                                            v-for="item in accType"
+                                            :key="item.value"
+                                            :label="item.label"
+                                            :value="item.label">
+                                    </el-option>
+                                </el-select>
+                            </el-col>
+                        </el-col>
+                        <el-col style="margin-top: 26px;" :span="24">
+                            <el-col :lg="5"><div class="textLeft">电&nbsp;&nbsp;&nbsp;&nbsp;户名：</div></el-col>
+                            <el-col :lg="4"> <el-input v-model="accNameElec" placeholder="请输入内容"></el-input></el-col>
+                            <el-col :lg="3"><div class="textLeft" style="text-align: center;margin-right: 0;">户号：</div></el-col>
+                            <el-col :lg="4"><el-input v-model="accNoElec" placeholder="请输入内容"></el-input></el-col>
+                            <el-col :lg="3"><div class="textLeft" style="text-align: center;margin-right: 0;">缴款方式：</div></el-col>
+                            <el-col :lg="4">
+                                <el-select  v-model="accTypeElec" placeholder="请选择" :disabled="disabled" @change="accTypeElecs">
+                                    <el-option
+                                            v-for="item in accType"
+                                            :key="item.value"
+                                            :label="item.label"
+                                            :value="item.label">
+                                    </el-option>
+                                </el-select>
+                            </el-col>
+                        </el-col>
+                        <el-col style="margin-top: 26px;" :span="24">
+                            <el-col :lg="5"><div class="textLeft">燃气&nbsp;&nbsp;&nbsp;&nbsp;户名：</div></el-col>
+                            <el-col :lg="4"> <el-input v-model="accNameGas" placeholder="请输入内容"></el-input></el-col>
+                            <el-col :lg="3"><div class="textLeft" style="text-align: center;margin-right: 0;">户号：</div></el-col>
+                            <el-col :lg="4"><el-input v-model="accNoGas" placeholder="请输入内容"></el-input></el-col>
+                            <el-col :lg="3"><div class="textLeft" style="text-align: center;margin-right: 0;">缴款方式：</div></el-col>
+                            <el-col :lg="4">
+                                <el-select  v-model="accTypeGas" placeholder="请选择" :disabled="disabled" @change="accTypeGass">
+                                    <el-option
+                                            v-for="item in accType"
+                                            :key="item.value"
+                                            :label="item.label"
+                                            :value="item.label">
+                                    </el-option>
+                                </el-select>
+                            </el-col>
+                        </el-col>
+                        <el-col :span="23" style="text-align: right;margin:40px 0;">
+                            <el-button type="primary" round @click="open">保存</el-button>
+                            <el-button type="success" round @click="showDialog = false">取消</el-button>
+                        </el-col>
                     </el-col>
-                    <el-col :span="24">
-                        <el-form-item label=" * 产权人：">
-                            <el-input v-model="assetUser" placeholder="请输入内容" :disabled="disabled"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label=" * 房屋坐落：">
-                            <el-input v-model="houseAddress" placeholder="请输入内容" :disabled="disabled"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label="原使用产权人：">
-                            <el-input v-model="assetUserOri" placeholder="请输入内容" :disabled="disabled"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col  :span="24">
-                        <el-form-item label=" * 房屋类型：" >
-                            <el-select  v-model="houseNatureVal" placeholder="请选择" :disabled="disabled" @change="houseNatureChange">
-                                <el-option
-                                        v-for="item in houseNature"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.label">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col  :span="24">
-                        <el-form-item label=" * 房屋结构：" >
-                            <el-select  v-model="houseStructureVal" placeholder="请选择" :disabled="disabled" @change="houseStructureChange">
-                                <el-option
-                                        v-for="item in houseStructure"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.label">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <!--<el-col  :span="24">-->
-                    <!--<el-form-item label="房屋结构：" >-->
-                    <!--<el-select  v-model="value" placeholder="请选择" :disabled="disabled">-->
-                    <!--<el-option-->
-                    <!--v-for="item in options"-->
-                    <!--:key="item.value"-->
-                    <!--:label="item.label"-->
-                    <!--:value="item.value">-->
-                    <!--</el-option>-->
-                    <!--</el-select>-->
-                    <!--</el-form-item>-->
+
+<div style="display: none;">
+
+
+
+
+
+
+
+</div>
+
+                    <!--<el-col class="table" :span="24" style="text-align: center;margin-top: 20px;">-->
+                        <!--<el-col :span="9">-->
+                            <!--水&nbsp;&nbsp;&nbsp;&nbsp;户名：-->
+                            <!--<el-input v-model="accNameWater" placeholder="请输入内容"></el-input>-->
+                        <!--</el-col>-->
+                        <!--<el-col :span="7">-->
+                            <!--户号-->
+                            <!--<el-input v-model="accNoWater" placeholder="请输入内容"></el-input>-->
+                        <!--</el-col>-->
+                        <!--<el-col :span="8">-->
+                            <!--缴款方式-->
+                            <!--<el-select  v-model="accTypeWater" placeholder="请选择" :disabled="disabled" @change="accTypeWaters">-->
+                                <!--<el-option-->
+                                        <!--v-for="item in accType"-->
+                                        <!--:key="item.value"-->
+                                        <!--:label="item.label"-->
+                                        <!--:value="item.label">-->
+                                <!--</el-option>-->
+                            <!--</el-select>-->
+                        <!--</el-col>-->
+
                     <!--</el-col>-->
-                    <el-col :span="24">
-                        <el-form-item label="未登记建筑面积：">
-                            <el-input v-model="noCheckinArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label=" * 房屋建筑面积：">
-                            <el-input v-model="houseArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col  :span="24">
-                        <el-form-item label=" * 用途（产权用途）：" >
-                            <el-select  v-model="assetUseVal" placeholder="请选择" :disabled="disabled" @change="assetUseChange">
-                                <el-option
-                                        v-for="item in assetUse"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.label">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label=" * 土地面积/m²：">
-                            <el-input v-model="landArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col  :span="24">
-                        <el-form-item label=" * 土地用途：" >
-                            <el-select  v-model="landUseVal" placeholder="请选择" :disabled="disabled" @change="landUseChange">
-                                <el-option
-                                        v-for="item in landUse"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.label">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col  :span="24">
-                        <el-form-item label=" * 土地性质：" >
-                            <el-select  v-model="landNatureVal" placeholder="请选择" :disabled="disabled" @change="landNatureChange">
-                                <el-option
-                                        v-for="item in landNature"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.label">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col  :span="24">
-                        <el-form-item label="未登记建筑：" >
-                            <el-select  v-model="noCheckinVal" placeholder="请选择" :disabled="disabled" @change="noCheckinChange">
-                                <el-option
-                                        v-for="item in noCheckin"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.label">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24" class="filess">
-                        <el-form-item label="不动产证：">
-                            <el-input v-model="realEstate" placeholder="请输入内容" style="width: 200px;"></el-input>
-                            <el-upload
-                                    class="upload-demo"
-                                    :action="upload()"
-                                    :on-preview="handlePreview"
-                                    :on-remove="handleRemove"
-                                    :before-remove="beforeRemove"
-                                    :on-success = 'handleSuccess'
-                                    multiple
-                                    :limit="3"
-                                    :on-exceed="handleExceed"
-                                    :file-list="realEstateAttach">
-                                <el-button size="small" type="primary">点击上传</el-button>
-                            </el-upload>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24" class="filess">
-                        <el-form-item label="房产证：">
-                            <el-input v-model="realHouse" placeholder="请输入内容" style="width: 200px;"></el-input>
-                            <el-upload
-                                    class="upload-demo"
-                                    action="http://39.100.95.204:2005/file/attachment/upload?type=asset"
-                                    :on-remove="realHouseAttachRemove"
-                                    :on-success = 'realHouseAttachSuccess'
-                                    :limit="3"
-                                    :file-list="realHouseAttach">
-                                <el-button size="small" type="primary">点击上传</el-button>
-                            </el-upload>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24" class="filess">
-                        <el-form-item label="土地证：">
-                            <el-input v-model="realLand" placeholder="请输入内容" style="width: 200px;"></el-input>
-                            <el-upload
-                                    class="upload-demo"
-                                    action="http://39.100.95.204:2005/file/attachment/upload?type=asset"
-                                    :on-preview="realLandAttachPreview"
-                                    :on-remove="realLandAttachRemove"
-                                    :before-remove="realLandAttachRemove"
-                                    :on-success = 'realLandAttachSuccess'
-                                    multiple
-                                    :limit="3"
-                                    :on-exceed="realLandAttachExceed"
-                                    :file-list="realLandAttach">
-                                <el-button size="small" type="primary">点击上传</el-button>
-                            </el-upload>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label="协议金额：">
-                            <el-input v-model="dealAmount" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>
-                        </el-form-item>
-                    </el-col>
+                    <!--<el-col class="table" :span="24" style="text-align: center;margin-top: 20px;">-->
+                        <!--<el-col :span="9">-->
+                            <!--电&nbsp;&nbsp;&nbsp;&nbsp;户名：-->
+                            <!--<el-input v-model="accNameElec" placeholder="请输入内容"></el-input>-->
+                        <!--</el-col>-->
+                        <!--<el-col :span="7">-->
+                            <!--户号-->
+                            <!--<el-input v-model="accNoElec" placeholder="请输入内容"></el-input>-->
+                        <!--</el-col>-->
+                        <!--<el-col :span="8">-->
+                            <!--缴款方式-->
+                            <!--<el-select  v-model="accTypeElec" placeholder="请选择" :disabled="disabled" @change="accTypeElecs">-->
+                                <!--<el-option-->
+                                        <!--v-for="item in accType"-->
+                                        <!--:key="item.value"-->
+                                        <!--:label="item.label"-->
+                                        <!--:value="item.label">-->
+                                <!--</el-option>-->
+                            <!--</el-select>-->
+                        <!--</el-col>-->
 
-                    <el-col  :span="24">
-                        <el-form-item label=" * 房屋现状：" >
-                            <el-select  v-model="houseNowVal" placeholder="请选择" :disabled="disabled" @change="houseNowChange">
-                                <el-option
-                                        v-for="item in houseNow"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.label">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label="房屋档案编号：">
-                            <el-input v-model="houseNo" placeholder="请输入内容" :disabled="disabled"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24">
-                        <el-form-item label="备注：">
-                            <el-input v-model="remark" placeholder="请输入内容" :disabled="disabled"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24" class="phone">
-                        <el-form-item label="照片：">
-                            <el-upload
-                                    action="http://39.100.95.204:2005/file/attachment/upload?type=asset"
-                                    list-type="picture-card"
-                                    :on-preview="handlePictureCardPreview"
-                                    :on-success="phone"
-                                    :limit="3"
-                                    :class="{hide:showUpload}"
-                                    :on-remove="handleRemove">
-                                <i class="el-icon-plus"></i>
-                            </el-upload>
-                            <el-dialog :visible.sync="dialogVisible">
-                                <img width="100%" :src="dialogImageUrl" alt="">
-                            </el-dialog>
-                        </el-form-item>
-                    </el-col>
-                    <el-col class="table" :span="24" style="text-align: center;margin-top: 20px;">
-                        <el-col :span="9">
-                            水&nbsp;&nbsp;&nbsp;&nbsp;户名：
-                            <el-input v-model="accNameWater" placeholder="请输入内容"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            户号
-                            <el-input v-model="accNoWater" placeholder="请输入内容"></el-input>
-                        </el-col>
-                        <el-col :span="8">
-                            缴款方式
-                            <el-input v-model="accTypeWater" placeholder="请输入内容"></el-input>
-                        </el-col>
+                    <!--</el-col>-->
+                    <!--<el-col class="table" :span="24" style="text-align: center;margin-top: 20px;">-->
+                        <!--<el-col :span="9">-->
+                            <!--燃气&nbsp;&nbsp;户名：-->
+                            <!--<el-input v-model="accNameGas" placeholder="请输入内容"></el-input>-->
+                        <!--</el-col>-->
+                        <!--<el-col :span="7">-->
+                            <!--户号-->
+                            <!--<el-input v-model="accNoGas" placeholder="请输入内容"></el-input>-->
+                        <!--</el-col>-->
+                        <!--<el-col :span="8">-->
+                            <!--缴款方式-->
+                            <!--<el-select  v-model="accTypeGas" placeholder="请选择" :disabled="disabled" @change="accTypeGass">-->
+                                <!--<el-option-->
+                                        <!--v-for="item in accType"-->
+                                        <!--:key="item.value"-->
+                                        <!--:label="item.label"-->
+                                        <!--:value="item.label">-->
+                                <!--</el-option>-->
+                            <!--</el-select>-->
+                        <!--</el-col>-->
 
-                    </el-col>
-                    <el-col class="table" :span="24" style="text-align: center;margin-top: 20px;">
-                        <el-col :span="9">
-                            电&nbsp;&nbsp;&nbsp;&nbsp;户名：
-                            <el-input v-model="accNameElec" placeholder="请输入内容"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            户号
-                            <el-input v-model="accNoElec" placeholder="请输入内容"></el-input>
-                        </el-col>
-                        <el-col :span="8">
-                            缴款方式
-                            <el-input v-model="accTypeElec" placeholder="请输入内容"></el-input>
-                        </el-col>
-
-                    </el-col>
-                    <el-col class="table" :span="24" style="text-align: center;margin-top: 20px;">
-                        <el-col :span="9">
-                            燃气&nbsp;&nbsp;户名：
-                            <el-input v-model="accNameGas" placeholder="请输入内容"></el-input>
-                        </el-col>
-                        <el-col :span="7">
-                            户号
-                            <el-input v-model="accNoGas" placeholder="请输入内容"></el-input>
-                        </el-col>
-                        <el-col :span="8">
-                            缴款方式
-                            <el-input v-model="accTypeGas" placeholder="请输入内容"></el-input>
-                        </el-col>
-
-                    </el-col>
-                    <el-col :span="24" style="text-align: right;margin-top: 20px;">
-                        <el-button type="primary" round @click="open">保存</el-button>
-                        <el-button type="success" round @click="showDialog = false">取消</el-button>
-                    </el-col>
+                    <!--</el-col>-->
                 </el-form>
             </el-row>
         </el-dialog>
+        <div v-if="imgShow" @click="imgShowFlase"  style="text-align:center;position: fixed;z-index: 999999;top:0;left:0;background: rgba(0,0,0,.5);width: 100%;height:100%;">
+            <img :src="showImgUrl" alt="" style="width: 500px;
+    height: 500px;
+    position: relative;
+    top: 50%;
+    margin-top: -250px;">
+        </div>
     </div>
 </template>
 
@@ -287,6 +563,8 @@
         },
   data () {
     return {
+        showImgUrl:'',
+        imgShow:false,
         showUpload:false,
         showDialog:false,
         input:'',
@@ -295,19 +573,88 @@
         disableds:false,
         dialogImageUrl: '',
         dialogVisible: false,
-        houseNature:[{value:'1',label:'房屋类型1'}, {value:'2',label:'房屋类型2'},],
+        houseNature:[
+            {'label':'办公'},{'label':'参主'},{'label':'仓储'},{'label':'工业厂房'},{'label':'公房'},
+            {'label':'集体'},{'label':'其他'},{'label':'全民'},{'label':'商业'},{'label':'私房'},
+            {'label':'未登记认定'},{'label':'住宅'},{'label':'住宅/仓储'},{'label':'住宅/工业厂房'}
+        ],
         houseNatureVal:'',
-        assetUse:[{value:'1',label:'产权用途1'}, {value:'2',label:'产权用途2'},],
+        assetUse:[
+            {'label':'公共设施'},{'label':'商业'},{'label':'住宅'}
+        ],
+        assetUseval:'',
+        accType:[{value:'代缴',label:'代缴'}, {value:'自缴',label:'自缴'},],
         assetUseVal:'',
-        landUse:[{value:'1',label:'土地用途1'}, {value:'2',label:'土地用途2'},],
+        landUse:[
+            {'label':'仓储用途'},{'label':'城镇住宅用地'},{'label':'城镇住宅用地/住宅'},{'label':'公共设施用地'},{'label':'批发零售用地/商业'}
+        ],
         landUseVal:'',
-        landNature:[{value:'1',label:'土地性质1'}, {value:'2',label:'土地性质2'},],
+        landNature:[
+            {'label':'仓储出让'},{'label':'仓储划拨'},{'label':'工业出让'},{'label':'工业划拨'},{'label':'商业出让'},
+            {'label':'商业划拨'},{'label':'住宅出让'},{'label':'住宅划拨'},{'label':'综合划拨'},
+        ],
         landNatureVal:'',
         noCheckin:[{value:'1',label:'未登记建筑1'}, {value:'2',label:'未登记建筑2'},],
         noCheckinVal:'',
-        houseNow:[{value:'1',label:'房屋现状1'}, {value:'2',label:'房屋现状2'},],
+        houseNow:[
+            {'label':'1.73'},{'label':'2.12'},{'label':'2.16'},{'label':'2.28'},{'label':'2.63'},
+            {'label':'2.64'},{'label':'2.73'},{'label':'2.75'},{'label':'2.85'},{'label':'2.86'},
+            {'label':'2.97'},{'label':'2.98'},{'label':'3'},{'label':'3.01'},{'label':'3.17'},
+            {'label':'3.41'},{'label':'3.48'},{'label':'3.69'},{'label':'3.7'},{'label':'3.72'},
+            {'label':'3.73'},{'label':'3.8'},{'label':'3.9'},{'label':'4.14'},{'label':'4.2'},
+            {'label':'4.26'},{'label':'4.49'},{'label':'4.62'},{'label':'4.66'},{'label':'4.72'},
+            {'label':'4.73'},{'label':'4.77'},{'label':'5.08'},{'label':'5.13'},{'label':'5.15'},
+            {'label':'5.24'},{'label':'5.29'},{'label':'5.31'},{'label':'5.38'},{'label':'5.42'},
+            {'label':'5.51'},{'label':'5.54'},{'label':'5.6'},{'label':'5.69'},{'label':'5.71'},
+            {'label':'5.77'},{'label':'5.81'},{'label':'5.82'},{'label':'5.86'},{'label':'5.94'},
+            {'label':'5.95'},{'label':'6'},{'label':'6.01'},{'label':'6.05'},{'label':'6.06'},
+            {'label':'6.08'},{'label':'6.12'},{'label':'6.14'},{'label':'6.16'},{'label':'6.17'},
+            {'label':'6.24'},{'label':'6.25'},{'label':'6.36'},{'label':'6.47'},{'label':'6.5'},
+            {'label':'6.55'},{'label':'6.58'},{'label':'6.63'},{'label':'6.64'},{'label':'6.72'},
+            {'label':'6.77'},{'label':'6.78'},{'label':'6.79'},{'label':'6.89'},{'label':'6.91'},
+            {'label':'7.02'},{'label':'7.05'},{'label':'7.13'},{'label':'7.22'},{'label':'7.32'},
+            {'label':'7.46'},{'label':'7.51'},{'label':'7.52'},{'label':'7.53'},{'label':'7.54'},
+            {'label':'7.68'},{'label':'7.8'},{'label':'7.9'},{'label':'7.99'},{'label':'8.09'},
+            {'label':'8.16'},{'label':'8.41'},{'label':'8.51'},{'label':'8.52'},{'label':'8.57'},
+            {'label':'8.6'},{'label':'8.8'},{'label':'9.23'},{'label':'9.37'},{'label':'9.45'},
+            {'label':'9.6'},{'label':'9.73'},{'label':'9.82'},{'label':'9.91'},{'label':'10.03'},
+            {'label':'10.36'},{'label':'10.43'},{'label':'10.56'},{'label':'10.64'},{'label':'10.67'},
+            {'label':'10.79'},{'label':'10.84'},{'label':'10.92'},{'label':'10.94'},{'label':'11.08'},
+            {'label':'11.17'},{'label':'11.2'},{'label':'11.25'},{'label':'11.34'},{'label':'11.42'},
+            {'label':'11.48'},{'label':'11.72'},{'label':'11.76'},{'label':'11.86'},{'label':'11.96'},
+            {'label':'12.54'},{'label':'12.95'},{'label':'12.97'},{'label':'12.99'},{'label':'13.12'},
+            {'label':'13.2'},{'label':'13.37'},{'label':'13.69'},{'label':'13.87'},{'label':'13.89'},
+            {'label':'14.12'},{'label':'14.26'},{'label':'14.38'},{'label':'14.59'},{'label':'14.82'},
+            {'label':'14.91'},{'label':'14.92'},{'label':'15.07'},{'label':'15.17'},{'label':'15.48'},
+            {'label':'15.51'},{'label':'15.86'},{'label':'16.11'},{'label':'16.33'},{'label':'16.59'},
+            {'label':'16.63'},{'label':'16.93'},{'label':'17.42'},{'label':'19.16'},{'label':'19.49'},
+            {'label':'21.12'},{'label':'21.32'},{'label':'21.67'},{'label':'22.26'},{'label':'22.34'},
+            {'label':'22.4'},{'label':'22.68'},{'label':'23.02'},{'label':'23.47'},{'label':'23.6'},
+            {'label':'23.66'},{'label':'23.8'},{'label':'23.99'},{'label':'24.56'},{'label':'25.52'},
+            {'label':'25.72'},{'label':'25.8'},{'label':'25.9'},{'label':'26.53'},{'label':'26.76'},
+            {'label':'30.84'},{'label':'31.59'},{'label':'31.96'},{'label':'56.02'},{'label':'0'},
+            {'label':'爱咖啡、猫的天空之城'},{'label':'百间楼河东47号名宿项目'},{'label':'篱梳坊、葫芦、手工瓷画、麻手工'},{'label':'厕所'},{'label':'拆除重建（厕所）'},
+            {'label':'拆迁过渡用房'},{'label':'出借'},{'label':'出租'},{'label':'丹丹手工茶饼'},{'label':'德茂弄酒店建造中'},
+            {'label':'都市聚落酒店及水晶晶文创园'},{'label':'二楼雅婷精舍、一楼云锦丝绸仓库'},{'label':'房屋已重建'},{'label':'西风服店'},{'label':'干洗店、千浔一人煲、足浴、香山桥古镇饭店'},
+            {'label':'工艺制品、休闲茶舍'},{'label':'红鼎酒店'},{'label':'借用工程'},{'label':'金宅修缮'},{'label':'囧囧奶茶、古朴奶茶'},
+            {'label':'空置'},{'label':'空置（小莲庄酒店）'},{'label':'空置（原杭州建筑工程有限公司）'},{'label':'库房、店铺 部分和东大街81号对调'},{'label':'老干部活动中心'},
+            {'label':'旅游协会'},{'label':'绿松石书吧'},{'label':'猫小院'},{'label':'煤失弄精品酒店建造中'},{'label':'木锤酥'},
+            {'label':'南浔难寻'},{'label':'三户占用'},{'label':'桑果酒'},{'label':'社区用房'},{'label':'诗域浔味'},
+            {'label':'糖艺坊'},{'label':'特产商行'},{'label':'天堂伞、民族服、诸老大粽子'},{'label':'天下湖品'},{'label':'天元尚品'},
+            {'label':'未找到'},{'label':'文房四宝'},{'label':'吴越丝绸'},{'label':'现环卫所办公大楼'},{'label':'现丝行隶停车场'},
+            {'label':'现为贻德广场（已拆除）'},{'label':'现象门街主入口（已拆除）'},{'label':'祥和糕点店'},{'label':'项目拆除'},{'label':'消防警务室'},
+            {'label':'小小饭店厨房'},{'label':'浔蹄'},{'label':'一户占用'},{'label':'怡德广场'},{'label':'宜兴紫砂'},
+            {'label':'已拆除'},{'label':'逸香轩'},{'label':'营销公司使用'},{'label':'颖园饭店'},{'label':'永为笔庄'},
+            {'label':'员工宿舍'},{'label':'原小莲庄宾馆'},{'label':'云栖灡亭会议室'},{'label':'运河酒店及运河名宿建造中'},{'label':'闸口仓库'},
+            {'label':'占用'},{'label':'真味斋'},{'label':'众里寻他'},{'label':'自用'},{'label':'空白'},
+        ],
+        houseNows:[
+            {'label':'借用'},{'label':'出租'},{'label':'空置'},{'label':'改建'},{'label':'拆除'},{'label':'其他'},
+        ],
         houseNowVal:'',
-        houseStructure:[{value:'1',label:'房屋结构1'}, {value:'2',label:'房屋结构2'},],
+        houseStructure:[
+            {'label':'混合'},{'label':'砖混'},{'label':'砖木'},{'label':'砖木、砖混'}
+        ],
         houseStructureVal:'',
         assetCode:'',//资产编号
         assetUser:'',//产权人
@@ -332,6 +679,8 @@
         accNameGas:'',//燃气：户名
         accNoGas:'',//燃气：户号
         accTypeGas:'',//燃气：缴款方式
+        legalArea:'',//燃气：缴款方式
+        assHouseArea:'',//燃气：缴款方式
         realEstateAttach:[],//不动产证文件
         realHouseAttach:[],//房产证文件
         realLandAttach:[],//土地证文件
@@ -363,6 +712,11 @@
         realHouseAttachUrl:'',
         realLandAttachUrl:'',
         picUrl:'',
+        numIndex:'',
+        label:'',
+        bdPic:[],
+        fcPic:[],
+        tdPic:[],
     }
   },
         components:{
@@ -373,14 +727,236 @@
         },
     },
     methods:{
+        accTypeWaters(val){this.accTypeWater = val;},
+        accTypeElecs(val){this.accTypeElec = val;},
+        accTypeGass(val){this.accTypeGas = val;},
+        detail(index,item){
+            // this.$nextTick(()=>{
+            //     var _h = window.screen.height;
+            //     console.log(_h)
+            //     var demo = document.getElementsByClassName('xzAdd');
+            //     if(_h == '768'){
+            //         demo[0].style.height = _h*0.3 +'px'
+            //     }else if(_h == '900'){
+            //         demo[0].style.height = _h*0.45 +'px'
+            //     }else{
+            //         demo[0].style.height = _h*0.6 +'px'
+            //     }
+            // })
+            console.log(item)
+            var that =this;
+            this.numIndex = index;
+            that.realEstateAttach = [];
+            that.realHouseAttach = [];
+            that.realLandAttach = [];
+            that.pic = [];
+            if(item.realEstateAttach){
+                console.log('***')
+                var imgbd = item.realEstateAttach.split(',')
+                for(var j =0;j<imgbd.length;j++){
+                    var obj4 = {}
+                    obj4['name']= imgbd[j].split('#_#')[0]
+                    obj4['url']= imgbd[j].split('#_#')[1]
+                    that.realEstateAttach.push(obj4);
+                }
+            }else{
+                console.log('**2*')
+                that.realEstateAttach = []
+            }
+            if(item.realHouseAttach){
+                var imgfc = item.realHouseAttach.split(',')
+                for(var z =0;z<imgfc.length;z++){
+                    var obj4 = {}
+                    obj4['name']= imgfc[z].split('#_#')[0]
+                    obj4['url']= imgfc[z].split('#_#')[1]
+                    that.realHouseAttach.push(obj4);
+                }
+            }else{
+                that.realHouseAttach = [];
+            }
+            if(item.realLandAttach){
+                var imgtd = item.realLandAttach.split(',');
+                for(var x =0;x<imgtd.length;x++){
+                    var obj4 = {}
+                    obj4['name']= imgtd[x].split('#_#')[0]
+                    obj4['url']= imgtd[x].split('#_#')[1]
+                    that.realLandAttach.push(obj4);
+                }
+            }else{
+                that.realLandAttach = []
+            }
+            if(item.pic){
+                var imgtd = item.pic.split(',')
+                for(var k =0;k<imgtd.length;k++){
+                    var obj4 = {}
+                    obj4['name']= imgtd[k].split('#_#')[0]
+                    obj4['url']= imgtd[k].split('#_#')[1]
+                    that.pic.push(obj4);
+                }
+            }else{
+                that.pic = []
+            }
+
+
+
+            this.assetCode = item.assetCode,
+            this.assetUser = item.assetUser,
+            this.houseAddress = item.houseAddress,
+            this.assetUserOri = item.assetUserOri,
+            this.houseNatureVal = item.houseNature,
+            this.noCheckinArea = item.noCheckinArea,
+            this.houseStructureVal = item.houseStructure,
+            this.houseArea = item.houseArea,
+            this.assetUseVal = item.assetUse,
+            this.landArea = item.landArea,
+            this.landUseVal = item.landUse,
+            this.landNatureVal = item.landNature,
+            this.noCheckinVal = item.noCheckin,
+            this.realEstate = item.realEstate,
+            this.realHouse = item.realHouse,
+            this.realLand = item.realLand,
+            this.dealAmount = item.dealAmount,
+            this.houseNowVal = item.houseNow,
+            this.houseNo = item.houseNo,
+            this.label = item.label,
+            this.remark = item.remark,
+            this.accNameWater = item.accNameWater,
+            this.accNoWater = item.accNoWater,
+            this.accTypeWater = item.accTypeWater,
+            this.accNameElec = item.accNameElec,
+            this.accNoElec = item.accNoElec,
+            this.accTypeElec = item.accTypeElec,
+            this.accNameGas = item.accNameGas,
+            this.accNoGas = item.accNoGas,
+            this.accTypeGas = item.accTypeGas,
+            this.legalArea =item.legalArea,
+            this.assHouseArea =item.assHouseArea
+        },
+        imgShowFlase(){
+            this.imgShow = false;
+            console.log(123)
+        },
         open() {
+            var that =this;
+            if(that.realEstateAttach.length>0){
+                var fileList = that.realEstateAttach;
+                var arr = []
+                var arrs = []
+                for(var i=0;i<fileList.length;i++){
+                    var obj = {};
+                    var img = {};
+                    if(fileList[i].response){
+                        obj['url'] = fileList[i].response.data[0]
+                        obj['name'] = fileList[i].name
+                        img['name'] =  fileList[i].name+'#_#'+fileList[i].response.data[0]
+                    }else{
+                        obj['url'] = fileList[i].name
+                        obj['name'] = fileList[i].name
+                        img['name'] =  fileList[i].name+'#_#'+fileList[i].url
+                    }
+
+                    arr.push(obj)
+                    arrs.push(img)
+                }
+                var imgs= []
+                for(var j=0;j<arrs.length;j++){
+                    imgs.push(arrs[j].name)
+                }
+                this.realEstateAttachUrl = imgs.toString()
+            }else{
+                that.realEstateAttach = []
+            }
+            if(that.realHouseAttach.length>0){
+                var fileList = that.realHouseAttach;
+                var arr = []
+                var arrs = []
+                for(var i=0;i<fileList.length;i++){
+                    var obj = {};
+                    var img = {};
+                    if(fileList[i].response){
+                        obj['url'] = fileList[i].response.data[0]
+                        obj['name'] = fileList[i].name
+                        img['name'] =  fileList[i].name+'#_#'+fileList[i].response.data[0]
+                    }else{
+                        obj['url'] = fileList[i].name
+                        obj['name'] = fileList[i].name
+                        img['name'] =  fileList[i].name+'#_#'+fileList[i].url
+                    }
+
+                    arr.push(obj)
+                    arrs.push(img)
+                }
+                var imgs= []
+                for(var j=0;j<arrs.length;j++){
+                    imgs.push(arrs[j].name)
+                }
+                this.realHouseAttachUrl = imgs.toString()
+            }else{
+                that.realHouseAttach = [];
+            }
+            if(that.realLandAttach.length>0){
+                var fileList = that.realLandAttach;
+                var arr = []
+                var arrs = []
+                for(var i=0;i<fileList.length;i++){
+                    var obj = {};
+                    var img = {};
+                    if(fileList[i].response){
+                        obj['url'] = fileList[i].response.data[0]
+                        obj['name'] = fileList[i].name
+                        img['name'] =  fileList[i].name+'#_#'+fileList[i].response.data[0]
+                    }else{
+                        obj['url'] = fileList[i].name
+                        obj['name'] = fileList[i].name
+                        img['name'] =  fileList[i].name+'#_#'+fileList[i].url
+                    }
+
+                    arr.push(obj)
+                    arrs.push(img)
+                }
+                var imgs= []
+                for(var j=0;j<arrs.length;j++){
+                    imgs.push(arrs[j].name)
+                }
+                this.realLandAttachUrl = imgs.toString()
+            }else{
+                that.realLandAttach = []
+            }
+            if(that.pic.length>0){
+                var fileList = that.pic;
+                var arr = []
+                var arrs = []
+                for(var i=0;i<fileList.length;i++){
+                    var obj = {};
+                    var img = {};
+                    if(fileList[i].response){
+                        obj['url'] = fileList[i].response.data[0]
+                        obj['name'] = fileList[i].name
+                        img['name'] =  fileList[i].name+'#_#'+fileList[i].response.data[0]
+                    }else{
+                        obj['url'] = fileList[i].name
+                        obj['name'] = fileList[i].name
+                        img['name'] =  fileList[i].name+'#_#'+fileList[i].url
+                    }
+
+                    arr.push(obj)
+                    arrs.push(img)
+                }
+                var imgs= []
+                for(var j=0;j<arrs.length;j++){
+                    imgs.push(arrs[j].name)
+                }
+                this.picUrl = imgs.toString()
+            }else{
+                that.pic = []
+            }
             var data = {
                 'id':null,
                 'assetCode':this.assetCode,
                 'assetUser':this.assetUser,
-                'houseAddress':this.houseAddress,
                 'assetUserOri':this.assetUserOri,
                 'houseNature':this.houseNatureVal,
+                'houseAddress':this.houseAddress,
                 'noCheckinArea':this.noCheckinArea,
                 'houseStructure':this.houseStructureVal,
                 'houseArea':this.houseArea,
@@ -398,6 +974,7 @@
                 'dealAmount':this.dealAmount,
                 'houseNow':this.houseNowVal,
                 'houseNo':this.houseNo,
+                'label':this.label,
                 'remark':this.remark,
                 'pic':this.picUrl,
                 'accNameWater':this.accNameWater,
@@ -409,81 +986,141 @@
                 'accNameGas':this.accNameGas,
                 'accNoGas':this.accNoGas,
                 'accTypeGas':this.accTypeGas,
+                'legalArea':this.legalArea,
+                'assHouseArea':this.assHouseArea,
             }
-            if(data.assetCode == ''){
+            console.log(data)
+            if(data.assetCode == '' || data.assetCode == undefined){
                 this.$message({
                     message: '资产编号不能为空',
                     type: 'warning'
                 });
                 return;
             }
-            if(data.assetUser == ''){
+            if(data.assetCode.indexOf("LT")){
+                this.$message({
+                    message: '资产编号格式必须以“LT”开头',
+                    type: 'warning'
+                });
+                return;
+            }
+
+            if(data.assetUser == '' || data.assetUser == undefined){
                 this.$message({
                     message: '产权人不能为空',
                     type: 'warning'
                 });
                 return;
             }
-            if(data.houseAddress == ''){
+            if(data.houseAddress == '' || data.houseAddress == undefined){
                 this.$message({
                     message: '房屋坐落不能为空',
                     type: 'warning'
                 });
                 return;
             }
-            if(data.houseNature == ''){
+            if(data.houseNature == '' || data.houseNature == undefined){
                 this.$message({
-                    message: '房屋类型不能为空',
+                    message: '房屋性质不能为空',
                     type: 'warning'
                 });
                 return;
             }
-            if(data.houseArea == ''){
+            if(data.houseStructure == '' || data.houseStructure == undefined){
+                this.$message({
+                    message: '房屋结构不能为空',
+                    type: 'warning'
+                });
+                return;
+            }
+
+            if(data.houseArea == '' || data.houseArea == undefined){
                 this.$message({
                     message: '房屋建筑面积不能为空',
                     type: 'warning'
                 });
                 return;
             }
-            if(data.assetUseVal == ''){
+            if(data.assetUse == '' || data.assetUse == undefined){
                 this.$message({
                     message: '产权用途不能为空',
                     type: 'warning'
                 });
                 return;
             }
-            if(data.landArea == ''){
+            if(data.landArea == '' || data.landArea == undefined){
                 this.$message({
                     message: '土地面积不能为空',
                     type: 'warning'
                 });
                 return;
             }
-            if(data.assetUse == ''){
+            if(data.landUse == '' || data.landUse == undefined){
                 this.$message({
                     message: '土地用途为空',
                     type: 'warning'
                 });
                 return;
             }
-            if(data.landNatureVal){
+            if(data.landNature == '' || data.landNature == undefined){
                 this.$message({
                     message: '土地性质为空',
                     type: 'warning'
                 });
                 return;
             }
-            if(data.houseNowVal == ''){
+            if(data.houseNow == '' ||  data.houseNow == undefined){
                 this.$message({
                     message: '房屋现状为空',
                     type: 'warning'
                 });
                 return;
             }
-                this.$alert('已提交，等待管理员审核', '提示', {
+                this.$alert('已保存！', '提示', {
                     callback: action => {
                     this.$emit('changeShow','false')
-                this.$emit('child-event',data)
+                this.$emit('child-event',data,this.numIndex)
+                        this.assetCode = '';
+                        this.assetUser = '';
+                        this.houseAddress = '';
+                        this.assetUserOri = '';
+                        this.houseNatureVal = '';
+                        this.noCheckinArea = '';
+                        this.houseStructureVal= '';
+                        this.houseArea= '';
+                        this.assetUseVal= '';
+                        this.landArea= '';
+                        this.landUseVal= '';
+                        this.landNatureVal= '';
+                        this.noCheckinVal= '';
+                        this.realEstate= '';
+                        this.realEstateAttachUrl= '';
+                        this.realHouseAttachUrl= '';
+                        this.realHouse= '';
+                        this.realLandAttachUrl= '';
+                        this.realLand= '';
+                        this.dealAmount= '';
+                        this.houseNowVal= '';
+                        this.houseNo= '';
+                        this.label= '';
+                        this.remark= '';
+                        this.picUrl= '';
+                        this.accNameWater= '';
+                        this.accNoWater= '';
+                        this.accTypeWater= '';
+                        this.accNameElec= '';
+                        this.accNoElec= '';
+                        this.accTypeElec= '';
+                        this.accNameGas= '';
+                        this.accNoGas = '';
+                        this.accTypeGas = '';
+                        this.legalArea = '';
+                        this.assHouseArea = '';
+                        this.fileList = [];
+                        this.realEstateAttach=[],
+                            this.realHouseAttach=[],
+                            this.realLandAttach=[]
+                        // this.$refs.upload.clearFiles()
             }
             });
         },
@@ -498,14 +1135,57 @@
         noCheckinChange(val){this.noCheckinVal = val;},
         houseNowChange(val){this.houseNowVal = val;},
         // 不动产证
-        handleRemove(file, fileList) {
-            console.log(file, fileList);
+        bdhandleRemove(file, fileList) {
+            var arr = []
+            var arrs = []
+            for(var i=0;i<fileList.length;i++){
+                var obj = {};
+                var img = {};
+                if(fileList[i].response){
+                    obj['url'] = fileList[i].response.data[0]
+                    obj['name'] = fileList[i].name
+                    img['name'] =  fileList[i].name+'#_#'+fileList[i].response.data[0]
+                }else{
+                    obj['url'] = fileList[i].name
+                    obj['name'] = fileList[i].name
+                    img['name'] =  fileList[i].name+'#_#'+fileList[i].url
+                }
+
+                arr.push(obj)
+                arrs.push(img)
+            }
+            var imgs= []
+            console.log(arrs)
+            for(var j=0;j<arrs.length;j++){
+                imgs.push(arrs[j].name)
+            }
+            this.realEstateAttachUrl = imgs.toString()
         },
-        handleSuccess(res,file){
-            console.log(res)
-            this.realEstateAttach.push({'url':res.data[0],'name':file.name})
-            this.realEstateAttachUrl = this.realEstateAttach[0].url
-            console.log(this.realEstateAttach)
+        handleSuccess(res,file,fileList){
+            console.log(fileList)
+            var arr = []
+            var arrs = []
+            for(var i=0;i<fileList.length;i++){
+                var obj = {};
+                var img = {};
+                if(fileList[i].response){
+                    obj['url'] = fileList[i].response.data[0]
+                    obj['name'] = fileList[i].name
+                    img['name'] =  fileList[i].name+'#_#'+fileList[i].response.data[0]
+                }else{
+                    obj['url'] = fileList[i].name
+                    obj['name'] = fileList[i].name
+                    img['name'] =  fileList[i].name+'#_#'+fileList[i].url
+                }
+
+                arr.push(obj)
+                arrs.push(img)
+            }
+            var imgs= []
+            for(var j=0;j<arrs.length;j++){
+                imgs.push(arrs[j].name)
+            }
+            this.realEstateAttachUrl = imgs.toString()
         },
         handlePreview(file) {
             console.log(file);
@@ -514,11 +1194,34 @@
             this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
         },
         beforeRemove(file, fileList) {
-            return this.$confirm(`确定移除 ${ file.name }？`);
+
         },
         // 房产证
         realHouseAttachRemove(file, fileList) {
-            console.log(file, fileList);
+            var arr = []
+            var arrs = []
+            for(var i=0;i<fileList.length;i++){
+                var obj = {};
+                var img = {};
+                if(fileList[i].response){
+                    obj['url'] = fileList[i].response.data[0]
+                    obj['name'] = fileList[i].name
+                    img['name'] =  fileList[i].name+'#_#'+fileList[i].response.data[0]
+                }else{
+                    obj['url'] = fileList[i].name
+                    obj['name'] = fileList[i].name
+                    img['name'] =  fileList[i].name+'#_#'+fileList[i].url
+                }
+
+                arr.push(obj)
+                arrs.push(img)
+            }
+            var imgs= []
+            console.log(arrs)
+            for(var j=0;j<arrs.length;j++){
+                imgs.push(arrs[j].name)
+            }
+            this.realHouseAttachUrl = imgs.toString()
         },
         realHouseAttachPreview(file) {
             console.log(file);
@@ -526,16 +1229,59 @@
         realHouseAttachExceed(files, fileList) {
             this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
         },
-        realHouseAttachRemove(file, fileList) {
-            return this.$confirm(`确定移除 ${ file.name }？`);
-        },
-        realHouseAttachSuccess(res,file){
-            this.realHouseAttach.push({'url':res.data[0],'name':file.name})
-            this.realHouseAttachUrl = this.realHouseAttach[0].url
+        realHouseAttachSuccess(res,file,fileList){
+            var arr = []
+            var arrs = []
+            for(var i=0;i<fileList.length;i++){
+                var obj = {};
+                var img = {};
+                if(fileList[i].response){
+                    obj['url'] = fileList[i].response.data[0]
+                    obj['name'] = fileList[i].name
+                    img['name'] =  fileList[i].name+'#_#'+fileList[i].response.data[0]
+                }else{
+                    obj['url'] = fileList[i].response.data[0]
+                    obj['name'] = fileList[i].name
+                    img['name'] =  fileList[i].name+'#_#'+fileList[i].url
+                }
+                arr.push(obj)
+                arrs.push(img)
+            }
+            var imgs= []
+            console.log(arrs)
+            for(var j=0;j<arrs.length;j++){
+                imgs.push(arrs[j].name)
+            }
+            this.realHouseAttachUrl = imgs.toString()
+            // this.realHouseAttach.push({'url':res.data[0],'name':file.name})
+            // this.realHouseAttachUrl = this.realHouseAttach[0].url
         },
         // 土地证
         realLandAttachRemove(file, fileList) {
-            console.log(file, fileList);
+            var arr = []
+            var arrs = []
+            for(var i=0;i<fileList.length;i++){
+                var obj = {};
+                var img = {};
+                if(fileList[i].response){
+                    obj['url'] = fileList[i].response.data[0]
+                    obj['name'] = fileList[i].name
+                    img['name'] =  fileList[i].name+'#_#'+fileList[i].response.data[0]
+                }else{
+                    obj['url'] = fileList[i].response.data[0]
+                    obj['name'] = fileList[i].name
+                    img['name'] =  fileList[i].name+'#_#'+fileList[i].url
+                }
+
+                arr.push(obj)
+                arrs.push(img)
+            }
+            var imgs= []
+            console.log(arrs)
+            for(var j=0;j<arrs.length;j++){
+                imgs.push(arrs[j].name)
+            }
+            this.realLandAttachUrl = imgs.toString()
         },
         realLandAttachPreview(file) {
             console.log(file);
@@ -546,9 +1292,32 @@
         realLandAttachRemove(file, fileList) {
             return this.$confirm(`确定移除 ${ file.name }？`);
         },
-        realLandAttachSuccess(res,file){
-            this.realLandAttach.push({'url':res.data[0],'name':file.name})
-            this.realLandAttachUrl = this.realLandAttach[0].url
+        realLandAttachSuccess(res,file,fileList){
+            var arr = []
+            var arrs = []
+            for(var i=0;i<fileList.length;i++){
+                var obj = {};
+                var img = {};
+                if(fileList[i].response){
+                    obj['url'] = fileList[i].response.data[0]
+                    obj['name'] = fileList[i].name
+                    img['name'] =  fileList[i].name+'#_#'+fileList[i].response.data[0]
+                }else{
+                    obj['url'] = fileList[i].response.data[0]
+                    obj['name'] = fileList[i].name
+                    img['name'] =  fileList[i].name+'#_#'+fileList[i].url
+                }
+                arr.push(obj)
+                arrs.push(img)
+            }
+            var imgs= []
+            console.log(arrs)
+            for(var j=0;j<arrs.length;j++){
+                imgs.push(arrs[j].name)
+            }
+            this.realLandAttachUrl = imgs.toString()
+            // this.realLandAttach.push({'url':res.data[0],'name':file.name})
+            // this.realLandAttachUrl = this.realLandAttach[0].url
         },
         // 照片
         handleRemove(file, fileList) {
@@ -560,10 +1329,24 @@
             if(fileList.length >= 3){
                 this.showUpload = true
             }
-            console.log(res.data[0])
-            console.log(file.name)
-            this.pic.push({'url':res.data[0],'name':file.name})
-            this.picUrl = this.pic[0].url
+            console.log(fileList)
+            var arr = []
+            var arrs = []
+            for(var i=0;i<fileList.length;i++){
+                var obj = {};
+                var img = {};
+                obj['url'] = fileList[i].response.data[0]
+                obj['name'] = fileList[i].name
+                img['name'] =  fileList[i].name+'#_#'+fileList[i].response.data[0]
+                arr.push(obj)
+                arrs.push(img)
+            }
+            var imgs= []
+            console.log(arrs)
+            for(var j=0;j<arrs.length;j++){
+                imgs.push(arrs[j].name)
+            }
+            this.picUrl = imgs.toString()
         },
         handleClose(){
             // 子组件调用父组件方法，并传递参数
@@ -573,6 +1356,8 @@
             console.log(file)
             this.dialogImageUrl = file.url;
             this.dialogVisible = true;
+            this.imgShow = true;
+            this.showImgUrl = file.url;
         },
         handleDownload(file) {
             console.log(file);
@@ -592,6 +1377,8 @@
     }
 }
 </script>
+<style>
+</style>
 <style scoped>
     #mapDiv {
         height: 150px;
@@ -604,10 +1391,11 @@
     .count>>>.col {margin: 0 25px 25px 0;background: #fff;}
     .count>>>.el-form-item__label {width: 25%;font-size: 14px;line-height: 40px;}
     .count>>>.el-form-item {margin-bottom: 5px;}
-    .count>>>.el-input {width: 400px;}
+    /*.count>>>.el-input {width: 400px;}*/
+    .aaaaa>>>.el-dialog {z-index: 99999;}
     .count>>>.el-upload--picture-card {width: 40px;height:40px;position: absolute;top:0;right:220px;}
     .count>>>.el-upload--picture-card i {width: 40px;height:40px;position: absolute;top:6px;left:0;}
-    .count .phone>>>.el-upload--picture-card {width: 140px;height:140px;position: relative;right: inherit;}
+    .count .phone>>>.el-upload--picture-card {width: 100px;height:100px;position: relative;right: inherit;}
     .count .phone>>>.el-upload--picture-card i {width: 140px;height:140px;position: relative;}
     .count .table>>>.el-input {width: 150px;}
     .filess>>>.el-upload-list{
@@ -615,11 +1403,11 @@
         top: 0;
         left: 90px;
     }
-    .count>>>.upload-demo {    width: 200px;
-        position: absolute;
-        top: 0;
-        right: 85px;
-        z-index: 9999;}
+    .count>>>.upload-demo {
+        width: 200px;
+        margin-left: 86px;
+        position: relative;
+        z-index: 999;}
     /*.count>>>.el-upload-list{position: absolute;left:90px;top:0;}*/
     .count>>>.el-upload-list__item-name{width: 140px;}
 

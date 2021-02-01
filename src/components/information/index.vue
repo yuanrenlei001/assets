@@ -7,41 +7,62 @@
             </el-radio-group>
         </div>
         <!--超管-->
-        <div v-if="user == '超管' || user == '审批人'">
-            <el-row>
-                <el-form ref="form" >
-                    <el-col class="sort" :span="7">
-                        <el-form-item label="资产审批管理：">
+        <div v-if="(user == '超管' || user == '审批人') && tabPosition3 == '1'">
+        <!--<div v-if="user == '审批人'">-->
+            <el-row class="zzzz">
+                <el-form ref="form" :lg="24">
+                    <el-col  :lg="7">
+                        <el-col :lg="8"><div class="topLeft">资产审批管理：</div></el-col>
+                        <el-col :lg="16">
                             <el-radio-group v-model="tabPosition" style="margin-bottom: 20px;" @change="ZCtype">
                                 <el-radio-button label="-1">全部</el-radio-button>
                                 <el-radio-button label="1">已审批</el-radio-button>
                                 <el-radio-button label="0">未审批</el-radio-button>
                             </el-radio-group>
-                        </el-form-item>
+                        </el-col>
+                        <!--<el-form-item label="资产审批管理：">-->
+                            <!--<el-radio-group v-model="tabPosition" style="margin-bottom: 20px;" @change="ZCtype">-->
+                                <!--<el-radio-button label="-1">全部</el-radio-button>-->
+                                <!--<el-radio-button label="1">已审批</el-radio-button>-->
+                                <!--<el-radio-button label="0">未审批</el-radio-button>-->
+                            <!--</el-radio-group>-->
+                        <!--</el-form-item>-->
                     </el-col>
-                    <el-col class="sort" :span="12">
-                        <el-form-item label="审批类型：">
-                            <el-select  v-model="value" placeholder="请选择">
+                    <el-col  :lg="12">
+                        <el-col :lg="8"><div class="topLeft">审批类型：</div></el-col>
+                        <el-col :lg="16">
+                            <el-select  v-model="spoptionsval" placeholder="请选择" @change="spoptionsvals">
                                 <el-option
-                                        v-for="item in options"
+                                        v-for="item in spoptions"
                                         :key="item.value"
                                         :label="item.label"
                                         :value="item.value">
                                 </el-option>
                             </el-select>
-                            <el-input style="width: 500px;"
-                                      placeholder="请输入内容"
-                                      prefix-icon="el-icon-search"
-                                      v-model="input2">
-                            </el-input>
-                        </el-form-item>
+                        </el-col>
+                        <!--<el-form-item label="审批类型：">-->
+                            <!--<el-select  v-model="spoptionsval" placeholder="请选择" @change="spoptionsvals">-->
+                                <!--<el-option-->
+                                        <!--v-for="item in spoptions"-->
+                                        <!--:key="item.value"-->
+                                        <!--:label="item.label"-->
+                                        <!--:value="item.value">-->
+                                <!--</el-option>-->
+                            <!--</el-select>-->
+                        <!--</el-form-item>-->
                     </el-col>
-                    <el-col :span="3" class="rightS">
+                    <el-col  :lg="5">
                         <div class="btns2">
                             <el-button type="danger" @click="plsp">批量审批</el-button>
                             <el-button type="primary">导出</el-button>
                         </div>
                     </el-col>
+                    <!--<el-col class="rightS">-->
+                        <!--<div class="btns2">-->
+                            <!--<el-button type="danger" @click="plsp">批量审批</el-button>-->
+                            <!--<el-button type="primary">导出</el-button>-->
+                        <!--</div>-->
+                    <!--</el-col>-->
                 </el-form>
             </el-row>
             <el-row class="tables" >
@@ -49,6 +70,7 @@
                         ref="multipleTable"
                         :data="tableData"
                         tooltip-effect="dark"
+                        :height="heighTable"
                         :key="toggleIndex"
                         style="width: 100%"
                         @selection-change="handleSelectionChange">
@@ -155,35 +177,50 @@
         <!--资产管理员-->
         <div v-if="user == '提交人'">
             <el-row>
-                <el-form ref="form" >
-                    <el-col class="sort" :span="9">
-                        <el-form-item label="资产审批管理：">
+                <el-form ref="form" :lg="24">
+                    <el-col  :lg="9">
+                        <el-col :lg="8"><div class="topLeft">资产审批管理：</div></el-col>
+                        <el-col :lg="16">
                             <el-radio-group v-model="tabPosition2" style="margin-bottom: 30px;" @change="typeChange2">
                                 <el-radio-button label="-1">全部</el-radio-button>
                                 <el-radio-button label="0">审批中</el-radio-button>
                                 <el-radio-button label="1">已审批</el-radio-button>
                                 <el-radio-button label="2">未通过</el-radio-button>
                             </el-radio-group>
-                        </el-form-item>
+                        </el-col>
+                        <!--<el-form-item label="资产审批管理：">-->
+                            <!--<el-radio-group v-model="tabPosition2" style="margin-bottom: 30px;" @change="typeChange2">-->
+                                <!--<el-radio-button label="-1">全部</el-radio-button>-->
+                                <!--<el-radio-button label="0">审批中</el-radio-button>-->
+                                <!--<el-radio-button label="1">已审批</el-radio-button>-->
+                                <!--<el-radio-button label="2">未通过</el-radio-button>-->
+                            <!--</el-radio-group>-->
+                        <!--</el-form-item>-->
                     </el-col>
-                    <el-col class="sort" :span="10">
-                        <el-form-item label="审批类型：">
-                            <el-select  v-model="value" placeholder="请选择">
+                    <el-col  :lg="10">
+                        <el-col :lg="8"><div class="topLeft">审批类型：</div></el-col>
+                        <el-col :lg="16">
+                            <el-select  v-model="spoptionsval" placeholder="请选择" @change="spoptionsvals">
                                 <el-option
-                                        v-for="item in options"
+                                        v-for="item in spoptions"
                                         :key="item.value"
                                         :label="item.label"
                                         :value="item.value">
                                 </el-option>
                             </el-select>
-                            <el-input style="width: 300px;"
-                                      placeholder="请输入内容"
-                                      prefix-icon="el-icon-search"
-                                      v-model="input2">
-                            </el-input>
-                        </el-form-item>
+                        </el-col>
+                        <!--<el-form-item label="审批类型：">-->
+                            <!--<el-select  v-model="spoptionsval" placeholder="请选择" @change="spoptionsvals">-->
+                                <!--<el-option-->
+                                        <!--v-for="item in spoptions"-->
+                                        <!--:key="item.value"-->
+                                        <!--:label="item.label"-->
+                                        <!--:value="item.value">-->
+                                <!--</el-option>-->
+                            <!--</el-select>-->
+                        <!--</el-form-item>-->
                     </el-col>
-                    <el-col :span="3" class="rightS">
+                    <el-col  :lg="3">
                         <div class="btns2">
                             <el-button type="danger">批量修改</el-button>
                             <el-button type="primary">导出</el-button>
@@ -196,6 +233,7 @@
                         ref="multipleTable"
                         :data="tableData2"
                         tooltip-effect="dark"
+                        :height="heighTable"
                         :key="toggleIndex"
                         style="width: 100%"
                         @selection-change="handleSelectionChange">
@@ -282,88 +320,152 @@
             </el-dialog>
         </div>
         <!--物业-->
-        <div v-if="user == '物业审批人'">
-            <el-row>
-                <el-form ref="form" >
-                    <el-col class="sort" :span="9">
-                            <el-radio-group v-model="tabPosition2" >
-                                <el-radio-button label="top">全部</el-radio-button>
-                                <el-radio-button label="left">未审批</el-radio-button>
-                                <el-radio-button label="left1">待审批</el-radio-button>
-                                <el-radio-button label="left1">处理中</el-radio-button>
-                                <el-radio-button label="left2">已完成</el-radio-button>
-                                <el-radio-button label="left3">被驳回</el-radio-button>
-                            </el-radio-group>
-                    </el-col>
-                </el-form>
+        <div v-if="(user == '物业审批人' || user=='超管' )&& tabPosition3 == '2'">
+            <!--<el-row>-->
+                <!--<el-form ref="form" >-->
+                    <!--<el-col class="sort" :span="12">-->
+                            <!--<el-radio-group v-model="wytabPosition2" @change="wyChange" >-->
+                                <!--<el-radio-button label="-1">全部</el-radio-button>-->
+                                <!--<el-radio-button label="0">待审批</el-radio-button>-->
+                                <!--<el-radio-button label="1">处理中</el-radio-button>-->
+                                <!--<el-radio-button label="3">已完成</el-radio-button>-->
+                                <!--<el-radio-button label="2">被驳回</el-radio-button>-->
+                            <!--</el-radio-group>-->
+                    <!--</el-col>-->
+                <!--</el-form>-->
 
-            </el-row>
-            <el-row>
+            <!--</el-row>-->
+            <el-row style="margin-top: 20px;">
                 <el-form ref="form" >
-                    <el-col class="sort" :span="8">
-                        <el-form-item label="巡检时间：">
+                    <el-col  :lg="8">
+                        <el-radio-group v-model="wytabPosition2" @change="wyChange" >
+                            <el-radio-button label="-1">全部</el-radio-button>
+                            <el-radio-button label="0">待审批</el-radio-button>
+                            <el-radio-button label="1">处理中</el-radio-button>
+                            <el-radio-button label="3">已完成</el-radio-button>
+                            <el-radio-button label="2">被驳回</el-radio-button>
+                        </el-radio-group>
+                    </el-col>
+                    <el-col  :lg="7">
+                        <el-col :lg="8"><div class="topLeft">巡检时间：</div></el-col>
+                        <el-col :lg="16">
                             <el-date-picker
+                                     style="width: 100%;"
                                     v-model="value1"
-                                    type="datetimerange"
+                                    type="daterange"
+                                    align="right"
+                                    value-format="yyyy-MM-dd"
+                                    unlink-panels
+                                    range-separator="至"
+                                    @change="time"
                                     start-placeholder="开始日期"
                                     end-placeholder="结束日期"
-                                    :default-time="['12:00:00']">
+                                    :picker-options="pickerOptions">
                             </el-date-picker>
-                        </el-form-item>
+                        </el-col>
+                        <!--<el-form-item label="巡检时间：">-->
+                            <!--<el-date-picker-->
+                                    <!--v-model="value1"-->
+                                    <!--type="daterange"-->
+                                    <!--align="right"-->
+                                    <!--value-format="yyyy-MM-dd"-->
+                                    <!--unlink-panels-->
+                                    <!--range-separator="至"-->
+                                    <!--@change="time"-->
+                                    <!--start-placeholder="开始日期"-->
+                                    <!--end-placeholder="结束日期"-->
+                                    <!--:picker-options="pickerOptions">-->
+                            <!--</el-date-picker>-->
+                        <!--</el-form-item>-->
                     </el-col>
-                    <el-col class="sort" :span="10">
-                        <el-form-item label="问题类型：">
-                            <el-select  v-model="value" placeholder="请选择">
+                    <el-col  :lg="8">
+                        <el-col :lg="4" style="opacity: 0;">
+                            <div class="topLeft">土：</div>
+                        </el-col>
+                        <el-col :lg="6"><div class="topLeft" style="text-align: center;">问题：</div></el-col>
+                        <el-col :lg="8">
+                            <el-select v-model="value" multiple placeholder="请选择" @change="questions">
                                 <el-option
-                                        v-for="item in options"
+                                        v-for="item in options2"
                                         :key="item.value"
                                         :label="item.label"
                                         :value="item.value">
                                 </el-option>
                             </el-select>
-                            <el-input style="width: 300px;"
-                                      placeholder="请输入内容"
-                                      prefix-icon="el-icon-search"
-                                      v-model="input2">
-                            </el-input>
-                        </el-form-item>
+                        </el-col>
+                        <el-col :lg="2" style="opacity: 0;">
+                            <div class="topLeft">土：</div>
+                        </el-col>
+                        <el-col :lg="4">
+                            <el-button type="warning" @click="xunjian">巡检打卡</el-button>
+                        </el-col>
+                        <!--<el-form-item label="问题类型：">-->
+                            <!--<el-select v-model="value" multiple placeholder="请选择" @change="questions">-->
+                                <!--<el-option-->
+                                        <!--v-for="item in options2"-->
+                                        <!--:key="item.value"-->
+                                        <!--:label="item.label"-->
+                                        <!--:value="item.value">-->
+                                <!--</el-option>-->
+                            <!--</el-select>-->
+                        <!--</el-form-item>-->
                     </el-col>
-                    <el-col :span="3" class="rightS">
-                        <div class="btns2">
-                            <el-button type="danger">批量审批</el-button>
-                            <el-button type="primary">导出</el-button>
-                        </div>
-                    </el-col>
+                    <!--<el-col :span="3" class="rightS">-->
+                        <!--<div class="btns2">-->
+                            <!--<el-button type="danger">批量审批</el-button>-->
+                            <!--<el-button type="primary">导出</el-button>-->
+                        <!--</div>-->
+                    <!--</el-col>-->
                 </el-form>
             </el-row>
             <el-row class="tables" style="margin-top: 20px;">
                 <el-table
                         ref="multipleTable"
-                        :data="tableData3"
+                        :data="wytableData2"
+                        :height="heighTable"
                         tooltip-effect="dark"
                         style="width: 100%"
                         @selection-change="handleSelectionChange">
                     <el-table-column type="selection" width="55"></el-table-column>
-                    <el-table-column  prop="date1" label="序号"></el-table-column>
-                    <el-table-column prop="date3" label="产权人"></el-table-column>
-                    <el-table-column prop="date8" label="资产坐落"></el-table-column>
-                    <el-table-column prop="date5" label="巡检人/单位"></el-table-column>
-                    <el-table-column prop="date4" label="巡检时间"></el-table-column>
-                    <el-table-column prop="date6" label="问题类型"></el-table-column>
+                    <el-table-column  type="index" label="序号"></el-table-column>
+                    <el-table-column prop="meansBook.assetUser" label="产权人"></el-table-column>
+                    <el-table-column prop="meansBook.houseAddress" label="资产坐落"></el-table-column>
+                    <el-table-column prop="sysUser.name" label="巡检人/单位"></el-table-column>
+                    <el-table-column prop="date4" label="巡检时间">
+                        <template slot-scope="wytableData2">
+                            {{wytableData2.row.createTime | dateFormat}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="question" label="问题类型"></el-table-column>
                     <el-table-column
                             label="问题详情"
                     >
-                        <template slot-scope="scope">
-                            <el-button  type="text" size="small" @click="detail2">详情</el-button>
+                        <template slot-scope="wytableData2">
+                            <el-button  type="text" size="small" @click="detail2(wytableData2.row)">详情</el-button>
                         </template>
                     </el-table-column>
                     <el-table-column
                             fixed="right"
                             label="操作"
                     >
-                        <template slot-scope="scope">
-                            <el-button  type="text" size="small" @click="open('success')">通过</el-button>
-                            <el-button  type="text" size="small" @click="open('cancel')">驳回</el-button>
+                        <template slot-scope="wytableData2">
+                            <div v-if="sysAuthAdmin == ''">
+                                <div>
+                                    <el-button  type="text" size="small" style="color: #999;">通过</el-button>
+                                    <el-button  type="text" size="small" style="color: #999;">驳回</el-button>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <div v-if="wytableData2.row.status == 0">
+                                    <el-button  type="text" size="small" @click="open('success',wytableData2.row.id)">通过</el-button>
+                                    <el-button  type="text" size="small" @click="open('cancel',wytableData2.row.id)">驳回</el-button>
+                                </div>
+                                <div v-else>
+                                    <el-button  type="text" size="small" style="color: #999;">通过</el-button>
+                                    <el-button  type="text" size="small" style="color: #999;">驳回</el-button>
+                                </div>
+                            </div>
+
                         </template>
                     </el-table-column>
                 </el-table>
@@ -373,16 +475,18 @@
                         background
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
-                        :current-page="currentPage4"
+                        :current-page="page.pageNum"
+                        :hide-on-single-page="1"
                         :page-sizes="[10, 20, 30, 40]"
-                        :page-size="10"
+                        :page-size="page.pageSize"
                         layout=" prev, pager, next, sizes,jumper"
-                        :total="400">
+                        :total="page.total">
                 </el-pagination>
             </el-row>
 
             <!--巡检问题详情-->
             <assets-infor-wuye :dialogKan="dialogKan"  @changeShow="showdialogKan" ref="dialogKanRef"></assets-infor-wuye>
+            <mapxj :dialogXj="dialogXj"  @changeShow="showdialogXj" ref="dialogXjRef"></mapxj>
         </div>
 
         <!--资产详情查看-->
@@ -397,10 +501,40 @@
     import AssetsInforManager from '@/components/information/AssetsInforManager'
     import AssetsInforWuye from '@/components/information/AssetsInforWuye'
     import AssetsKan from '@/components/assets/AssetsKan'
+    import mapxj from '@/components/information/AssetsInforXj'
     export default {
         name: 'login',
         data () {
             return {
+                heighTable:300,
+                pickerOptions: {
+                    shortcuts: [{
+                        text: '最近一周',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近一个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近三个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }]
+                },
+                wytabPosition2:-1,
                 sysAuthAdmin:sessionStorage.getItem('authStr'),
                 dialogUpdate: false,
                 toggleIndex:0,
@@ -408,6 +542,26 @@
                 currentPage4: 4,
                 user:1,
                 input2:'',
+                options2: [{
+                    value: '门窗锁损坏',
+                    label: '门窗锁损坏'
+                }, {
+                    value: '房屋损坏',
+                    label: '房屋损坏'
+                }, {
+                    value: '占用',
+                    label: '占用'
+                }, {
+                    value: '坏境卫生',
+                    label: '坏境卫生'
+                }, {
+                    value: '其他',
+                    label: '其他'
+                }],
+                spoptions:[
+                    {label:'全部',value:'-1'},{label:'审批中',value:'0'},{label:'已审批',value:'1'},{label:'未通过',value:'2'}
+                ],
+                spoptionsval:'',
                 options: [
                     {
                         value: '选项1',
@@ -432,6 +586,9 @@
                 ],
                 tableData2: [
                 ],
+                wytableData2: [
+                    {assetCode:''}
+                ],
                 tableData3: [
                     {date1: '1',date2:'新增资产',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'寸池潭7号'},
                     {date1: '2',date2:'信息更新',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型2',date7:'',date8:'下塘东街7弄3号'},
@@ -452,6 +609,7 @@
                 dialogVisibleAdd3: false,
                 AssetsKanVisible: false,
                 dialogKan: false,
+                dialogXj: false,
                 title:'',
                 type:'',
                 type2:'',
@@ -459,19 +617,86 @@
                 tabPosition: -1,
                 tabPosition2: '-1',
                 tabPosition3:'1',
+                total:1,
+                page:'',
                 pageNum:1,
                 pageSize:10,
-                total:1,
                 pageType:false,
                 pageSizesList: [10, 15, 20, 30, 50],
                 status:-1,
                 isAccount: true,
+                startTime:'',
+                endTime:'',
+                val:''
             }
         },
         components:{
-            AssetsInfor,AssetsInforManager,AssetsInforWuye,AssetsKan
+            AssetsInfor,AssetsInforManager,AssetsInforWuye,AssetsKan,mapxj
         },
         methods:{
+            xunjian(){
+                this.dialogXj =true;
+                this.$refs.dialogXjRef.detail('123')
+                },
+            time(e){
+                console.log(e)
+                if(e){
+                    this.startTime=e[0]
+                    this.endTime=e[1]
+                    this.wysplist(1,this.val,this.startTime,this.endTime);
+                    // this.findList(1,this.val,this.rentStart,this.rentEnd);
+                }else{
+                    this.rentStart=''
+                    this.rentEnd=''
+                    this.wysplist(1,this.val,this.startTime,this.endTime);
+                    // this.findList(1,this.val,this.rentStart,this.rentEnd);
+                }
+
+            },
+            questions(val){
+                this.val = val.toString();
+                this.wysplist(1,this.val,this.startTime,this.endTime);
+            },
+            // 物业审批人
+            wysplist(page,question,startTime,endTime){
+                var that = this;
+                this.toggleIndex = Math.random()
+                var data ={
+                    question:question,
+                    pageNum:page,
+                    pageSize:10,
+                    status:this.wytabPosition2,
+                    startTime:startTime,
+                    endTime:endTime
+                }
+                this.$axios({
+                    url: this.getAjax + '/admin/meansBookReportAdmin/findList',
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    data:data
+                }).then(res => {
+                    if(res.data.code == '2004'){
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'warning'
+                        });
+                        this.$router.push('/')
+                    }else{
+                        var list = res.data.data.records;
+                        that.wytableData2 = '';
+                        that.wytableData2 = list;
+                        this.page = [];
+                        this.page = res.data.data;
+                        that.total = res.data.data.total
+                        if(that.total<=1){
+                            that.pageType = false
+                        }
+                    }
+                })
+            },
             // 催办
             cui(data){
                 this.$axios({
@@ -537,11 +762,11 @@
                 }
             },
             // 资产修改
-            dialogUpdates(index,data){
-                this.dialogUpdate = true
-                let param = data.id
-                this.$refs.dialogUpdateRef.detail(param)
-            },
+            // dialogUpdates(index,data){
+            //     this.dialogUpdate = true
+            //     let param = data.id
+            //     this.$refs.dialogUpdateRef.detail(param)
+            // },
             newInforUpdate(data){
                 this.findList();
             },
@@ -631,7 +856,7 @@
             // 资产修改
             dialogUpdates(index,data){
                 this.dialogUpdate = true
-                let param = data.id
+                let param = data.meansBook.id
                 this.$refs.dialogUpdateRef.detail(param)
             },
             showAssetsKan(data){
@@ -730,7 +955,7 @@
                 }else if(userType == 'xjsb,xjyjsp,htgx'){
                     this.user = '物业审批人';
                     this.status = -1
-                    this.splist();
+                    this.wysplist(1,'');
                 }else if(userType == 'xjsb,htgx'){
                     this.user = '提交人';
                     this.status = -1
@@ -756,7 +981,7 @@
                 }else if(userType == 'xjsb,xjyjsp,htgx'){
                     this.user = '物业审批人';
                     this.status = -1
-                    this.splist();
+                    this.wysplist(1,'');
                 }else if(userType == 'xjsb,htgx'){
                     this.user = '提交人';
                     this.status = -1
@@ -775,7 +1000,16 @@
             },
             typeChange(val){
                 console.log(val)
-                this.user = val
+                this.tabPosition3 = val
+                if(val == 1){
+                    this.splist();
+                }else{
+                    this.wysplist(1,this.val,this.startTime,this.endTime);
+                }
+            },
+            wyChange(val){
+                this.wytabPosition2 = val
+                this.wysplist(1)
             },
             typeChange2(val){
                 console.log(val)
@@ -783,27 +1017,118 @@
                 this.status = val
                 this.stjlist()
             },
-            open(type) {
-                console.log(type)
+            spoptionsvals(val){
+                var userType = this.userType;
+                if(userType == ''){
+                    this.status = val
+                    this.splist();
+                }else if(userType == 'zcxxlrjgx'){
+                    this.stjlist(val);
+                }else if(userType == 'zcgxsp'){
+                    this.status = val
+                    this.splist();
+                }else if(userType == 'xjsb,xjyjsp,htgx'){
+                    this.wysplist(val,'');
+                }else if(userType == 'xjsb,htgx'){
+                    this.stjlist(val);
+                }
+                else if(userType == 'xjejsp'){
+                    this.wysplist(val,'');
+                }
+            },
+            open(type,id) {
+                var arr = []
+                arr.push(id)
                 if(type=='success'){
-                    this.$alert('审批已通过', '提示', {
-                        callback: action => {
+                    var data = {
+                        ids:arr,
+                        status:1,
+                        remark:''
+                    }
+                    console.log(data)
+                    this.$axios({
+                        url: this.getAjax + '/admin/meansBookReportAdmin/check',
+                        method: "post",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:data
+                    }).then(res => {
+                        if(res.data.code == '2004'){
+                            this.$message({
+                                message: res.data.msg,
+                                type: 'warning'
+                            });
+                            this.$router.push('/')
+                        }else{
+                            this.$alert('审批已通过', '提示', {
+                                callback: action => {
+                                    this.wysplist(1)
+                                }
+                            });
                         }
-                    });
-                }else{
-                    this.$alert('审批已驳回', '提示', {
-                        callback: action => {
+                    })
+                }
+                else{
+
+                    this.$prompt('请输入驳回理由', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                    }).then(({ value }) => {
+                        var data = {
+                            ids:arr,
+                            status:2,
+                            remark:value
                         }
+                        this.$axios({
+                            url: this.getAjax + '/admin/meansBookReportAdmin/check',
+                            method: "post",
+                            headers: {
+                                'Content-Type': 'application/json;charset=UTF-8',
+                                'Token':sessionStorage.getItem('token')
+                            },
+                            data:data
+                        }).then(res => {
+                            if(res.data.code == '2004'){
+                                this.$message({
+                                    message: res.data.msg,
+                                    type: 'warning'
+                                });
+                                this.$router.push('/')
+                            }else{
+                                this.$message({
+                                    type: 'success',
+                                    message: '驳回成功！'
+                                });
+                                this.wysplist(1)
+                            }
+                        })
+                        console.log(data)
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '取消驳回'
+                        });
                     });
                 }
 
             },
 
             // 巡检问题详情
-            detail2(){
+            detail2(data){
                 this.dialogKan = true
+                this.$refs.dialogKanRef.detail(data)
             },
             showdialogKan(data){
+                if(data === 'false'){
+                    this.dialogKan = false
+                }else{
+                    this.dialogKan = true
+                }
+            },
+            showdialogXj(data){
+                console.log(data)
                 if(data === 'false'){
                     this.dialogKan = false
                 }else{
@@ -864,36 +1189,63 @@
             }
         },
         created:function () {
+            this.$nextTick(()=>{
+                var _h = window.screen.height;
+                console.log(_h)
+                if(_h == '768'){
+                    this.heighTable = _h*0.3
+                }else if(_h == '900'){
+                    this.heighTable = _h*0.4
+                }
+                else{
+                    this.heighTable = _h*0.5
+                }
+
+            })
         },
         mounted(){
             var userType = this.userType;
+            console.log(userType)
             if(userType == ''){
+                console.log(1)
                 this.user = '超管';
                 this.status = -1
                 this.splist();
+                this.wysplist(1,this.val,this.startTime,this.endTime);
             }else if(userType == 'zcxxlrjgx'){
+                console.log(2)
                 this.user = '提交人';
                 this.status = -1
                 this.stjlist();
             }else if(userType == 'zcgxsp'){
+                console.log(3)
                 this.user = '审批人';
                 this.status = -1
                 this.splist();
             }else if(userType == 'xjsb,xjyjsp,htgx'){
+                console.log(4)
                 this.user = '物业审批人';
                 this.status = -1
-                this.splist();
+                this.tabPosition3 = 2
+
+                this.wysplist(1,this.val,this.startTime,this.endTime);
             }else if(userType == 'xjsb,htgx'){
-                this.user = '提交人';
+                this.user = '无权限';
                 this.status = -1
                 this.stjlist();
+            }
+            else if(userType == 'xjejsp'){
+                this.user = '物业审批人';
+                this.status = -1
+                this.tabPosition3 = 2
+                this.wysplist(1,this.val,this.startTime,this.endTime);
             }
 
         }
     }
 </script>
 <style>
-    .el-input {width: 200px;}
+    /*.el-input {width: 200px;}*/
     .el-form-item__label {font-size: 16px;color: #333;}
     .el-dialog {background-color: #f2f2f2;}
     .el-message-box  .el-input {width: 370px;}
@@ -907,7 +1259,7 @@
     .btns>>>.el-menu--horizontal>.el-menu-item {color: #fff;}
     .rightS {position: relative;}
     .btns {position: absolute;top:-10px;right:-68px;}
-    .btns2 {position: absolute;top:0;right:-90px;}
+    .btns2 {position: absolute;top:0;right:0;}
     .tables>>>th{padding: 0;height:80px;background: #eee;font-size: 16px;font-weight: bold;color: #333;text-align: center;}
     .tables>>>.el-table {border: 1px dotted #eee;}
     .tables>>>.el-table__row td{padding: 0;height:50px;text-align: center;color: #333;}

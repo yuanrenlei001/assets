@@ -7,67 +7,108 @@
             </el-radio-group>
         </div>
        <div v-if="user == 1">
-           <el-row >
-               <el-form ref="form" >
-                   <el-col class="sort" :span="4">
-                       <el-form-item label="付款状态：">
-                           <el-select  v-model="value" placeholder="请选择">
+           <el-row  class="tops" style="position: relative;">
+               <el-form ref="form" :lg="24" >
+                   <el-col  :lg="5">
+                       <el-col :lg="8"><div class="topLeft">付款状态：</div></el-col>
+                       <el-col :lg="16">
+                           <el-select  v-model="valuefk" placeholder="请选择" @change="fk">
                                <el-option
-                                       v-for="item in options"
+                                       v-for="item in optionsfk"
                                        :key="item.value"
                                        :label="item.label"
                                        :value="item.value">
                                </el-option>
                            </el-select>
-                       </el-form-item>
+                       </el-col>
+                       <!--<el-form-item label="付款状态：">-->
+                           <!--<el-select  v-model="valuefk" placeholder="请选择" @change="fk">-->
+                               <!--<el-option-->
+                                       <!--v-for="item in optionsfk"-->
+                                       <!--:key="item.value"-->
+                                       <!--:label="item.label"-->
+                                       <!--:value="item.value">-->
+                               <!--</el-option>-->
+                           <!--</el-select>-->
+                       <!--</el-form-item>-->
                    </el-col>
-                   <el-col class="sort times" :span="6">
-                       <el-form-item label="日期：">
+                   <el-col  :lg="8">
+                       <el-col :lg="8"><div class="topLeft">日期：</div></el-col>
+                       <el-col :lg="16">
                            <el-date-picker
                                    v-model="value2"
                                    type="daterange"
                                    align="right"
+                                   value-format="yyyy-MM-dd"
                                    unlink-panels
                                    range-separator="至"
+                                   @change="time"
                                    start-placeholder="开始日期"
                                    end-placeholder="结束日期"
-                                   :picker-options="pickerOptions">
+                           >
                            </el-date-picker>
-                       </el-form-item>
+                       </el-col>
+                       <!--<el-form-item label="日期：">-->
+                           <!--<el-date-picker-->
+                                   <!--v-model="value2"-->
+                                   <!--type="daterange"-->
+                                   <!--align="right"-->
+                                   <!--value-format="yyyy-MM-dd"-->
+                                   <!--unlink-panels-->
+                                   <!--range-separator="至"-->
+                                   <!--@change="time"-->
+                                   <!--start-placeholder="开始日期"-->
+                                   <!--end-placeholder="结束日期"-->
+                                   <!--&gt;-->
+                           <!--</el-date-picker>-->
+                       <!--</el-form-item>-->
                    </el-col>
-                   <el-col class="sort" :span="5">
-                       <el-input
-                               placeholder="请输入内容"
-                               prefix-icon="el-icon-search"
-                               v-model="input2">
-                       </el-input>
+                   <el-col  :lg="4">
+                       <el-col :lg="4" style="opacity: 0;">
+                       <div class="topLeft">土：</div>
                    </el-col>
-
-                   <el-col :span="5" class="rightS">
+                       <el-col :lg="16">
+                           <el-input placeholder="请输入合同编号" v-model="input2" clearable  @clear="searchHandle" class="input-with-select">
+                               <el-button slot="append" icon="el-icon-search" @click="searchs"></el-button>
+                           </el-input>
+                       </el-col>
+                       <!--<el-input placeholder="请输入合同编号" v-model="input2" clearable  @clear="searchHandle" class="input-with-select">-->
+                           <!--<el-button slot="append" icon="el-icon-search" @click="searchs"></el-button>-->
+                       <!--</el-input>-->
+                   </el-col>
+                   <el-col  :lg="8">
                        <div class="btns2">
                            <el-button type="success" @click="dialogVisible = true">统计</el-button>
-                           <el-button  type="primary" @click="handleClickss">新增</el-button>
+                           <el-button type="primary" @click="handleClickss">新增</el-button>
                            <el-button type="primary" @click="findExportTitles">导出</el-button>
                        </div>
                    </el-col>
+                   <!--<el-col class="rightS">-->
+                       <!--<div class="btns2">-->
+                           <!--<el-button type="success" @click="dialogVisible = true">统计</el-button>-->
+                           <!--<el-button  type="primary" @click="handleClickss">新增</el-button>-->
+                           <!--<el-button type="primary" @click="findExportTitles">导出</el-button>-->
+                       <!--</div>-->
+                   <!--</el-col>-->
                </el-form>
            </el-row>
-           <el-row class="tables">
+           <el-row class="tables" style="margin-top: 26px;">
                <el-table
                        ref="multipleTable"
-                       :data="tableData"
+                       :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                        tooltip-effect="dark"
+                       :height="heighTable"
                        :key="toggleIndex"
                        style="width: 100%"
                        @selection-change="handleSelectionChange">
                    <el-table-column type="selection" width="55"></el-table-column>
-                   <el-table-column  type="index" label="序号"></el-table-column>
-                   <el-table-column prop="pactCode" label="合同编号"></el-table-column>
+                   <el-table-column  type="index" width="80" label="序号"></el-table-column>
+                   <el-table-column prop="pactCode" width="100" label="合同编号"></el-table-column>
                    <el-table-column prop="tenant" label="承租方"></el-table-column>
-                   <el-table-column prop="contact" label="联系方式"></el-table-column>
-                   <el-table-column prop="houseAddr" label="房屋坐落"></el-table-column>
-                   <el-table-column prop="rentAmount" label="租金（元）"></el-table-column>
-                   <el-table-column prop="fee" label="物业费（元）"></el-table-column>
+                   <el-table-column prop="contact" width="100" label="联系方式"></el-table-column>
+                   <el-table-column prop="houseAddr" width="100" label="房屋坐落"></el-table-column>
+                   <el-table-column prop="rentAmount" width="100" label="租金（元）"></el-table-column>
+                   <el-table-column prop="fee" width="150" label="物业费（元）"></el-table-column>
                    <el-table-column prop="time" width="200" label="租约日期">
                        <template scope="tableData">
                            <span >{{tableData.row.rentStart}} - {{tableData.row.rentEnd}}</span>
@@ -76,7 +117,7 @@
                    <el-table-column prop="tradeName" label="店名"></el-table-column>
                    <el-table-column prop="formats" label="业态"></el-table-column>
                    <el-table-column prop="margin" label="保证金"></el-table-column>
-                   <el-table-column prop="date9" label="付款状态">
+                   <el-table-column prop="date9" width="100" label="付款详情">
                        <template scope="tableData">
                            <el-button  type="text" size="small" @click="fkzt(tableData.row)">详情</el-button>
                            <!--<span v-if="tableData.row.date9 === '1'" style="color:deepskyblue;">已缴纳</span>-->
@@ -84,15 +125,18 @@
                            <!--<span v-if="tableData.row.date9 === '3'" style="color:orange;">即将到期</span>-->
                        </template>
                    </el-table-column>
-                   <el-table-column
-                           label="合同详情"
-                   >
+                   <el-table-column label="付款状态" width="100">
+                       <template slot-scope="tableData">
+                           <div >{{tableData.row.flag}}</div>
+                       </template>
+                   </el-table-column>
+                   <el-table-column label="合同详情" width="100">
                        <template slot-scope="tableData">
                            <el-button  type="text" size="small" @click="kan(tableData.row)">详情</el-button>
                        </template>
                    </el-table-column>
                    <el-table-column
-                           label="资产详情"
+                           label="资产详情" width="100"
                    >
                        <template slot-scope="tableData">
                            <el-button  type="text" size="small" @click="zclist(tableData.row)">详情</el-button>
@@ -102,6 +146,7 @@
                    <el-table-column
                            fixed="right"
                            label="操作"
+                           width="100"
                    >
                        <template slot-scope="tableData">
                            <div v-if="sysAuthAdmin !== '' && sysAuthAdmin !== 'zcxxlrjgx' && sysAuthAdmin !== 'zcgxsp'">
@@ -121,74 +166,106 @@
                        background
                        @size-change="handleSizeChange"
                        @current-change="handleCurrentChange"
-                       :current-page="page.pageNum"
+                       :current-page="currentPage"
                        :page-sizes="[10, 20, 30, 40]"
-                       :page-size="page.pageSize"
+                       :page-size="pagesize"
                        layout=" prev, pager, next, sizes,jumper"
-                       :total="page.total">
+                       :total="this.tableData.length">
                </el-pagination>
            </el-row>
        </div>
         <div v-if="user == 2">
-            <el-row >
-                <el-form ref="form" >
-                    <el-col class="sort" :span="4">
-                        <el-form-item label="付款状态：">
-                            <el-select  v-model="value" placeholder="请选择">
+            <el-row  class="wz">
+                <el-form ref="form" :lg="24">
+                    <el-col  :span="5">
+                        <el-col :lg="8"><div class="topLeft">付款状态：</div></el-col>
+                        <el-col :lg="16">
+                            <el-select  v-model="valuefk" placeholder="请选择" @change="fk">
                                 <el-option
-                                        v-for="item in options"
+                                        v-for="item in optionsfk"
                                         :key="item.value"
                                         :label="item.label"
                                         :value="item.value">
                                 </el-option>
                             </el-select>
-                        </el-form-item>
+                        </el-col>
+                        <!--<el-form-item label="付款状态：">-->
+                            <!--<el-select  v-model="valuefk" placeholder="请选择" @change="fk">-->
+                                <!--<el-option-->
+                                        <!--v-for="item in optionsfk"-->
+                                        <!--:key="item.value"-->
+                                        <!--:label="item.label"-->
+                                        <!--:value="item.value">-->
+                                <!--</el-option>-->
+                            <!--</el-select>-->
+                        <!--</el-form-item>-->
                     </el-col>
-                    <el-col class="sort times" :span="8">
-                        <el-form-item label="日期：">
+                    <el-col  :span="8">
+                        <el-col :lg="8"><div class="topLeft">日期：</div></el-col>
+                        <el-col :lg="16">
                             <el-date-picker
                                     v-model="value2"
                                     type="daterange"
                                     align="right"
+                                    value-format="yyyy-MM-dd"
                                     unlink-panels
                                     range-separator="至"
+                                    @change="time"
                                     start-placeholder="开始日期"
                                     end-placeholder="结束日期"
-                                    :picker-options="pickerOptions">
+                            >
                             </el-date-picker>
-                        </el-form-item>
+                        </el-col>
+                        <!--<el-form-item label="日期：">-->
+                            <!--<el-date-picker-->
+                                    <!--v-model="value2"-->
+                                    <!--type="daterange"-->
+                                    <!--align="right"-->
+                                    <!--value-format="yyyy-MM-dd"-->
+                                    <!--unlink-panels-->
+                                    <!--range-separator="至"-->
+                                    <!--@change="time"-->
+                                    <!--start-placeholder="开始日期"-->
+                                    <!--end-placeholder="结束日期"-->
+                                    <!--&gt;-->
+                            <!--</el-date-picker>-->
+                        <!--</el-form-item>-->
                     </el-col>
-                    <el-col class="sort" :span="5">
-                        <el-input
-                                placeholder="请输入内容"
-                                prefix-icon="el-icon-search"
-                                v-model="input2">
-                        </el-input>
+                    <el-col  :span="4">
+                        <el-col :lg="4" style="opacity: 0;">
+                            <div class="topLeft">土：</div>
+                        </el-col>
+                        <el-col :span="16">
+                            <el-input placeholder="请输入合同编号" clearable v-model="input2" @clear="searchHandle" class="input-with-select">
+                                <el-button slot="append" icon="el-icon-search" @click="searchs"></el-button>
+                            </el-input>
+                        </el-col>
                     </el-col>
 
-                    <el-col :span="5" class="rightS">
+                    <el-col class="rightS">
                         <div class="btns2">
                             <el-button type="primary" @click="handleClicksswz">新增</el-button>
                         </div>
                     </el-col>
                 </el-form>
             </el-row>
-            <el-row class="tables" >
+            <el-row class="tables" style="margin-top: 26px;" >
                 <el-table
                         ref="multipleTable"
                         :data="tableData"
+                        :height="heighTable"
                         :key="toggleIndex"
                         tooltip-effect="dark"
                         style="width: 100%"
                         @selection-change="handleSelectionChange">
                     <el-table-column type="selection" width="55"></el-table-column>
                     <el-table-column  type="index" label="序号"></el-table-column>
-                    <el-table-column prop="pactCode" label="租进合同编号"></el-table-column>
+                    <el-table-column prop="pactCode" width="150" label="租进合同编号"></el-table-column>
                     <el-table-column prop="tenant" label="承租方"></el-table-column>
-                    <el-table-column prop="contact" label="联系方式"></el-table-column>
+                    <el-table-column prop="contact" width="100" label="联系方式"></el-table-column>
                     <el-table-column prop="houseAddr" width="200" label="房屋坐落"></el-table-column>
-                    <el-table-column prop="rentAmount" label="租金（元）"></el-table-column>
-                    <el-table-column prop="fee" label="物业费（元）"></el-table-column>
+                    <el-table-column prop="rentAmount" width="100" label="租金（元）"></el-table-column>
+                    <el-table-column prop="fee" width="150" label="物业费（元）"></el-table-column>
                     <el-table-column prop="date8" width="200" label="租约日期">
                         <template scope="tableData">
                             <span >{{tableData.row.rentStart}} - {{tableData.row.rentEnd}}</span>
@@ -196,23 +273,27 @@
                     </el-table-column>
                     <el-table-column prop="tradeName"  label="店名"></el-table-column>
                     <el-table-column prop="formats"  label="业态"></el-table-column>
-                    <el-table-column prop="margin"  label="保证金（元）"></el-table-column>
-                    <el-table-column prop="tableData" label="付款状态">
+                    <el-table-column prop="margin"  width="150" label="保证金（元）"></el-table-column>
+                    <el-table-column prop="tableData" width="100" label="付款详情">
                         <template scope="tableData">
                             <el-button  type="text" size="small" @click="fkzt(tableData.row)">详情</el-button>
                         </template>
                     </el-table-column>
                     <el-table-column
-                            label="合同详情"
+                            label="合同详情" width="100"
                     >
                         <template slot-scope="tableData">
                             <el-button  type="text" size="small" @click="kan(tableData.row)">详情</el-button>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="contStatus" label="合同状态"></el-table-column>
+                    <el-table-column prop="contStatus" width="100" label="合同状态">
+                        <template slot-scope="tableData">
+                            <div >{{tableData.row.flag}}</div>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="remark" label="备注"></el-table-column>
                     <el-table-column
-                            label="操作"
+                            label="操作" width="100"
                     >
                         <template slot-scope="tableData">
                             <div v-if="sysAuthAdmin !== '' && sysAuthAdmin !== 'zcxxlrjgx' && sysAuthAdmin !== 'zcgxsp'">
@@ -227,7 +308,7 @@
 
                     </el-table-column>
                     <el-table-column
-                            label="历史出租合同"
+                            label="历史出租合同" width="150"
                     >
                         <template slot-scope="scope">
                             <el-button  type="text" size="small" @click="kan">详情</el-button>
@@ -321,21 +402,21 @@
                             <el-col :span="10" style="position: relative;margin-bottom: 20px;">
                                 <div style="display: none;">{{item.num = index+1}}</div>
                                 <div style="position: absolute;top:15px;left:0;">第 {{index+1}} 笔</div>
-                                <el-input style="margin-left: 50px;" v-model="item.dateStr" placeholder="请输入内容" disabled></el-input>
+                                <el-input style="margin-left: 50px;width: 80%;" v-model="item.dateStr" placeholder="请输入内容" disabled></el-input>
                             </el-col>
                             <el-col :span="10" style="position: relative">
-                                <el-input v-model="item.rentAmount" placeholder="请输入内容" disabled></el-input>
+                                <el-input v-model="item.rentAmount" style="width: 70%;" placeholder="请输入内容" disabled></el-input>
                                 <div class="sjsc">
                                     <el-upload
                                             class="upload-demo"
                                             action="http://39.100.95.204:2005/file/attachment/upload?type=asset"
-                                            :on-preview="handlePictureCardPreview"
                                             :on-success="phone.bind(null, {'index':index,'data':item})"
+                                            :on-preview="handlePreview.bind(null, {'index':index,'data':item})"
                                             multiple
                                             :limit="1"
                                             :file-list="item.img"
                                             :class="{hide:showUpload}"
-                                            :on-remove="handleRemove">
+                                            :on-remove="handleRemove.bind(null, {'index':index,'data':item})">
                                         <!--<i class="el-icon-plus"></i>-->
                                         <el-button size="small" type="primary">点击上传</el-button>
                                     </el-upload>
@@ -386,7 +467,10 @@
         name: 'login',
         data () {
             return {
+                heighTable:300,
+                pagesize:10,
                 Amount:0,
+                currentPage:1,
                 toggleIndex:0,
                 sysAuthAdmin:sessionStorage.getItem('authStr'),
                 dialogVisibleKanwy:false,
@@ -399,6 +483,23 @@
                 user:1,
                 input2:'',
                 value2:'',
+                valuefk:'',
+                optionsfk: [
+                     {
+                        value: '全部',
+                        label: '全部'
+                    },
+                    {
+                        value: '即将到期',
+                        label: '即将到期'
+                    }, {
+                        value: '已缴纳',
+                        label: '已缴纳'
+                    }, {
+                        value: '已超期',
+                        label: '已超期'
+                    }
+                ],
                 options: [
                     {
                         value: '选项1',
@@ -477,12 +578,40 @@
                 cities: [{'title':'上海','key':'shanghai'},{'title':'上海1','key':'shanghai1'},{'title':'上海2','key':'shanghai2'},],
                 isIndeterminate: false,
                 findExportTitle:false,
+                rentStart:'',
+                rentEnd:'',
+                val:'全部',
+                pactCode:''
             }
         },
         components:{
             DateChart,AssetsInfor,AssetsAdd,AssetsKan,AssetsKans
         },
         methods:{
+            searchHandle(){
+                this.pactCode = ''
+                this.findList(this.user,this.val,this.rentStart,this.rentEnd,this.pactCode)
+            },
+            searchs(e){
+                this.pactCode = this.input2
+                this.findList(this.user,this.val,this.rentStart,this.rentEnd,this.pactCode)
+            },
+            time(e){
+                if(e){
+                    this.rentStart=e[0]
+                    this.rentEnd=e[1]
+                    this.findList(this.user,this.val,this.rentStart,this.rentEnd,this.pactCode)
+                }else{
+                    this.rentStart=''
+                    this.rentEnd=''
+                    this.findList(this.user,this.val,this.rentStart,this.rentEnd,this.pactCode)
+                }
+
+            },
+            fk(val){
+                this.val = val;
+                this.findList(this.user,this.val,this.rentStart,this.rentEnd,this.pactCode)
+            },
             // 获取导出列表
             findExportTitles(){
                 this.findExportTitle = true
@@ -594,7 +723,7 @@
                 console.log(fileList)
             },
             handlePictureCardPreview(file) {
-                console.log(file)
+                window.open(file.url)
                 this.dialogImageUrl = file.url;
                 this.dialogVisibless = true;
             },
@@ -622,11 +751,96 @@
                     },
                     data:this.books2
                 }).then(res => {
+                    var id = that.id
+                    this.$axios({
+                        url: that.getAjax + '/admin/property/findDetails?id='+id,
+                        method: "get",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:{}
+                    }).then(res => {
+                        if(res.data.code == '2004'){
+                            that.$message({
+                                message: res.data.msg,
+                                type: 'warning'
+                            });
+                            that.$router.push('/')
+                        }else{
+                            var params = res.data.data
+                            this.Amount = 0;
+                            that.books2 = params.propertyPayTypeList
+                            for(var i=0;i<that.books2.length;i++){
+                                if(this.books2[i].attach){
+                                    var obj4 = {}
+                                    that.$set(obj4,'name','第'+(i+1)+'笔收据');
+                                    that.$set(obj4,'url',that.books2[i].attach);
+                                    var arr4 = []
+                                    arr4.push(obj4)
+                                    that.books2[i]['img'] = arr4
+                                    that.Amount += parseFloat(that.books2[i].rentAmount)
+                                }
+                            }
+                            console.log(that.books2)
+                        }
+                    })
                 })
                 // admin/property/updatePayList
             },
-            handleRemove(file, fileList) {
-                console.log(file, fileList);
+            handleRemove(obj,res,file) {
+                var index = obj.index
+                var that = this;
+                this.books2[index].attach = ''
+                this.$axios({
+                    url: this.getAjax + '/admin/property/updatePayList',
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    data:this.books2
+                }).then(res => {
+                    var id = that.id
+                    this.$axios({
+                        url: that.getAjax + '/admin/property/findDetails?id='+id,
+                        method: "get",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:{}
+                    }).then(res => {
+                        if(res.data.code == '2004'){
+                            that.$message({
+                                message: res.data.msg,
+                                type: 'warning'
+                            });
+                            that.$router.push('/')
+                        }else{
+                            var params = res.data.data
+                            this.Amount = 0;
+                            that.books2 = params.propertyPayTypeList
+                            for(var i=0;i<that.books2.length;i++){
+                                if(this.books2[i].attach){
+                                    var obj4 = {}
+                                    that.$set(obj4,'name','第'+(i+1)+'笔收据');
+                                    that.$set(obj4,'url',that.books2[i].attach);
+                                    var arr4 = []
+                                    arr4.push(obj4)
+                                    that.books2[i]['img'] = arr4
+                                    that.Amount += parseFloat(that.books2[i].rentAmount)
+                                }
+                            }
+                            console.log(that.books2)
+                        }
+                    })
+                })
+            },
+            handlePreview(obj,res){
+                console.log(obj)
+                var url = obj.data.attach;
+                window.open(url)
             },
             realLandAttachRemove(file, fileList) {
                 console.log(file, fileList);
@@ -646,7 +860,7 @@
             // 付款状态
             fkzt(data){
                 this.skvisible = true;
-                console.log(data.id)
+                this.id= data.id
                 var that = this;
                 this.$axios({
                     url: this.getAjax + '/admin/property/findDetails?id='+data.id,
@@ -668,13 +882,15 @@
                         this.Amount = 0;
                     that.books2 = params.propertyPayTypeList
                         for(var i=0;i<that.books2.length;i++){
-                            var obj4 = {}
-                            that.$set(obj4,'name','第'+(i+1)+'笔收据');
-                            that.$set(obj4,'url',that.books2[i].attach);
-                            var arr4 = []
-                            arr4.push(obj4)
-                            that.books2[i]['img'] = arr4
-                            this.Amount += parseFloat(that.books2[i].rentAmount)
+                            if(this.books2[i].attach){
+                                var obj4 = {}
+                                that.$set(obj4,'name','第'+(i+1)+'笔收据');
+                                that.$set(obj4,'url',that.books2[i].attach);
+                                var arr4 = []
+                                arr4.push(obj4)
+                                that.books2[i]['img'] = arr4
+                                this.Amount += parseFloat(that.books2[i].rentAmount)
+                            }
                         }
                         console.log(that.books2)
                 }
@@ -739,7 +955,7 @@
                         type: 'success',
                         message: '删除成功!'
                     });
-                        this.findList(this.user,this.pageNum,this.pageSize)
+                        this.findList(this.user,this.val,this.rentStart,this.rentEnd,this.assetCode)
                 }else{
                     this.$message({
                         message: res.data.msg,
@@ -755,16 +971,22 @@
                 });
             });
             },
-            newInforAdd(data){this.findList(this.user,this.pageNum,this.pageSize)},
-            newInforInfo(data){this.findList(this.user,this.pageNum,this.pageSize)},
+            newInforAdd(data){
+                console.log(this.user)
+                this.findList(this.user,this.val,this.rentStart,this.rentEnd,this.pactCode)
+            },
+            newInforInfo(data){this.findList(this.user,this.val,this.rentStart,this.rentEnd,this.pactCode)},
             // 查询列表
-            findList(type,pageNum,pageSize){
+            findList(type,val,rentStart,rentEnd,pactCode){
                 var that = this;
+                var rentStart = rentStart;
+                var rentEnd = rentEnd;
                 this.toggleIndex = Math.random()
                 var data = {
-                    "pageNum": pageNum,
-                    "pageSize": pageSize,
-                    "typeItem": type
+                    "rentStart":rentStart,
+                    "rentEnd":rentEnd,
+                    "typeItem": type,
+                    pactCode:pactCode
                 }
                 this.$axios({
                     url: this.getAjax + '/admin/property/findList',
@@ -779,8 +1001,116 @@
                     var list = res.data.data.list;
                     this.page = [];
                     this.page = res.data.data;
-                    console.log(this.page)
-                    this.tableData = list
+                    var dataList = res.data.data.list;
+                    var arr = [];
+                        for(var i=0;i<list.length;i++){
+                            for(var j=0;j<list[i].propertyPayTypeList.length;j++){
+                                var datas = list[i].propertyPayTypeList[j];
+                                var time = list[i].propertyPayTypeList[j].dateStr?list[i].propertyPayTypeList[j].dateStr:'2021-01-28';
+                                var img = list[i].propertyPayTypeList[j].attach==''?null:list[i].propertyPayTypeList[j].attach;
+                                var strtime = time.replace("/-/g", "/");//时间转换
+                                var date1=new Date(strtime);
+                                var date2=new Date();
+                                if(date1<date2 && img){
+                                    list[i].propertyPayTypeList[j]['jkStatus'] ='已缴纳'
+                                }
+                                else if(date1<date2 && (img==null)){
+                                    list[i].propertyPayTypeList[j]['jkStatus'] ='已超期'
+                                }
+                                else{
+                                    var date = new Date();
+                                    var seperator1 = "-";
+                                    var year = date.getFullYear();
+                                    var month = date.getMonth() + 1;
+                                    var strDate = date.getDate();
+                                    if (month >= 1 && month <= 9) {
+                                        month = "0" + month;
+                                    }
+                                    if (strDate >= 0 && strDate <= 9) {
+                                        strDate = "0" + strDate;
+                                    }
+                                    var currentdate = year + seperator1 + month + seperator1 + strDate;
+                                    var arr1 = currentdate.split('-');
+                                    var arr2 = time.split('-');
+                                    arr1[1] = parseInt(arr1[1]);
+                                    arr1[2] = parseInt(arr1[2]);
+                                    arr2[1] = parseInt(arr2[1]);
+                                    arr2[2] = parseInt(arr2[2]);
+                                    var flag = true;
+                                    var type = '即将到期'
+                                    if(arr1[0] == arr2[0]){//同年
+                                        if(arr2[1]-arr1[1] > 3){ //月间隔超过3个月
+                                            flag = false;
+                                            list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                        }else if(arr2[1]-arr1[1] == 3){ //月相隔3个月，比较日
+                                            if(arr2[2] > arr1[2]){ //结束日期的日大于开始日期的日
+                                                flag = false;
+                                                list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                            }else{
+                                                list[i].propertyPayTypeList[j]['jkStatus'] ='即将到期'
+                                            }
+                                        }else{
+                                            list[i].propertyPayTypeList[j]['jkStatus'] ='即将到期'
+                                        }
+                                    }else{ //不同年
+                                        if(arr2[0] - arr1[0] > 1){
+                                            list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                            flag = false;
+                                        }else if(arr2[0] - arr1[0] == 1){
+                                            if(arr1[1] < 10){ //开始年的月份小于10时，不需要跨年
+                                                flag = false;
+                                                list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                            }else if(arr1[1]+3-arr2[1] < 12){ //月相隔大于3个月
+                                                flag = false;
+                                                list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                            }else if(arr1[1]+3-arr2[1] == 12){ //月相隔3个月，比较日
+                                                if(arr2[2] > arr1[2]){ //结束日期的日大于开始日期的日
+                                                    flag = false;
+                                                    list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                                }else{
+                                                    list[i].propertyPayTypeList[j]['jkStatus'] ='即将到期'
+                                                }
+                                            }
+                                        }
+                                    }
+                                    // list[i].propertyPayTypeList[j]['jkStatus'] ='未来时间'
+                                }
+                            }
+                        }
+                        for(var z=0;z<list.length;z++){
+                            list[z]['flag'] = '';
+                            var flag = list[z].flag,
+                                item = list[z].propertyPayTypeList;
+                            for(var y = 0; y < item.length; y++) {
+                                if(item[y].jkStatus === "已超期") {
+                                    list[z].flag = '已超期'
+                                } else if(item[y].jkStatus === "已缴纳") {
+                                    if(
+                                        (list[z].flag.length == 0) &&
+                                        (list[z].flag !== "已超期")&&(list[z].flag !== "即将到期" )
+                                    ){
+                                        list[z].flag = "已缴纳"
+                                    }
+                                } else if(item[y].jkStatus === "即将到期") {
+                                    if(  (list[z].flag != "已超期") ){
+                                        list[z].flag = "即将到期"
+                                    }
+                                }
+                            }
+                        }
+                        console.log(val)
+                        if(val === '全部'){
+                            this.tableData = list
+                        }else{
+                            var arr = [];
+                            list.forEach((item, i) => {
+                                if(item.flag === val){
+                                    arr.push(item)
+                                }
+                            })
+                            this.tableData = arr
+                        }
+
                 }else{
                     this.$message({
                         message: res.data.msg,
@@ -791,16 +1121,16 @@
             },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
-                this.pageSize = val
-                    this.findList(this.user,this.pageNum,this.pageSize)
+                this.pagesize = val
             },
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
-                this.pageNum = val;
-                this.findList(this.user,this.pageNum,this.pageSize)
+                this.currentPage = val;
             },
             typeChange(val){
                 console.log(val)
+                this.value2 = ''
+                this.valuefk = ''
                 this.toggleIndex = Math.random()
                 this.user = val
                 if(val ==  1){
@@ -808,7 +1138,7 @@
                 }else{
                     this.itemtypes = 'wz'
                 }
-                this.findList(val,1,10)
+                this.findList(this.user,'全部','','','');
             },
             handleClickss(){
                 var sysAuthAdmin = this.sysAuthAdmin;
@@ -849,7 +1179,7 @@
 
             kan(data){
                 this.dialogVisibleKanwy = true
-                this.$refs.dialogVisibleKanwyRef.detail(data)
+                this.$refs.dialogVisibleKanwyRef.detail(data,'zy')
             },
             showdialogVisibleKan(data){
                 if(data === 'false'){
@@ -881,14 +1211,27 @@
             },
         },
         created:function () {
+            this.$nextTick(()=>{
+                var _h = window.screen.height;
+                console.log(_h)
+                if(_h == '768'){
+                    this.heighTable = _h*0.3
+                }else if(_h == '900'){
+                    this.heighTable = _h*0.4
+                }
+                else{
+                    this.heighTable = _h*0.5
+                }
+
+            })
         },
         mounted(){
-            this.findList(1,1,10);
+            this.findList(this.user,this.val,this.rentStart,this.rentEnd,this.pactCode);
         }
     }
 </script>
 <style>
-    .el-input {width: 200px;}
+    /*.el-input {width: 200px;}*/
     .el-form-item__label {font-size: 16px;color: #333;}
     .el-dialog {background-color: #f2f2f2;}
 </style>
@@ -901,7 +1244,7 @@
     .btns>>>.el-menu--horizontal>.el-menu-item {color: #fff;}
     .rightS {position: relative;}
     .btns {position: absolute;top:-10px;right:-68px;}
-    .btns2 {position: absolute;top:0;right:-90px;}
+    .btns2 {position: absolute;top:0;right:0;}
     .tables>>>th{padding: 0;height:80px;background: #eee;font-size: 16px;font-weight: bold;color: #333;text-align: center;}
     .tables>>>.el-table {border: 1px dotted #eee;}
     .tables>>>.el-table__row td{padding: 0;height:50px;text-align: center;color: #333;}
@@ -913,6 +1256,7 @@
     .sjsc {position: absolute;top:5px;right:-25px;}
     /*.sjsc>>>.el-upload {width: 40px;height:40px;}*/
     .sjsc>>>.el-upload-list{position: absolute;top:24px;left:0;}
+    .sjsc>>>.el-icon-close-tip{color: transparent;}
     /*.sjsc>>>.el-upload-list--picture-card .el-upload-list__item{right:-100px;width: 40px;height:40px;}*/
 </style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

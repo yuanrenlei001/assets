@@ -60,7 +60,7 @@
                 </el-col>
             </el-row>
         </div>
-        <el-col :span="2" v-if="tabs" class="sort" style="position: fixed;height:100%;z-index: 9999;border-top: 1px solid #eee;">
+        <el-col v-if="tabs" class="sort" style="position: fixed;height:100%;z-index: 999;border-top: 1px solid #eee;width: 160px;">
             <el-menu
                     :default-active="active"
                     @select="handleSelect2"
@@ -215,6 +215,7 @@ export default {
         },
         handleSelect(key,keyPath,title) {
             console.log(key)
+            localStorage.setItem('navType',key)
             this.$emit('update:active',key)
             this.name = key;
             this.tabs = false;
@@ -244,6 +245,7 @@ export default {
                 console.log(res.data.data)
             var code = res.data.code;
             var data = res.data.data;
+                localStorage.setItem('navType','maps')
                 this.$message({
                     message: '退出成功！',
                     type: 'success'
@@ -266,6 +268,13 @@ export default {
     },
     mounted() {
       this.list();
+      var navType = localStorage.getItem('navType')?localStorage.getItem('navType'):'maps';
+
+        this.$emit('update:active',navType)
+        this.name = navType;
+        this.tabs = false;
+        this.new = false;
+        this.news = false;
     },
 }
 </script>
@@ -401,5 +410,40 @@ export default {
     .el-menu--horizontal>.el-menu-item:hover:nth-child(2) img {content:url('../assets/icon_assets2.png');}
     .el-menu--horizontal>.el-menu-item:hover:nth-child(3) img {content:url('../assets/icon_wuye2.png');}
     .el-menu--horizontal>.el-menu-item:hover:nth-child(4) img {content:url('../assets/icon_infor2.png');}
+    /*@media (max-width: 1024px){*/
+        /*.tabSort>>>.el-menu--horizontal>.el-menu-item {height:100px;padding: 16px 0 0 0;width: 130px;}*/
+        /*.logo-container {min-width: 220px;}*/
+        /*.title {width: 150px;font-size: 16px;border-radius: 35px;}*/
+        /*.user {width: 20%;}*/
+    /*} !*>=1024的设备*!*/
+    /*@media (max-width: 1280px) {*/
+        /*.tabSort>>>.el-menu--horizontal>.el-menu-item {height:100px;padding: 16px 0 0 0;width: 160px;}*/
+        /*.logo-container {min-width: 260px;}*/
+        /*.title {width: 200px;font-size: 16px;border-radius: 35px;}*/
+        /*.user {width: 20%;}*/
+    /*} !*>=1280的设备*!*/
+
+    /*@media (max-width: 1366px) {*/
+        /*.tabSort>>>.el-menu--horizontal>.el-menu-item {height:100px;padding: 16px 0 0 0;width: 160px;}*/
+        /*.logo-container {min-width: 360px;}*/
+        /*.title {width: 300px;font-size: 20px;border-radius: 35px;}*/
+        /*.user {width: 18%;}*/
+    /*}*/
+    /*@media (max-width: 1480px) {*/
+        /*.tabSort>>>.el-menu--horizontal>.el-menu-item {height:100px;padding: 16px 0 0 0;width: 160px;}*/
+        /*.logo-container {min-width: 400px;}*/
+        /*.title {width: 300px;font-size: 20px;border-radius: 35px;}*/
+        /*.user {width: 18%;}*/
+    /*}*/
+    /*@media (max-width: 1680px) {*/
+        /*.tabSort>>>.el-menu--horizontal>.el-menu-item {height:100px;padding: 16px 0 0 0;width: 160px;}*/
+        /*.logo-container {min-width: 400px;}*/
+        /*.title {width: 300px;font-size: 20px;border-radius: 35px;}*/
+        /*.user {width: 18%;}*/
+    /*}*/
+    /*@media (min-width: 1680px) {*/
+    /*}*/
+    /*@media (min-width: 1920px) {*/
+    /*}*/
 </style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
