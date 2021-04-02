@@ -181,7 +181,7 @@
                                 <el-col :lg="13">
                                     <el-upload
                                             class="upload-demo"
-                                            action="http://39.100.95.204:2005/file/attachment/upload?type=asset"
+                                            action="http://61.153.180.66:9098/file/attachment/upload?type=asset"
                                             :on-preview="handlePictureCardPreview"
                                             :on-success="phone"
                                             multiple
@@ -195,7 +195,7 @@
                                 <!--<el-form-item label="附件：">-->
                                     <!--<el-upload-->
                                             <!--class="upload-demo"-->
-                                            <!--action="http://39.100.95.204:2005/file/attachment/upload?type=asset"-->
+                                            <!--action="http://61.153.180.66:9098/file/attachment/upload?type=asset"-->
                                             <!--:on-preview="handlePictureCardPreview"-->
                                             <!--:on-success="phone"-->
                                             <!--multiple-->

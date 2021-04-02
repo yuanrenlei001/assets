@@ -8,7 +8,7 @@
                 width="1000px">
         <el-row>
             <el-form ref="form" class="wyxjHight">
-                <el-col :soan="24" style="padding-top: 26px;">
+                <el-col :span="24" style="padding-top: 26px;">
                     <el-col :span="12">
                         <el-col :lg="22">
                             <el-col :lg="11"><div class="textLeft">资产编号：</div></el-col>
@@ -54,8 +54,9 @@
                             <el-col :lg="11"><div class="textLeft">现场照片：</div></el-col>
                             <el-col :lg="13">
                                 <el-image
-                                        style="width: 100px; height: 100px"
-                                        :src="url"
+                                        style="width: 100px; height: 100px;margin-right: 10px;"
+                                        v-for="items in url"
+                                        :src="items"
                                         disabled="disabled"
                                         :preview-src-list="srcList">
                                 </el-image>
@@ -90,7 +91,7 @@
                         <el-col :lg="22">
                             <el-col :lg="11"><div class="textLeft">巡检人时间：</div></el-col>
                             <el-col :lg="13" style="line-height: 40px;font-size: 24px;">
-                                {{datas.sysUser.createTime | dateFormat}}
+                                {{datas.createTime | dateFormat}}
                             </el-col>
                             <!--<el-form-item label="巡检人时间：">-->
                                 <!--{{datas.sysUser.createTime | dateFormat}}-->
@@ -98,11 +99,76 @@
                             <!--</el-form-item>-->
                         </el-col>
                     </el-col>
-                    <el-col :span="24" style="position: relative;margin: 0;"><div class="map" id="mapid" ref="mapsss"></div></el-col>
+                    <el-col :span="24" v-if="userType =='xjcl'">
+                        <el-col :span="24">
+                            <el-col :lg="22">
+                                <el-col :lg="8"><div class="textLeft">处理过程：</div></el-col>
+                                <el-col :lg="13"><div class="textLeft" style="text-align: left;">处理结果描述</div></el-col>
+                            </el-col>
+                            <el-col :lg="22">
+                                    <el-col :lg="8"><div class="textLeft" style="opacity: 0;">问题描述：</div></el-col>
+                                    <el-col :lg="13" class="textears2">
+                                        <el-input type="textarea" v-model="tick"  style="height:150px;"></el-input>
+                                    </el-col>
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="8"><div class="textLeft" style="opacity: 0;">问题类型：</div></el-col>
+                                <el-col :lg="13"><div class="textLeft" style="text-align: left;">照片</div></el-col>
+                            </el-col>
+                            <el-col :lg="24">
+                                <el-col :lg="8"><div class="textLeft" style="opacity: 0;">问题描述：</div></el-col>
+                                <el-col :lg="16">
+                                    <el-upload
+                                            action="http://61.153.180.66:9098/file/attachment/upload?type=asset"
+                                            list-type="picture-card"
+                                            :on-preview="handlePictureCardPreview"
+                                            :on-success="phone"
+                                            :limit="3"
+                                            :on-remove="handleRemove">
+                                        <!--<i class="el-icon-plus"></i>-->
+                                    </el-upload>
+                                </el-col>
+                            </el-col>
+                        </el-col>
+                        <el-col :span="24">
+                            <el-col :lg="22">
+                                <el-col :lg="8"><div class="textLeft">处理结果：</div></el-col>
+                                <el-col :lg="13"><div class="textLeft" style="text-align: left;">处理结果描述</div></el-col>
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="8"><div class="textLeft" style="opacity: 0;">问题描述：</div></el-col>
+                                <el-col :lg="13" class="textears2">
+                                    <el-input type="textarea" v-model="resu" style="height:150px;" ></el-input>
+                                </el-col>
+                            </el-col>
+                            <el-col :lg="22">
+                                <el-col :lg="8"><div class="textLeft" style="opacity: 0;">问题类型：</div></el-col>
+                                <el-col :lg="13"><div class="textLeft" style="text-align: left;">照片</div></el-col>
+                            </el-col>
+                            <el-col :lg="24">
+                                <el-col :lg="8"><div class="textLeft" style="opacity: 0;">问题描述：</div></el-col>
+                                <el-col :lg="16">
+                                    <el-upload
+                                            action="http://61.153.180.66:9098/file/attachment/upload?type=asset"
+                                            list-type="picture-card"
+                                            :on-preview="handlePictureCardPreview2"
+                                            :on-success="phone2"
+                                            :limit="3"
+                                            :on-remove="handleRemove2">
+                                        <!--<i class="el-icon-plus"></i>-->
+                                    </el-upload>
+                                </el-col>
+                            </el-col>
+                        </el-col>
+                    </el-col>
+                    <el-col :span="24" style="position: relative;margin: 30px 0;"><div class="map" id="mapid" ref="mapsss"></div></el-col>
                 </el-col>
                 <el-col :span="23" style="text-align: right;margin: 40px 0;" v-if="datas.status == 0">
                     <el-button type="primary" round @click="open('success',datas.id)">通过</el-button>
                     <el-button type="success" round @click="open('cancel',datas.id)">驳回</el-button>
+                </el-col>
+                <el-col :span="23" style="text-align: center;margin: 40px 0;" v-if="userType =='xjcl'">
+                    <el-button type="primary" round @click="CLbtn(datas.id)">提交处理</el-button>
                 </el-col>
             </el-form>
         </el-row>
@@ -124,6 +190,11 @@
         },
   data () {
     return {
+        tick:'',
+        resu:'',
+        tickAttach:'',
+        resuAttach:'',
+        userType:sessionStorage.getItem('authStr'),
         map:null,
         _marker:null,
         AssetsKanVisible:false,
@@ -180,6 +251,98 @@
         },
     },
     methods:{
+        CLbtn(id){
+            let data = {
+                id:id,
+                tick:this.tick,
+                tickAttach:this.tickAttach,
+                resu:this.resu,
+                resuAttach:this.resuAttach
+            }
+            this.$axios({
+                url: this.getAjax + '/admin/meansBookReportAdmin/resu',
+                method: "post",
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    'Token':sessionStorage.getItem('token')
+                },
+                data:data
+            }).then(res => {
+                if(res.data.code == '2004'){
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'warning'
+                    });
+                    this.$router.push('/')
+                }else{
+                    this.$alert('处理已上传', '提示', {
+                        callback: action => {
+                            this.$emit('changeShow','false')
+                            this.wysplist(1)
+                        }
+                    });
+                }
+            })
+            console.log(data)
+        },
+        phone(res, file, fileList) {
+            if(fileList.length >= 3){
+                this.showUpload = true
+            }
+            var arr = []
+            var arrs = []
+            for(var i=0;i<fileList.length;i++){
+                var obj = {};
+                var img = {};
+                obj['url'] = fileList[i].response.data[0]
+                obj['name'] = fileList[i].name
+                img['name'] =  fileList[i].name+'#_#'+fileList[i].response.data[0]
+                arr.push(obj)
+                arrs.push(img)
+            }
+            var imgs= []
+            for(var j=0;j<arrs.length;j++){
+                imgs.push(arrs[j].name)
+            }
+            console.log(imgs)
+            this.tickAttach = imgs.toString()
+        },
+        handleRemove(file, fileList) {
+            if(fileList.length < 4){
+                this.showUpload = false
+            }
+        },
+        handlePictureCardPreview2(file) {
+            this.dialogImageUrl = file.url;
+            this.dialogVisible = true;
+        },
+        phone2(res, file, fileList) {
+            if(fileList.length >= 3){
+                this.showUpload = true
+            }
+            var arr = []
+            var arrs = []
+            for(var i=0;i<fileList.length;i++){
+                var obj = {};
+                var img = {};
+                obj['url'] = fileList[i].response.data[0]
+                obj['name'] = fileList[i].name
+                img['name'] =  fileList[i].name+'#_#'+fileList[i].response.data[0]
+                arr.push(obj)
+                arrs.push(img)
+            }
+            var imgs= []
+            for(var j=0;j<arrs.length;j++){
+                imgs.push(arrs[j].name)
+            }
+            console.log(imgs)
+            this.resuAttach = imgs.toString()
+        },
+        handleRemove2(file, fileList) {
+            if(fileList.length < 4){
+                this.showUpload = false
+            }
+        },
         zcdetail(id){
             this.AssetsKanVisible = true
             let param = id
@@ -197,7 +360,7 @@
           this.datas = data;
           var that =this;
           this.$nextTick(()=>{
-              this.map = L.map(this.$refs['mapsss'], {
+              that.map = L.map(that.$refs['mapsss'], {
                   center: [30.88246, 120.427756],
                   zoom: 14,
                   maxZoom: 18,
@@ -244,7 +407,7 @@
                   demo[0].style.height = _h*0.6 +'px'
               }
           })
-          this.url = data.attach.split(',')[0]
+          this.url = data.attach.split(',')
           this.srcList = data.attach.split(',')
 
       },
@@ -335,9 +498,6 @@
             // 子组件调用父组件方法，并传递参数
             this.$emit('changeShow','false')
         },
-        handleRemove(file) {
-            console.log(file);
-        },
         handlePictureCardPreview(file) {
             this.dialogImageUrl = file.url;
             this.dialogVisible = true;
@@ -369,6 +529,7 @@
         background: aliceblue;
     }
     .textears>>>.el-textarea__inner {height:200px;}
+    .textears2>>>.el-textarea__inner {height:150px;}
     .count>>>.charts {position: relative;left:50%;margin-left: -150px;}
     .count>>>.col {margin: 0 25px 25px 0;background: #fff;}
     .counts>>>.el-form-item__label {width: 30%;font-size: 14px;line-height: 32px;}

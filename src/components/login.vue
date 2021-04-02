@@ -6,7 +6,7 @@
                 <!--        <div class="blur-box"></div>-->
             </div>
             <div class="input-box">
-                <h3>国有资产管理系统OA系统</h3>
+                <h3>国有资产管理系统</h3>
                 <div id="all">
                     <ul id="card">
                         <li class="active">
@@ -126,11 +126,13 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     .technical-support {
-        font-size: 16px;
-        color: #fff;
         position: absolute;
-        bottom: 20px;
-        right: 40px;
+        top: calc(55vh + 240px);
+        left: 50%;
+        -webkit-transform: translateX(-50%);
+        transform: translateX(-50%);
+        font-size: 20px;
+        color: #fff;
     }
     .copyright {
         position: absolute;

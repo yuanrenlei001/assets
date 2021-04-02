@@ -5,46 +5,78 @@
                 title="信息管理 > 物业巡检打卡"
                 :visible.sync="showDialog"
                 @close="handleClose"
-                width="1000px">
+                width="80%">
         <el-row>
             <el-form ref="form" class="wyxjHight" style="position: relative;">
                 <el-col :soan="24" style="padding-top: 26px;">
                     <div  class="map" id="mapid" ref="mapsss"></div>
                 </el-col>
                 <div class="fixed">
-                    <el-row>
-                        <el-date-picker
-                                style="width: 100%;"
-                                v-model="value1"
-                                type="daterange"
-                                align="right"
-                                value-format="yyyy-MM-dd"
-                                unlink-panels
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期"
+                    <div style="width:435px;height:100%;">
+                        <el-row>
+                            <el-date-picker
+                                    style="width: 100%;"
+                                    v-model="value1"
+                                    type="daterange"
+                                    align="right"
+                                    value-format="yyyy-MM-dd"
+                                    unlink-panels
+                                    range-separator="至"
+                                    start-placeholder="开始日期"
+                                    end-placeholder="结束日期"
+                            >
+                            </el-date-picker>
+                        </el-row>
+                        <el-row class="tables" style="height:100%;" >
+                            <el-table
+                                    ref="multipleTable"
+                                    :data="tableData2"
+                                    tooltip-effect="dark"
+                                    style="width: 100%;height:100%;overflow-y: scroll;text-align: center;"
+                            >
+                                <el-table-column  type="index" label="序号"></el-table-column>
+                                <el-table-column width="200" prop="houseAddress" label="房屋坐落"></el-table-column>
+                                <el-table-column prop="date2" label="打卡次数"></el-table-column>
+                                <el-table-column
+                                        fixed="right"
+                                        label="操作"
                                 >
-                        </el-date-picker>
-                    </el-row>
-                    <el-row class="tables" >
-                        <el-table
-                                ref="multipleTable"
-                                :data="tableData2"
-                                @row-click="clickTable"
-                                tooltip-effect="dark"
-                                style="width: 100%"
-                                >
-                            <el-table-column  type="index" label="序号"></el-table-column>
-                            <el-table-column width="200" prop="houseAddress" label="房屋坐落"></el-table-column>
-                            <el-table-column prop="date2" label="打卡次数"></el-table-column>
-                        </el-table>
-                    </el-row>
+                                    <template slot-scope="tableData" >
+                                            <el-button  type="text" size="small" @click="showBtn">查看</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-row>
+                    </div>
                 </div>
             </el-form>
         </el-row>
         </el-dialog>
         <!--资产详情查看-->
         <assets-kans  :AssetsKanVisible="AssetsKanVisible"  @changeShow="showAssetsKan" ref="AssetsKanRef"></assets-kans>
+        <el-dialog
+                class="abow_dialogDK"
+                title="打卡详情"
+                :visible.sync="showDialogDK"
+                @close="handleClose"
+                width="600px">
+            <el-row>
+                <el-form ref="form" class="wyxjHight" style="position: relative;">
+                            <el-row class="dk">
+                                   <el-table
+                                           ref="multipleTable"
+                                           :data="tableData3"
+                                           tooltip-effect="dark"
+                                           border
+                                   >
+                                       <el-table-column  prop="user" label="巡检人"></el-table-column>
+                                       <el-table-column prop="time" label="巡检时间"></el-table-column>
+
+                                   </el-table>
+                            </el-row>
+                </el-form>
+            </el-row>
+        </el-dialog>
     </div>
 </template>
 
@@ -61,6 +93,7 @@
         },
   data () {
     return {
+        showDialogDK:false,
         value1: [],
         map:null,
         _marker:null,
@@ -77,16 +110,24 @@
             'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
         ],
         tableData2: [
-            {date1: '1',date2:'1',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'寸池潭7号'},
-            {date1: '2',date2:'3',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型2',date7:'',date8:'下塘东街7弄3号'},
-            {date1: '3',date2:'2',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型3',date7:'',date8:'爱勤弄11号'},
-            {date1: '4',date2:'8',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型4',date7:'',date8:'爱勤弄13号'},
-            {date1: '5',date2:'0',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄15号'},
-            {date1: '6',date2:'0',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄17号'},
-            {date1: '7',date2:'2',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄18号'},
-            {date1: '8',date2:'5',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄22号'},
-            {date1: '9',date2:'4',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄12号'},
-            {date1: '10',date2:'1',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄8号'},
+            // {date1: '1',date2:'1',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'寸池潭7号'},
+            // {date1: '2',date2:'3',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型2',date7:'',date8:'下塘东街7弄3号'},
+            // {date1: '3',date2:'2',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型3',date7:'',date8:'爱勤弄11号'},
+            // {date1: '4',date2:'8',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型4',date7:'',date8:'爱勤弄13号'},
+            // {date1: '5',date2:'0',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄15号'},
+            // {date1: '6',date2:'0',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄17号'},
+            // {date1: '7',date2:'2',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄18号'},
+            // {date1: '8',date2:'5',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄22号'},
+            // {date1: '9',date2:'4',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄12号'},
+            // {date1: '10',date2:'1',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'爱勤弄8号'},
+        ],
+        tableData3:[
+            {user:'陈魏',time:'2021-3-4 14：34：11'},
+            {user:'陈魏',time:'2021-3-5 14：34：11'},
+            {user:'陈魏',time:'2021-3-6 14：34：11'},
+            {user:'陈魏',time:'2021-3-11 14：34：11'},
+            {user:'陈魏',time:'2021-3-15 14：34：11'},
+            {user:'陈魏',time:'2021-3-17 14：34：11'},
         ],
         dialogVisible: false,
         options: [
@@ -130,6 +171,9 @@
         },
     },
     methods:{
+        showBtn(){
+            this.showDialogDK = !this.showDialogDK
+        },
         clickTable(e,str){
             console.log(e)
             this.AssetsKanVisible = true;
@@ -216,6 +260,7 @@
                         list[i]['date2'] = i
                     }
                     this.tableData2 = list;
+                    console.log(this.tableData2)
                 }
             })
         },
@@ -403,7 +448,7 @@
     .sumRight {margin-left: 130px;padding-top: 20px;}
     .sumRight p:first-child {font-size: 16px;color: #666;}
     .sumRight p:last-child {font-size: 30px;color: #333;margin-top: 10px;}
-    .fixed {width: 300px;position: absolute;top:55px;right:24px;z-index: 9999;height:500px;text-align: center;background: rgba(0,0,0,.2);}
+    .fixed {width: 435px;position: absolute;top:55px;right:24px;z-index: 9999;height:70vh;text-align: center;background: rgba(0,0,0,.2);}
     .fixed th {
         padding: 0;
         background: #eee;
@@ -413,4 +458,9 @@
         text-align: center;
     }
     .fixed >>>.el-table th, .el-table tr {cursor: pointer;}
+    .fixed >>>.el-table .cell  {text-align: center;}
+    .dk >>>.el-table .cell  {text-align: center;}
+    .kan .abow_dialogDK {height:300px;
+        top: 50%;
+        margin-top: -150px;}
 </style>

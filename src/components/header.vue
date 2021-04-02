@@ -34,7 +34,8 @@
 
                     </div>
                     <div class="userinfo">
-                        <div class="btn-fullscreen icon-font" @click="newss">
+                        <div class="btn-fullscreen icon-font" @click="newss" style="position: relative;">
+                            <div v-if="tableData.length !==0" style="position: absolute;top:0;right:0;border-radius: 50%;font-size: 12px;background: red;color: #fff;width: 10px;height:10px;"></div>
                             <el-tooltip class="item" effect="dark" content="消息" placement="bottom">
                                 <i class="el-icon-bell"></i>
                             </el-tooltip>
@@ -46,7 +47,7 @@
                             <p class="name avatarname">{{headerData.name}}</p>
                         </div>
                         <span class='username'>
-						<el-dropdown trigger="click" @command='handleCommand'>
+						<el-dropdown trigger="click" @command='handleCommand' id="xiala">
 							<span class="el-dropdown-link">
 								<i class="el-icon-caret-bottom el-icon--right"></i>
 							</span>
@@ -158,6 +159,8 @@ export default {
     },
     computed: {
     },
+    beforeDestroy() {
+    },
     methods: {
         gourl(data){
             // assets
@@ -182,13 +185,16 @@ export default {
                 data:{}
             }).then(res => {
                 if(res.data.code == '2004'){
-                    this.$message({
-                        message: res.data.msg,
-                        type: 'warning'
-                    });
+                    // this.$message({
+                    //     message: res.data.msg,
+                    //     type: 'warning'
+                    // });
                     this.$router.push('/')
                 }else{
-                    this.tableData = res.data.data
+                    this.tableData = res.data.data;
+                    if(res.data.data == ''){
+                        clearInterval(that.timer)
+                    }
                 }
             })
         },
@@ -267,17 +273,21 @@ export default {
 
     },
     mounted() {
-      this.list();
+      var that =this;
       var navType = localStorage.getItem('navType')?localStorage.getItem('navType'):'maps';
-
         this.$emit('update:active',navType)
         this.name = navType;
         this.tabs = false;
         this.new = false;
         this.news = false;
+        this.timer = setInterval(() => {
+            that.list();
+        }, 1000);
     },
 }
 </script>
+<style>
+</style>
 <style scoped>
     .tables>>>th{padding: 0;height:80px;background: #eee;font-size: 16px;font-weight: normal;color: #333;text-align: center;}
     .tables>>>.el-table {border: 1px dotted #eee;}

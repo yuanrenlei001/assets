@@ -78,7 +78,7 @@
                    </el-col>
                    <el-col  :lg="8">
                        <div class="btns2">
-                           <el-button type="success" @click="dialogVisible = true">统计</el-button>
+                           <el-button type="success" @click="dialogVisibleShow">统计</el-button>
                            <el-button type="primary" @click="handleClickss">新增</el-button>
                            <el-button type="primary" @click="findExportTitles">导出</el-button>
                        </div>
@@ -103,6 +103,14 @@
                        @selection-change="handleSelectionChange">
                    <el-table-column type="selection" width="55"></el-table-column>
                    <el-table-column  type="index" width="80" label="序号"></el-table-column>
+                   <el-table-column prop="date9" width="100" label="付款详情">
+                       <template scope="tableData">
+                           <div v-for="item in tableData.row.propertyPayTypeList">{{item.jkStatus}} ： {{item.rentAmount}}</div>
+                           <!--<span v-if="tableData.row.propertyPayTypeList === '1'" style="color:deepskyblue;">已缴纳</span>-->
+                           <!--<span v-if="tableData.row.date9 === '2'" style="color:red;">已超期</span>-->
+                           <!--<span v-if="tableData.row.date9 === '3'" style="color:orange;">即将到期</span>-->
+                       </template>
+                   </el-table-column>
                    <el-table-column prop="pactCode" width="100" label="合同编号"></el-table-column>
                    <el-table-column prop="tenant" label="承租方"></el-table-column>
                    <el-table-column prop="contact" width="100" label="联系方式"></el-table-column>
@@ -151,11 +159,11 @@
                        <template slot-scope="tableData">
                            <div v-if="sysAuthAdmin !== '' && sysAuthAdmin !== 'zcxxlrjgx' && sysAuthAdmin !== 'zcgxsp'">
                                <el-button  type="text" size="small" @click="info(tableData.row)">修改</el-button>
-                               <el-button type="text" size="small" @click="del(tableData.row)">删除</el-button>
+                               <!--<el-button type="text" size="small" @click="del(tableData.row)">删除</el-button>-->
                            </div>
                            <div v-else>
                                <el-button  type="text" size="small" style="color: #999;">修改</el-button>
-                               <el-button type="text" size="small" style="color: #999;">删除</el-button>
+                               <!--<el-button type="text" size="small" style="color: #999;">删除</el-button>-->
                            </div>
                        </template>
                    </el-table-column>
@@ -331,8 +339,8 @@
         </div>
         <el-dialog
                 :visible.sync="dialogVisible"
-                width="680px">
-            <date-chart @childEvent="parentMethod"></date-chart>
+                width="880px">
+            <date-chart @childEvent="parentMethod" :msg="dataChar"></date-chart>
         </el-dialog>
         <!--新增-->
         <assets-add :dialogVisibleAdd="dialogVisibleAdd" @child-event="newInforAdd"  @changeShow="showdialogVisibleAdd" ref="dialogVisibleAddRef"></assets-add>
@@ -409,7 +417,7 @@
                                 <div class="sjsc">
                                     <el-upload
                                             class="upload-demo"
-                                            action="http://39.100.95.204:2005/file/attachment/upload?type=asset"
+                                            action="http://61.153.180.66:9098/file/attachment/upload?type=asset"
                                             :on-success="phone.bind(null, {'index':index,'data':item})"
                                             :on-preview="handlePreview.bind(null, {'index':index,'data':item})"
                                             multiple
@@ -467,6 +475,7 @@
         name: 'login',
         data () {
             return {
+                dataChar:'',
                 heighTable:300,
                 pagesize:10,
                 Amount:0,
@@ -588,6 +597,11 @@
             DateChart,AssetsInfor,AssetsAdd,AssetsKan,AssetsKans
         },
         methods:{
+            dialogVisibleShow(){
+                console.log(this.tableData)
+                this.dialogVisible = true;
+                this.dataChar = this.tableData
+            },
             searchHandle(){
                 this.pactCode = ''
                 this.findList(this.user,this.val,this.rentStart,this.rentEnd,this.pactCode)
@@ -614,25 +628,34 @@
             },
             // 获取导出列表
             findExportTitles(){
-                this.findExportTitle = true
-                this.$axios({
-                    url: this.getAjax + '/admin/property/findExportTitle',
-                    method: "get",
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Token':sessionStorage.getItem('token')
-                    },
-                    data:{}
-                }).then(res => {
-                    if(res.data.code == '1001'){
-                        this.cities = res.data.data
-                    }else{
-                        this.$message({
-                            message: res.data.msg,
-                            type: 'warning'
-                        });
-                    }
-                })
+                var sysAuthAdmin = this.sysAuthAdmin;
+                if(sysAuthAdmin == '' || sysAuthAdmin == 'zcxxlrjgx' || sysAuthAdmin == 'zcgxsp'){
+                    this.$message({
+                        message: '暂无权限！',
+                        type: 'warning'
+                    });
+                }else{
+                    this.findExportTitle = true
+                    this.$axios({
+                        url: this.getAjax + '/admin/property/findExportTitle',
+                        method: "get",
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:{}
+                    }).then(res => {
+                        if(res.data.code == '1001'){
+                            this.cities = res.data.data
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
+                                type: 'warning'
+                            });
+                        }
+                    })
+                }
+
             },
             handleCheckAllChange(val) {
                 const cityOptions = this.cities;
@@ -1098,7 +1121,7 @@
                                 }
                             }
                         }
-                        console.log(val)
+                        console.log(list)
                         if(val === '全部'){
                             this.tableData = list
                         }else{

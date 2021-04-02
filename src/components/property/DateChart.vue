@@ -6,44 +6,33 @@
                     <div class="sum">
                         <div class="sumLeft"><el-button type="primary" icon="el-icon-s-finance" circle style="font-size: 30px;"></el-button></div>
                         <div class="sumRight">
-                            <p>可收租金（万元）</p>
-                            <p>200</p>
+                            <p>可收租金</p>
+                            <p>{{sum}}</p>
                         </div>
                     </div>
                 </el-col>
                 <el-col :span="13" class="sort"  >
                     <el-form-item label="日期：" style="margin-left: 23px;">
                         <el-date-picker
-                                v-model="value1"
-                                type="date"
-                                placeholder="选择日期">
+                                v-model="value2"
+                                type="daterange"
+                                align="right"
+                                value-format="yyyy-MM-dd"
+                                unlink-panels
+                                range-separator="至"
+                                @change="time"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                        >
                         </el-date-picker>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="13" class="sort"  >
-                    <el-form-item label="产权人：" style="margin-left: 23px;">
-                        <el-select  v-model="value" placeholder="请选择">
-                            <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
                     </el-form-item>
                 </el-col>
             </el-form>
         </el-row>
         <el-row >
-            <el-col class="col" :span="11" >
-                <div class="charts" id="myChart5" :style="{width: width, height: height}"></div>
+            <el-col class="col" :span="24" >
+                <div class="charts" id="myChart5" :style="{width: width, height: height}" ref="main"></div>
             </el-col>
-            <el-col class="col" :span="11">
-                <div class="charts" id="myChart2" :style="{width: width, height: height}"></div>
-            </el-col>
-            <!--<el-col class="col" :span="8">-->
-                <!--<div class="charts" id="myChart3" :style="{width: width, height: height}"></div>-->
-            <!--</el-col>-->
         </el-row>
     </div>
 </template>
@@ -51,8 +40,10 @@
 <script>
 export default {
   name: 'login',
+    props:['msg'],
   data () {
     return {
+        value2:'',
         input2:'',
         options: [
             {
@@ -108,115 +99,208 @@ export default {
         multipleSelection: [],
         width:'300px',
         height:'300px',
+        dataList:'',
+        sum:0,
+        page:''
     }
   },
     methods:{
-      // 土地性质
-        // 产权人
-        drawLine2(){
-            // 基于准备好的dom，初始化echarts实例
-            let myChart2 = this.$echarts.init(document.getElementById('myChart2'));
-            myChart2.setOption({
-                color: ['#3398DB'],
-                title:{
-                    text:'资产租金统计',
-                    top:20,
-                    textStyle: {
-                        fontSize: 14,
-                        color:'#999',
-                    }
+        detail(data){
+            var that = this;
+            let sum = 0;
+            let arr = [];
+            for(let i=0;i<data.length;i++){
+                sum += data[i].rentAmount;
+                for(let j=0;j<data[i].propertyPayTypeList.length;j++){
+                    let obj = {};
+                    obj['jkStatus'] = data[i].propertyPayTypeList[j].jkStatus
+                    obj['rentAmount'] = data[i].propertyPayTypeList[j].rentAmount
+                    arr.push(obj)
+                }
+            }
+            console.log(arr)
+            this.sum = sum;
+            let yjn = 0;
+            let ycq = 0;
+            let jjdq = 0;
+            let wdq = 0;
+            for(let x = 0;x<arr.length;x++){
+                if(arr[x].jkStatus === '已缴纳'){yjn+=arr[x].rentAmount}
+                if(arr[x].jkStatus === '已超期'){ycq+=arr[x].rentAmount}
+                if(arr[x].jkStatus === '即将到期'){jjdq+=arr[x].rentAmount}
+                if(arr[x].jkStatus === '未到期'){wdq+=arr[x].rentAmount}
+            }
+            var data = [
+                {value:yjn,name:'已缴纳'},
+                {value:ycq,name:'已超期'},
+                {value:jjdq,name:'即将到期'},
+                {value:wdq,name:'未到期'},
+            ]
+            console.log(data)
+            this.$nextTick(()=>{
+                that.drawLine5(data)
+            })
+
+        },
+        time(e){
+            if(e){
+                console.log(e)
+                let rentStart=e[0]
+                let rentEnd=e[1]
+                this.findList(rentStart,rentEnd)
+            }else{
+                this.findList('','')
+            }
+
+        },
+        // 查询列表
+        findList(rentStart,rentEnd){
+            var that = this;
+            var rentStart = rentStart;
+            var rentEnd = rentEnd;
+            this.toggleIndex = Math.random()
+            var data = {
+                "rentStart":rentStart,
+                "rentEnd":rentEnd,
+                "typeItem": 1,
+                'pactCode':''
+            }
+            this.$axios({
+                url: this.getAjax + '/admin/property/findList',
+                method: "post",
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    'Token':sessionStorage.getItem('token')
                 },
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-                    }
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis: [
-                    {
-                        type: 'category',
-                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                        axisTick: {
-                            alignWithLabel: true
+                data:data
+            }).then(res => {
+                if(res.data.code == '1001'){
+                    var list = res.data.data.list;
+                    this.page = [];
+                    this.page = res.data.data;
+                    var dataList = res.data.data.list;
+                    var arr = [];
+                    for(var i=0;i<list.length;i++){
+                        for(var j=0;j<list[i].propertyPayTypeList.length;j++){
+                            var datas = list[i].propertyPayTypeList[j];
+                            var time = list[i].propertyPayTypeList[j].dateStr?list[i].propertyPayTypeList[j].dateStr:'2021-01-28';
+                            var img = list[i].propertyPayTypeList[j].attach==''?null:list[i].propertyPayTypeList[j].attach;
+                            var strtime = time.replace("/-/g", "/");//时间转换
+                            var date1=new Date(strtime);
+                            var date2=new Date();
+                            if(date1<date2 && img){
+                                list[i].propertyPayTypeList[j]['jkStatus'] ='已缴纳'
+                            }
+                            else if(date1<date2 && (img==null)){
+                                list[i].propertyPayTypeList[j]['jkStatus'] ='已超期'
+                            }
+                            else{
+                                var date = new Date();
+                                var seperator1 = "-";
+                                var year = date.getFullYear();
+                                var month = date.getMonth() + 1;
+                                var strDate = date.getDate();
+                                if (month >= 1 && month <= 9) {
+                                    month = "0" + month;
+                                }
+                                if (strDate >= 0 && strDate <= 9) {
+                                    strDate = "0" + strDate;
+                                }
+                                var currentdate = year + seperator1 + month + seperator1 + strDate;
+                                var arr1 = currentdate.split('-');
+                                var arr2 = time.split('-');
+                                arr1[1] = parseInt(arr1[1]);
+                                arr1[2] = parseInt(arr1[2]);
+                                arr2[1] = parseInt(arr2[1]);
+                                arr2[2] = parseInt(arr2[2]);
+                                var flag = true;
+                                var type = '即将到期'
+                                if(arr1[0] == arr2[0]){//同年
+                                    if(arr2[1]-arr1[1] > 3){ //月间隔超过3个月
+                                        flag = false;
+                                        list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                    }else if(arr2[1]-arr1[1] == 3){ //月相隔3个月，比较日
+                                        if(arr2[2] > arr1[2]){ //结束日期的日大于开始日期的日
+                                            flag = false;
+                                            list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                        }else{
+                                            list[i].propertyPayTypeList[j]['jkStatus'] ='即将到期'
+                                        }
+                                    }else{
+                                        list[i].propertyPayTypeList[j]['jkStatus'] ='即将到期'
+                                    }
+                                }else{ //不同年
+                                    if(arr2[0] - arr1[0] > 1){
+                                        list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                        flag = false;
+                                    }else if(arr2[0] - arr1[0] == 1){
+                                        if(arr1[1] < 10){ //开始年的月份小于10时，不需要跨年
+                                            flag = false;
+                                            list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                        }else if(arr1[1]+3-arr2[1] < 12){ //月相隔大于3个月
+                                            flag = false;
+                                            list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                        }else if(arr1[1]+3-arr2[1] == 12){ //月相隔3个月，比较日
+                                            if(arr2[2] > arr1[2]){ //结束日期的日大于开始日期的日
+                                                flag = false;
+                                                list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                            }else{
+                                                list[i].propertyPayTypeList[j]['jkStatus'] ='即将到期'
+                                            }
+                                        }
+                                    }
+                                }
+                                // list[i].propertyPayTypeList[j]['jkStatus'] ='未来时间'
+                            }
                         }
                     }
-                ],
-                yAxis: [
-                    {
-                        type: 'value'
-                    }
-                ],
-                series: [
-                    {
-                        name: '直接访问',
-                        type: 'bar',
-                        barWidth: '60%',
-                        data: [10, 52, 200, 334, 390, 330, 220]
-                    }
-                ]
-            });
-        },
-        // 房屋现状
-        drawLine3(){
-            // 基于准备好的dom，初始化echarts实例
-            let myChart3 = this.$echarts.init(document.getElementById('myChart3'));
-            myChart3.setOption({
-                title:{
-                    text:'房屋现状',
-                    subtext: '78%',
-                    top:20,
-                    textStyle: {
-                        fontSize: 14,
-                        color:'#999',
-                    }
-                },
-                color:['#999','#33a4fb'],
-                legend: {
-                    left: '50%',
-                    data: ['占用', '闲置'],
-                    bottom:0,
-                },
-
-                series: [
-                    {
-                        name: '访问来源',
-                        type: 'pie',
-                        radius: ['50%', '70%'],
-                        avoidLabelOverlap: false,
-                        label: {
-                            show: false,
-                            position: 'center'
-                        },
-                        emphasis: {
-                            label: {
-                                show: true,
-                                fontSize: '30',
-                                fontWeight: 'bold'
+                    for(var z=0;z<list.length;z++){
+                        list[z]['flag'] = '';
+                        var flag = list[z].flag,
+                            item = list[z].propertyPayTypeList;
+                        for(var y = 0; y < item.length; y++) {
+                            if(item[y].jkStatus === "已超期") {
+                                list[z].flag = '已超期'
+                            } else if(item[y].jkStatus === "已缴纳") {
+                                if(
+                                    (list[z].flag.length == 0) &&
+                                    (list[z].flag !== "已超期")&&(list[z].flag !== "即将到期" )
+                                ){
+                                    list[z].flag = "已缴纳"
+                                }
+                            } else if(item[y].jkStatus === "即将到期") {
+                                if(  (list[z].flag != "已超期") ){
+                                    list[z].flag = "即将到期"
+                                }
                             }
-                        },
-                        labelLine: {
-                            show: false
-                        },
-                        data: [
-                            {value: 100, name: '占用'},
-                            {value: 335, name: '闲置'},
-                        ]
+                        }
                     }
-                ]
-            });
+                    console.log(list)
+                    that.detail(list)
+                    // if(val === '全部'){
+                    //     this.tableData = list
+                    // }else{
+                    //     var arr = [];
+                    //     list.forEach((item, i) => {
+                    //         if(item.flag === val){
+                    //             arr.push(item)
+                    //         }
+                    //     })
+                    //     this.tableData = arr
+                    // }
+
+                }else{
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'warning'
+                    });
+                }
+            })
         },
-        // 产权用途
-        // 土地用途
-        drawLine5(){
+        drawLine5(data){
             // 基于准备好的dom，初始化echarts实例
-            let myChart5 = this.$echarts.init(document.getElementById('myChart5'));
-            myChart5.setOption({
+            let myChart5 =  this.$echarts.init(this.$refs.main);
+            let option = {
                 title: {
                     text:'土地用途',
                     top:20,
@@ -232,16 +316,15 @@ export default {
                 legend: {
                     left: 'center',
                     top: 'bottom',
-                    data: ['住宅', '商铺', '服务', '酒店', '餐饮']
+                    data: ['即将到期', '已缴纳', '已超期','未到期']
                 },
-                color:['#61a5e8','#7ecf51','#eecb5f','#c55a4c','#c78151'],
+                color:['#61a5e8','#7ecf51','#eecb5f','#becb5f'],
                 series: [
                     {
                         name: '半径模式',
                         type: 'pie',
-                        radius: [20, 110],
+                        radius: [0, 100],
                         center: ['50%', '50%'],
-                        roseType: 'radius',
                         label: {
                             show: false
                         },
@@ -250,25 +333,20 @@ export default {
                                 show: true
                             }
                         },
-                        data: [
-                            {value: 30, name: '住宅'},
-                            {value: 20, name: '商铺'},
-                            {value: 15, name: '服务'},
-                            {value: 10, name: '酒店'},
-                            {value: 5, name: '餐饮'},
-                        ]
+                        data: data
                     }
                 ]
-            });
+            }
+            myChart5.setOption(option);
         },
-        // 产权人
     },
     mounted(){
-      this.drawLine2();
-      this.drawLine5();
+      // this.drawLine2();
+      // this.drawLine5();
             this.$emit('childEvent', { name: 'zhangsan', age:  10 })
     },
     created:function () {
+      this.detail(this.$props.msg)
     }
 }
 </script>

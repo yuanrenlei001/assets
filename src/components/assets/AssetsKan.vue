@@ -7,90 +7,59 @@
                        @close="handleClose"
                        width="1000px">
                <el-row>
-                   <!--<div class="kanTitle">资产详情</div>-->
                    <el-form ref="form" >
                        <el-col :span="24" class="newKan"  style="padding-top: 26px;">
                            <el-col :span="12">
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">产权名：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.assetCode == 'assetCode'?'color:red':''">产权名：</div></el-col>
                                    <el-col :lg="13"><el-input v-model="tmp&&tmp.assetCode?tmp.assetCode:meansBook.assetCode" placeholder="" :disabled="disabled"></el-input></el-col>
-                                   <!--<el-form-item label="产权名：">-->
-                                       <!--<el-input v-model="tmp&&tmp.assetCode?tmp.assetCode:meansBook.assetCode" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">产权人：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.assetUser == 'assetUser'?'color:red':''">产权人：</div></el-col>
                                    <el-col :lg="13"><el-input v-model="tmp&&tmp.assetUser?tmp.assetUser:meansBook.assetUser" placeholder="" :disabled="disabled"></el-input></el-col>
-                                   <!--<el-form-item label="产权人：">-->
-                                       <!--<el-input v-model="tmp&&tmp.assetUser?tmp.assetUser:meansBook.assetUser" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">原使用产权人：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.assetUserOri == 'assetUserOri'?'color:red':''">原使用产权人：</div></el-col>
                                    <el-col :lg="13"><el-input v-model="tmp&&tmp.assetUserOri?tmp.assetUserOri:meansBook.assetUserOri" placeholder="" :disabled="disabled"></el-input></el-col>
-                                   <!--<el-form-item label="原使用产权人：">-->
-                                   <!--<el-input v-model="tmp&&tmp.assetUserOri?tmp.assetUserOri:meansBook.assetUserOri" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">房屋坐落：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.houseAddress == 'houseAddress'?'color:red':''">房屋坐落：</div></el-col>
                                    <el-col :lg="13"><el-input v-model="tmp&&tmp.houseAddress?tmp.houseAddress:meansBook.houseAddress" placeholder="" :disabled="disabled"></el-input></el-col>
-                                   <!--<el-form-item label="房屋坐落：">-->
-                                       <!--<el-input v-model="tmp&&tmp.houseAddress?tmp.houseAddress:meansBook.houseAddress" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">房屋性质：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.houseNature == 'houseNature'?'color:red':''">房屋性质：</div></el-col>
                                    <el-col :lg="13"><el-input v-model="tmp&&tmp.houseNature?tmp.houseNature:meansBook.houseNature" placeholder="" :disabled="disabled"></el-input></el-col>
-                                   <!--<el-form-item label="房屋性质：" >-->
-                                   <!--<el-input v-model="tmp&&tmp.houseNature?tmp.houseNature:meansBook.houseNature" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">房屋结构：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.houseStructure == 'houseStructure'?'color:red':''">房屋结构：</div></el-col>
                                    <el-col :lg="13"><el-input v-model="tmp&&tmp.houseStructure?tmp.houseStructure:meansBook.houseStructure" placeholder="" :disabled="disabled"></el-input></el-col>
-                                   <!--<el-form-item label="房屋结构：" >-->
-                                   <!--<el-input v-model="tmp&&tmp.houseStructure?tmp.houseStructure:meansBook.houseStructure" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">产权用途：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.assetUse == 'assetUse'?'color:red':''">产权用途：</div></el-col>
                                    <el-col :lg="13">
                                        <el-input v-model="tmp&&tmp.assetUse?tmp.assetUse:meansBook.assetUse" placeholder="" :disabled="disabled"></el-input>
                                    </el-col>
-                                   <!--<el-form-item label="产权用途：" >-->
-                                   <!--<el-input v-model="tmp&&tmp.assetUse?tmp.assetUse:meansBook.assetUse" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">土地面积 (m²)：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.landArea == 'landArea'?'color:red':''">土地面积 (m²)：</div></el-col>
                                    <el-col :lg="13"><el-input v-model="tmp&&tmp.landArea?tmp.landArea:meansBook.landArea" placeholder="" :disabled="disabled"></el-input></el-col>
-                                   <!--<el-form-item label="土地面积：">-->
-                                   <!--<el-input v-model="tmp&&tmp.landArea?tmp.landArea:meansBook.landArea+' m²'" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col  :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">土地用途：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.landUse == 'landUse'?'color:red':''">土地用途：</div></el-col>
                                    <el-col :lg="13"><el-input v-model="tmp&&tmp.landUse?tmp.landUse:meansBook.landUse" placeholder="" :disabled="disabled"></el-input></el-col>
-                                   <!--<el-form-item label="土地用途：" >-->
-                                   <!--<el-input v-model="tmp&&tmp.landUse?tmp.landUse:meansBook.landUse" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col  :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">土地性质：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.landNature == 'landNature'?'color:red':''">土地性质：</div></el-col>
                                    <el-col :lg="13"><el-input v-model="tmp&&tmp.landNature?tmp.landNature:meansBook.landNature" placeholder="" :disabled="disabled"></el-input></el-col>
-                                   <!--<el-form-item label="土地性质：" >-->
-                                   <!--<el-input v-model="tmp&&tmp.landNature?tmp.landNature:meansBook.landNature" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">不动产证：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.realEstate == 'realEstate'?'color:red':''">不动产证：</div></el-col>
                                    <el-col :lg="13">
                                        <el-input v-model="tmp&&tmp.realEstate?tmp.realEstate:meansBook.realEstate" placeholder="" :disabled="disabled"></el-input>
                                    </el-col>
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">不动产证附件：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.realEstateAttach == 'realEstateAttach'?'color:red':''">不动产证附件：</div></el-col>
                                    <el-col :lg="13">
                                        <div v-for="item in bdPic" class="newKan_img">
                                            <img src="@/assets/pdf.png" alt="" v-if="item.hz==='.pdf'" @click="file(item.url)">
@@ -104,13 +73,13 @@
                                    </el-col>
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">土地证：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.realLand == 'realLand'?'color:red':''">土地证：</div></el-col>
                                    <el-col :lg="13">
                                        <el-input v-model="tmp&&tmp.realLand?tmp.realLand:meansBook.realLand" placeholder=""  :disabled="disabled"></el-input>
                                    </el-col>
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">土地证附件：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.realLandAttach == 'realLandAttach'?'color:red':''">土地证附件：</div></el-col>
                                    <el-col :lg="13">
                                        <div v-for="item in tdPic" class="newKan_img">
                                            <img src="@/assets/pdf.png" alt="" v-if="item.hz==='.pdf'" @click="file(item.url)">
@@ -126,90 +95,62 @@
                            </el-col>
                            <el-col :span="12">
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">房屋建筑面积 (m²)：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.landArea == 'landArea'?'color:red':''">房屋建筑面积 (m²)：</div></el-col>
                                    <el-col :lg="13"><el-input v-model="tmp&&tmp.landArea?tmp.landArea:meansBook.landArea" placeholder="" :disabled="disabled"></el-input></el-col>
-                                   <!--<el-form-item label="房屋建筑面积：">-->
-                                   <!--<el-input v-model="tmp&&tmp.landArea?tmp.landArea:meansBook.landArea+' m²'" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">未登记建筑面积 (m²)：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.noCheckinArea == 'noCheckinArea'?'color:red':''">未登记建筑面积 (m²)：</div></el-col>
                                    <el-col :lg="13">
                                        <el-input  placeholder="" :disabled="disabled" v-model="tmp&&tmp.noCheckinArea?tmp.noCheckinArea:meansBook.noCheckinArea"></el-input>
                                    </el-col>
-                                   <!--<el-form-item label="未登记建筑面积：">-->
-                                   <!--<el-input v-if="(tmp&&tmp.noCheckinArea?tmp.noCheckinArea:meansBook.noCheckinArea) == null"  placeholder="" :disabled="disabled" value=""></el-input>-->
-                                   <!--<el-input v-else  placeholder="" :disabled="disabled" v-model="tmp&&tmp.noCheckinArea?tmp.noCheckinArea:meansBook.noCheckinArea+' m²'"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">合法住宅面积 (m²)：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.legalArea == 'legalArea'?'color:red':''">合法住宅面积 (m²)：</div></el-col>
                                    <el-col :lg="13">
                                        <el-input v-model="tmp&&tmp.legalArea?tmp.legalArea:meansBook.legalArea" placeholder="" :disabled="disabled"></el-input>
                                    </el-col>
-                                   <!--<el-form-item label=" 合法住宅面积（m²）：">-->
-                                   <!--<el-input v-if="(tmp&&tmp.legalArea?tmp.legalArea:meansBook.legalArea) == null"  placeholder="" :disabled="disabled" value=""></el-input>-->
-                                   <!--<el-input v-else v-model="tmp&&tmp.legalArea?tmp.legalArea:meansBook.legalArea+' m²'" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">辅助用房面积 (m²)：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.assHouseArea == 'assHouseArea'?'color:red':''">辅助用房面积 (m²)：</div></el-col>
                                    <el-col :lg="13">
                                        <el-input v-model="tmp&&tmp.assHouseArea?tmp.assHouseArea:meansBook.assHouseArea" placeholder="" :disabled="disabled"></el-input>
                                    </el-col>
-                                   <!--<el-form-item label=" 辅助用房面积（m²）：">-->
-                                   <!--<el-input v-if="(tmp&&tmp.assHouseArea?tmp.assHouseArea:meansBook.assHouseArea) == null"  placeholder="" :disabled="disabled" value=""></el-input>-->
-                                   <!--<el-input v-else v-model="tmp&&tmp.assHouseArea?tmp.assHouseArea:meansBook.assHouseArea+' m²'" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">协议金额：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.dealAmount == 'dealAmount'?'color:red':''">协议金额：</div></el-col>
                                    <el-col :lg="13">
                                        <el-input v-if="(tmp&&tmp.dealAmount?tmp.dealAmount:meansBook.dealAmount) == null"  placeholder="" :disabled="disabled" value=""></el-input>
                                        <el-input v-else v-model="tmp&&tmp.dealAmount?tmp.dealAmount:meansBook.dealAmount +' m²'" placeholder="" :disabled="disabled"></el-input>
                                    </el-col>
-                                   <!--<el-form-item label="协议金额：">-->
-                                   <!--<el-input v-if="(tmp&&tmp.dealAmount?tmp.dealAmount:meansBook.dealAmount) == null"  placeholder="" :disabled="disabled" value=""></el-input>-->
-                                   <!--<el-input v-else v-model="tmp&&tmp.dealAmount?tmp.dealAmount:meansBook.dealAmount +' m²'" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">房屋现状：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft"  :style="showObj.houseNow == 'houseNow'?'color:red':''">房屋现状：</div></el-col>
                                    <el-col :lg="13">
                                        <el-input v-model="tmp&&tmp.houseNow?tmp.houseNow:meansBook.houseNow" placeholder="" :disabled="disabled"></el-input>
                                    </el-col>
-                                   <!--<el-form-item label="房屋现状：" >-->
-                                   <!--<el-input v-model="tmp&&tmp.houseNow?tmp.houseNow:meansBook.houseNow" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">房屋档案编号：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.houseNo == 'houseNo'?'color:red':''">房屋档案编号：</div></el-col>
                                    <el-col :lg="13">
                                        <el-input v-model="tmp&&tmp.houseNo?tmp.houseNo:meansBook.houseNo" placeholder="" :disabled="disabled"></el-input>
                                    </el-col>
-                                   <!--<el-form-item label="房屋档案编号：">-->
-                                   <!--<el-input v-model="tmp&&tmp.houseNo?tmp.houseNo:meansBook.houseNo" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">备注：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.remark == 'remark'?'color:red':''">备注：</div></el-col>
                                    <el-col :lg="13">
                                        <el-input v-model="tmp&&tmp.remark?tmp.remark:meansBook.remark" placeholder="" :disabled="disabled"></el-input>
                                    </el-col>
-                                   <!--<el-form-item label="备注：">-->
-                                   <!--<el-input v-model="tmp&&tmp.remark?tmp.remark:meansBook.remark" placeholder="" :disabled="disabled"></el-input>-->
-                                   <!--</el-form-item>-->
                                </el-col>
 
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">房产证：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.realHouse == 'realHouse'?'color:red':''">房产证：</div></el-col>
                                    <el-col :lg="13">
                                        <el-input v-model="tmp&&tmp.realHouse?tmp.realHouse:meansBook.realHouse" placeholder="" :disabled="disabled"></el-input>
 
                                    </el-col>
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">房产证附件：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.realHouseAttach == 'realHouseAttach'?'color:red':''">房产证附件：</div></el-col>
                                    <el-col :lg="13">
                                        <div v-for="item in fcPic"  class="newKan_img">
                                            <img src="@/assets/pdf.png" alt="" v-if="item.hz==='.pdf'" @click="file(item.url)">
@@ -224,7 +165,7 @@
                                    </el-col>
                                </el-col>
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft">照片：</div></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.pic == 'pic'?'color:red':''">照片：</div></el-col>
                                    <el-col :lg="13">
                                        <el-image
                                                v-for="item in imgpicc"
@@ -237,31 +178,31 @@
                                </el-col>
                            </el-col>
                            <el-col :span="24">
-                               <el-col :lg="5"><div class="textLeft">水&nbsp;&nbsp;&nbsp;&nbsp;户名：</div></el-col>
+                               <el-col :lg="5"><div class="textLeft" :style="showObj.accNameWater == 'accNameWater'?'color:red':''">水&nbsp;&nbsp;&nbsp;&nbsp;户名：</div></el-col>
                                <el-col :lg="4"><el-input v-model="tmp&&tmp.accNameWater?tmp.accNameWater:meansBook.accNameWater" placeholder="" :disabled="disabled"></el-input></el-col>
-                               <el-col :lg="3"><div class="textLeft" style="text-align: center;margin-right: 0;">户号：</div></el-col>
+                               <el-col :lg="3"><div class="textLeft" :style="showObj.accNoWater == 'accNoWater'?'color:red':''" style="text-align: center;margin-right: 0;">户号：</div></el-col>
                                <el-col :lg="4"><el-input v-model="tmp&&tmp.accNoWater?tmp.accNoWater:meansBook.accNoWater" placeholder="" :disabled="disabled"></el-input></el-col>
-                               <el-col :lg="3"><div class="textLeft" style="text-align: center;margin-right: 0;">缴款方式：</div></el-col>
+                               <el-col :lg="3"><div class="textLeft" :style="showObj.accTypeWater == 'accTypeWater'?'color:red':''" style="text-align: center;margin-right: 0;">缴款方式：</div></el-col>
                                <el-col :lg="4">
                                    <el-input v-model="tmp&&tmp.accTypeWater?tmp.accTypeWater:meansBook.accTypeWater" placeholder="" :disabled="disabled"></el-input>
                                </el-col>
                            </el-col>
                            <el-col style="margin-top: 26px;" :span="24">
-                               <el-col :lg="5"><div class="textLeft">电&nbsp;&nbsp;&nbsp;&nbsp;户名：</div></el-col>
+                               <el-col :lg="5"><div class="textLeft" :style="showObj.accNameElec == 'accNameElec'?'color:red':''">电&nbsp;&nbsp;&nbsp;&nbsp;户名：</div></el-col>
                                <el-col :lg="4"><el-input v-model="tmp&&tmp.accNameElec?tmp.accNameElec:meansBook.accNameElec" placeholder="" :disabled="disabled"></el-input></el-col>
-                               <el-col :lg="3"><div class="textLeft" style="text-align: center;margin-right: 0;">户号：</div></el-col>
+                               <el-col :lg="3"><div class="textLeft" :style="showObj.accNoElec == 'accNoElec'?'color:red':''" style="text-align: center;margin-right: 0;">户号：</div></el-col>
                                <el-col :lg="4"><el-input v-model="tmp&&tmp.accNoElec?tmp.accNoElec:meansBook.accNoElec" placeholder="" :disabled="disabled"></el-input></el-col>
-                               <el-col :lg="3"><div class="textLeft" style="text-align: center;margin-right: 0;">缴款方式：</div></el-col>
+                               <el-col :lg="3"><div class="textLeft"  :style="showObj.accTypeElec == 'accTypeElec'?'color:red':''" style="text-align: center;margin-right: 0;">缴款方式：</div></el-col>
                                <el-col :lg="4">
                                    <el-input v-model="tmp&&tmp.accTypeElec?tmp.accTypeElec:meansBook.accTypeElec" placeholder="" :disabled="disabled"></el-input>
                                </el-col>
                            </el-col>
                            <el-col style="margin-top: 26px;" :span="24">
-                               <el-col :lg="5"><div class="textLeft">燃气&nbsp;&nbsp;&nbsp;&nbsp;户名：</div></el-col>
+                               <el-col :lg="5"><div class="textLeft" :style="showObj.accNameGas == 'accNameGas'?'color:red':''">燃气&nbsp;&nbsp;&nbsp;&nbsp;户名：</div></el-col>
                                <el-col :lg="4"><el-input v-model="tmp&&tmp.accNameGas?tmp.accNameGas:meansBook.accNameGas" placeholder="" :disabled="disabled"></el-input></el-col>
-                               <el-col :lg="3"><div class="textLeft" style="text-align: center;margin-right: 0;">户号：</div></el-col>
+                               <el-col :lg="3"><div class="textLeft" :style="showObj.accNoGas == 'accNoGas'?'color:red':''" style="text-align: center;margin-right: 0;">户号：</div></el-col>
                                <el-col :lg="4"><el-input v-model="tmp&&tmp.accNoGas?tmp.accNoGas:meansBook.accNoGas" placeholder="" :disabled="disabled"></el-input></el-col>
-                               <el-col :lg="3"><div class="textLeft" style="text-align: center;margin-right: 0;">缴款方式：</div></el-col>
+                               <el-col :lg="3"><div class="textLeft" :style="showObj.accTypeGas == 'accTypeGas'?'color:red':''" style="text-align: center;margin-right: 0;">缴款方式：</div></el-col>
                                <el-col :lg="4">
                                    <el-input v-model="tmp&&tmp.accTypeGas?tmp.accTypeGas:meansBook.accTypeGas" placeholder="" :disabled="disabled"></el-input>
                                </el-col>
@@ -300,114 +241,12 @@
 
 </div>
                        </el-col>
-                       <!--<el-col :span="24" style="position: relative;margin: 0;">-->
-                           <!--<div class="map" id="mapid" ref="mapsss"></div>-->
-                       <!--</el-col>-->
-                       <!--<el-col class="table" :span="24" style="text-align: center;margin-top: 20px;">-->
-                           <!--<el-col :span="9">-->
-                               <!--水&nbsp;&nbsp;&nbsp;&nbsp;户名：-->
-                               <!--<el-input v-model="tmp&&tmp.accNameWater?tmp.accNameWater:meansBook.accNameWater" placeholder="" :disabled="disabled"></el-input>-->
-                           <!--</el-col>-->
-                           <!--<el-col :span="7">-->
-                               <!--户号-->
-                               <!--<el-input v-model="tmp&&tmp.accNoWater?tmp.accNoWater:meansBook.accNoWater" placeholder="" :disabled="disabled"></el-input>-->
-                           <!--</el-col>-->
-                           <!--<el-col :span="8">-->
-                               <!--缴款方式-->
-                               <!--<el-input v-model="tmp&&tmp.accTypeWater?tmp.accTypeWater:meansBook.accTypeWater" placeholder="" :disabled="disabled"></el-input>-->
-                           <!--</el-col>-->
-
-                       <!--</el-col>-->
-                       <!--<el-col class="table" :span="24" style="text-align: center;margin-top: 20px;">-->
-                           <!--<el-col :span="9">-->
-                               <!--电&nbsp;&nbsp;&nbsp;&nbsp;户名：-->
-                               <!--<el-input v-model="tmp&&tmp.accNameElec?tmp.accNameElec:meansBook.accNameElec" placeholder="" :disabled="disabled"></el-input>-->
-                           <!--</el-col>-->
-                           <!--<el-col :span="7">-->
-                               <!--户号-->
-                               <!--<el-input v-model="tmp&&tmp.accNoElec?tmp.accNoElec:meansBook.accNoElec" placeholder="" :disabled="disabled"></el-input>-->
-                           <!--</el-col>-->
-                           <!--<el-col :span="8">-->
-                               <!--缴款方式-->
-                               <!--<el-input v-model="tmp&&tmp.accTypeElec?tmp.accTypeElec:meansBook.accTypeElec" placeholder="" :disabled="disabled"></el-input>-->
-                           <!--</el-col>-->
-
-                       <!--</el-col>-->
-                       <!--<el-col class="table" :span="24" style="text-align: center;margin-top: 20px;">-->
-                           <!--<el-col :span="9">-->
-                               <!--燃气&nbsp;&nbsp;户名：-->
-                               <!--<el-input v-model="tmp&&tmp.accNameGas?tmp.accNameGas:meansBook.accNameGas" placeholder="" :disabled="disabled"></el-input>-->
-                           <!--</el-col>-->
-                           <!--<el-col :span="7">-->
-                               <!--户号-->
-                               <!--<el-input v-model="tmp&&tmp.accNoGas?tmp.accNoGas:meansBook.accNoGas" placeholder="" :disabled="disabled"></el-input>-->
-                           <!--</el-col>-->
-                           <!--<el-col :span="8">-->
-                               <!--缴款方式-->
-                               <!--<el-input v-model="tmp&&tmp.accTypeGas?tmp.accTypeGas:meansBook.accTypeGas" placeholder="" :disabled="disabled"></el-input>-->
-                           <!--</el-col>-->
-                           <!--<el-col :span="24" style="position: relative;margin: 0;">-->
-                               <!--<div class="map" id="mapid" ref="mapsss"></div>-->
-                           <!--</el-col>-->
-                           <!--&lt;!&ndash;<div v-if="typesss == 'sp'"  >&ndash;&gt;-->
-                               <!--&lt;!&ndash;<div style="font-size: 30px;margin: 20px 0;">审批流程：</div>&ndash;&gt;-->
-                               <!--&lt;!&ndash;<el-col :span="24">&ndash;&gt;-->
-                                   <!--&lt;!&ndash;<el-form-item label="审批：">&ndash;&gt;-->
-                                       <!--&lt;!&ndash;<div class="sp">&ndash;&gt;-->
-                                           <!--&lt;!&ndash;<div>&ndash;&gt;-->
-                                               <!--&lt;!&ndash;<div>发起人：</div>&ndash;&gt;-->
-                                               <!--&lt;!&ndash;<div v-for="item in approvalFindList.openRole">&ndash;&gt;-->
-                                                   <!--&lt;!&ndash;<div v-for="items in item.users">&ndash;&gt;-->
-                                                       <!--&lt;!&ndash;<img :src="items.avatar" alt=""><p>{{items.name}}</p>&ndash;&gt;-->
-                                                   <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                               <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                           <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                           <!--&lt;!&ndash;<div>&ndash;&gt;-->
-                                               <!--&lt;!&ndash;<div>审批人：</div>&ndash;&gt;-->
-                                               <!--&lt;!&ndash;<div v-for="item in approvalFindList.checkRole">&ndash;&gt;-->
-                                                   <!--&lt;!&ndash;<div v-for="items in item.users">&ndash;&gt;-->
-                                                       <!--&lt;!&ndash;<img :src="items.avatar" alt=""><p>{{items.name}}</p>&ndash;&gt;-->
-                                                   <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                               <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                           <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                           <!--&lt;!&ndash;&lt;!&ndash;<div  v-for="item in approvalFindList.openRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>&ndash;&gt;&ndash;&gt;-->
-                                           <!--&lt;!&ndash;&lt;!&ndash;<div v-for="item in approvalFindList.checkRole"><img src="@/assets/logo.png" alt=""><p>{{item.name}}</p></div>&ndash;&gt;&ndash;&gt;-->
-                                           <!--&lt;!&ndash;&lt;!&ndash;<span class="hr"></span>&ndash;&gt;&ndash;&gt;-->
-                                       <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                   <!--&lt;!&ndash;</el-form-item>&ndash;&gt;-->
-
-                               <!--&lt;!&ndash;</el-col>&ndash;&gt;-->
-                               <!--&lt;!&ndash;<el-col :span="24">&ndash;&gt;-->
-                                   <!--&lt;!&ndash;<el-form-item label="抄送：">&ndash;&gt;-->
-                                       <!--&lt;!&ndash;<div class="sp">&ndash;&gt;-->
-                                           <!--&lt;!&ndash;<div>&ndash;&gt;-->
-                                               <!--&lt;!&ndash;<div>抄送人：</div>&ndash;&gt;-->
-                                               <!--&lt;!&ndash;<div v-for="item in approvalFindList.noticeRole">&ndash;&gt;-->
-                                                   <!--&lt;!&ndash;<div v-for="items in item.users">&ndash;&gt;-->
-                                                       <!--&lt;!&ndash;<img :src="items.avatar" alt=""><p>{{items.name}}</p>&ndash;&gt;-->
-                                                   <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                               <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                           <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                       <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                   <!--&lt;!&ndash;</el-form-item>&ndash;&gt;-->
-
-                               <!--&lt;!&ndash;</el-col>&ndash;&gt;-->
-                           <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                       <!--</el-col>-->
                    </el-form>
                    <el-col :span="23" style="text-align: right;margin-top: 40px;margin-bottom: 40px;">
                        <el-button type="primary" round @click="closes">确定</el-button>
                        <el-button type="success" round @click="closes">取消</el-button>
                    </el-col>
                </el-row>
-                   <!--<el-row :gutter="10" style="margin-top: 20px;">-->
-                       <!--<el-col :lg="12" style="text-align: center;">-->
-                           <!--<el-button type="success" class="grid-content" plain @click="closes">确 定</el-button>-->
-                       <!--</el-col>-->
-                       <!--<el-col :lg="12" style="text-align: center;">-->
-                           <!--<el-button class="grid-content" plain @click="closes">取 消</el-button>-->
-                       <!--</el-col>-->
-                   <!--</el-row>-->
                </el-dialog>
                <div v-if="imgShow" @click="imgShowFlase"  style="text-align:center;position: fixed;z-index: 999999;top:0;left:0;background: rgba(0,0,0,.5);width: 100%;height:100%;">
                    <img :src="showImgUrl" alt="" style="width: 500px;
@@ -431,6 +270,7 @@
         },
   data () {
     return {
+        showObj:'',
         map:null,
         _marker:null,
         showImgUrl:'',
@@ -600,51 +440,130 @@
                 if(res.data.code = '1001'){
                     this.meansBook = res.data.data.meansBook;
                     this.tmp = res.data.data.tmp
+                    that.showObj = ''
                     that.bdPic = []
                     that.fcPic = []
                     that.tdPic = []
                     that.imgpicc = []
-                    var imgbd = res.data.data.meansBook.realEstateAttach.split(',');
-                    var imgfc = res.data.data.meansBook.realHouseAttach.split(',');
-                    var imgtd = res.data.data.meansBook.realLandAttach.split(',');
-                    var imgpicc = res.data.data.meansBook.pic.split(',');
-                    console.log(imgpicc)
                     var file= []
-                    for(var j =0;j<imgbd.length;j++){
-                        var obj4 = {}
-                        obj4['name']= imgbd[j].split('#_#')[0]
-                        obj4['url']= imgbd[j].split('#_#')[1]
-                        obj4['hz']= imgbd[j].split('#_#')[1].substring(imgbd[j].split('#_#')[1].lastIndexOf("."))
-                        that.bdPic.push(obj4);
-                    }
-                    console.log(that.bdPic)
-                    for(var z =0;z<imgfc.length;z++){
-                        var obj4 = {}
-                        obj4['name']= imgfc[z].split('#_#')[0]
-                        obj4['url']= imgfc[z].split('#_#')[1]
-                        obj4['hz']= imgfc[z].split('#_#')[1].substring(imgfc[z].split('#_#')[1].lastIndexOf("."))
-                        that.fcPic.push(obj4);
-                        console.log(that.fcPic)
-                    }
-                    for(var x =0;x<imgtd.length;x++){
-                        var obj4 = {}
-                        obj4['name']= imgtd[x].split('#_#')[0]
-                        obj4['url']= imgtd[x].split('#_#')[1]
-                        obj4['hz']= imgtd[x].split('#_#')[1].substring(imgtd[x].split('#_#')[1].lastIndexOf("."))
-                        that.tdPic.push(obj4);
-                    }
-                    if(imgpicc == ''){
-                        that.imgpicc =[]
+                    if(res.data.data.tmp){
+                        if(res.data.data.tmp.realEstateAttach && res.data.data.tmp.realEstateAttach!==''){
+                            var imgbd = res.data.data.tmp.realEstateAttach.split(',')
+                            for(var j =0;j<imgbd.length;j++){
+                                var obj4 = {}
+                                obj4['name']= imgbd[j].split('#_#')[0]
+                                obj4['url']= imgbd[j].split('#_#')[1]
+                                obj4['hz']= imgbd[j].split('#_#')[1].substring(imgbd[j].split('#_#')[1].lastIndexOf("."))
+                                that.bdPic.push(obj4);
+                            }
+                        }
+                        if(res.data.data.tmp.realHouseAttach && res.data.data.tmp.realHouseAttach !==''){
+                            var imgfc = res.data.data.tmp.realHouseAttach.split(',');
+                            for(var z =0;z<imgfc.length;z++){
+                                var obj4 = {}
+                                obj4['name']= imgfc[z].split('#_#')[0]
+                                obj4['url']= imgfc[z].split('#_#')[1]
+                                obj4['hz']= imgfc[z].split('#_#')[1].substring(imgfc[z].split('#_#')[1].lastIndexOf("."))
+                                that.fcPic.push(obj4);
+                                console.log(that.fcPic)
+                            }
+                        }
+                        if(res.data.data.tmp.realLandAttach && res.data.data.tmp.realLandAttach!==''){
+                            var imgtd = res.data.data.tmp.realLandAttach.split(',');
+                            for(var x =0;x<imgtd.length;x++){
+                                var obj4 = {}
+                                obj4['name']= imgtd[x].split('#_#')[0]
+                                obj4['url']= imgtd[x].split('#_#')[1]
+                                obj4['hz']= imgtd[x].split('#_#')[1].substring(imgtd[x].split('#_#')[1].lastIndexOf("."))
+                                that.tdPic.push(obj4);
+                            }
+                        }
+                        if(res.data.data.tmp.pic && res.data.data.tmp.pic !==''){
+                            var imgpicc = res.data.data.tmp.pic.split(',');
+                            if(imgpicc == ''){
+                                that.imgpicc =[]
+                            }else{
+                                for(var k =0;k<imgpicc.length;k++){
+                                    var obj4 = {}
+                                    obj4['url']= imgpicc[k].split('#_#')[1]
+                                    obj4['hz']= imgpicc[k].split('#_#')[1].substring(imgpicc[k].split('#_#')[1].lastIndexOf("."))
+                                    that.imgpicc.push(obj4);
+                                }
+                            }
+                        }
                     }else{
-                        for(var k =0;k<imgpicc.length;k++){
-                            var obj4 = {}
-                            obj4['url']= imgpicc[k].split('#_#')[1]
-                            obj4['hz']= imgpicc[k].split('#_#')[1].substring(imgpicc[k].split('#_#')[1].lastIndexOf("."))
-                            that.imgpicc.push(obj4);
+                        if(res.data.data.meansBook.realEstateAttach && res.data.data.meansBook.realEstateAttach!==''){
+                            var imgbd = res.data.data.meansBook.realEstateAttach.split(',')
+                            for(var j =0;j<imgbd.length;j++){
+                                var obj4 = {}
+                                obj4['name']= imgbd[j].split('#_#')[0]
+                                obj4['url']= imgbd[j].split('#_#')[1]
+                                obj4['hz']= imgbd[j].split('#_#')[1].substring(imgbd[j].split('#_#')[1].lastIndexOf("."))
+                                that.bdPic.push(obj4);
+                            }
+                        }
+                        if(res.data.data.meansBook.realHouseAttach && res.data.data.meansBook.realHouseAttach !==''){
+                            var imgfc = res.data.data.meansBook.realHouseAttach.split(',');
+                            for(var z =0;z<imgfc.length;z++){
+                                var obj4 = {}
+                                obj4['name']= imgfc[z].split('#_#')[0]
+                                obj4['url']= imgfc[z].split('#_#')[1]
+                                obj4['hz']= imgfc[z].split('#_#')[1].substring(imgfc[z].split('#_#')[1].lastIndexOf("."))
+                                that.fcPic.push(obj4);
+                                console.log(that.fcPic)
+                            }
+                        }
+                        if(res.data.data.meansBook.realLandAttach && res.data.data.meansBook.realLandAttach!==''){
+                            var imgtd = res.data.data.meansBook.realLandAttach.split(',');
+                            for(var x =0;x<imgtd.length;x++){
+                                var obj4 = {}
+                                obj4['name']= imgtd[x].split('#_#')[0]
+                                obj4['url']= imgtd[x].split('#_#')[1]
+                                obj4['hz']= imgtd[x].split('#_#')[1].substring(imgtd[x].split('#_#')[1].lastIndexOf("."))
+                                that.tdPic.push(obj4);
+                            }
+                        }
+                        if(res.data.data.meansBook.pic && res.data.data.meansBook.pic !==''){
+                            var imgpicc = res.data.data.meansBook.pic.split(',');
+                            if(imgpicc == ''){
+                                that.imgpicc =[]
+                            }else{
+                                for(var k =0;k<imgpicc.length;k++){
+                                    var obj4 = {}
+                                    obj4['url']= imgpicc[k].split('#_#')[1]
+                                    obj4['hz']= imgpicc[k].split('#_#')[1].substring(imgpicc[k].split('#_#')[1].lastIndexOf("."))
+                                    that.imgpicc.push(obj4);
+                                }
+                            }
                         }
                     }
 
-                    console.log(that.imgpicc)
+
+
+
+
+
+                    let obj1 = res.data.data.meansBook;
+                    let obj2 = res.data.data.tmp;
+                    let obj1arr = []
+                    let obj2arr = []
+                    for(k in obj1){let obj = {};obj['name'] = k;obj['value'] =obj1[k]; obj1arr.push(obj)}
+                    for(k in obj2){let obj = {};obj['name'] = k;obj['value'] =obj2[k]; obj2arr.push(obj)}
+                    let Ids = obj1arr.map(item => item.value);
+                    let arr = new Array();
+                    obj2arr.forEach((item, index) => {
+                        if (!Ids.includes(item.value)) {
+                            arr.push(item);
+                        }
+                    });
+                    if(arr.length>0){
+                        let objSum = {}
+                        for(let i=0;i<arr.length;i++){
+                            objSum[arr[i].name] = arr[i].name
+                        }
+                        this.showObj = objSum
+                        console.log(objSum)
+                    }
             }else{
                 this.$message({
                     message: res.data.msg,

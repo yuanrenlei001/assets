@@ -53,8 +53,8 @@
                     </el-col>
                     <el-col  :lg="5">
                         <div class="btns2">
-                            <el-button type="danger" @click="plsp">批量审批</el-button>
-                            <el-button type="primary">导出</el-button>
+                            <!--<el-button type="danger" @click="plsp">批量审批</el-button>-->
+                            <!--<el-button type="primary">导出</el-button>-->
                         </div>
                     </el-col>
                     <!--<el-col class="rightS">-->
@@ -108,21 +108,19 @@
                     <el-table-column  label="审批状态">
                         <template slot-scope="tableData">
                             <div v-if="tableData.row.roveType == 1">
-                                <div v-if="tableData.row.meansBook.checkStatus == 1">（新增）审批中</div>
-                                <div v-if="tableData.row.meansBook.checkStatus == 2" style="color: #5daf34;">（新增）审批通过</div>
-                                <div v-if="tableData.row.meansBook.checkStatus == 3" style="color: red;">（新增）审批驳回</div>
+                                <div v-if="tableData.row.status == 0">（新增）审批中</div>
+                                <div v-if="tableData.row.status == 1" style="color: #5daf34;">（新增）审批通过</div>
+                                <div v-if="tableData.row.status == 2" style="color: red;">（新增）审批驳回</div>
                             </div>
                             <div v-if="tableData.row.roveType == 2">
-                                <div v-if="tableData.row.meansBook.checkUpdate == 0">未修改</div>
-                                <div v-if="tableData.row.meansBook.checkUpdate == 1">（修改）审批中</div>
-                                <div v-if="tableData.row.meansBook.checkUpdate == 2" style="color: #5daf34;">（修改）审批通过</div>
-                                <div v-if="tableData.row.meansBook.checkUpdate == 3" style="color: red;">（修改）审批驳回</div>
+                                <div v-if="tableData.row.status == 0">（修改）审批中</div>
+                                <div v-if="tableData.row.status == 1" style="color: #5daf34;">（修改）审批通过</div>
+                                <div v-if="tableData.row.status == 2" style="color: red;">（修改）审批驳回</div>
                             </div>
                             <div v-if="tableData.row.roveType == 3">
-                                <div v-if="tableData.row.meansBook.checkDel == 0">未修改</div>
-                                <div v-if="tableData.row.meansBook.checkDel == 1">（删除）审批中</div>
-                                <div v-if="tableData.row.meansBook.checkDel == 2" style="color: #5daf34;">（删除）审批通过</div>
-                                <div v-if="tableData.row.meansBook.checkDel == 3" style="color: red;">（删除）审批驳回</div>
+                                <div v-if="tableData.row.status == 0">（删除）审批中</div>
+                                <div v-if="tableData.row.status == 1" style="color: #5daf34;">（删除）审批通过</div>
+                                <div v-if="tableData.row.status == 2" style="color: red;">（删除）审批驳回</div>
                             </div>
                         </template>
                     </el-table-column>
@@ -222,8 +220,8 @@
                     </el-col>
                     <el-col  :lg="3">
                         <div class="btns2">
-                            <el-button type="danger">批量修改</el-button>
-                            <el-button type="primary">导出</el-button>
+                            <!--<el-button type="danger">批量修改</el-button>-->
+                            <!--<el-button type="primary">导出</el-button>-->
                         </div>
                     </el-col>
                 </el-form>
@@ -242,7 +240,7 @@
                     <el-table-column prop="meansBook.assetCode" label="资产编号"></el-table-column>
                     <el-table-column prop="meansBook.assetUser" label="产权人"></el-table-column>
                     <el-table-column prop="meansBook.houseAddress" label="房屋坐落"></el-table-column>
-                    <el-table-column prop="meansBook.assetCode" label="提交时间">
+                    <el-table-column label="提交时间">
                         <template slot-scope="tableData2">
                             {{tableData2.row.createTime | dateFormat}}
                         </template>
@@ -256,20 +254,20 @@
                     </el-table-column>
                     <el-table-column prop="date6" label="审批状态">
                         <template slot-scope="tableData2">
-                            <div v-if="tableData2.row.roveType == 1">
-                                <div v-if="tableData2.row.meansBook.checkStatus == 1">（新增）审批中</div>
-                                <div v-if="tableData2.row.meansBook.checkStatus == 2" style="color: #5daf34;">（新增）审批通过</div>
-                                <div v-if="tableData2.row.meansBook.checkStatus == 3" style="color: red;">（新增）审批驳回</div>
+                            <div v-if="tableData2.row.roveType === 1">
+                                <div v-if="tableData2.row.status === 0">（新增）审批中</div>
+                                <div v-if="tableData2.row.status === 1" style="color: #5daf34;">（新增）审批通过</div>
+                                <div v-if="tableData2.row.status === 2" style="color: red;">（新增）审批驳回</div>
                             </div>
-                            <div v-if="tableData2.row.roveType == 2">
-                                <div v-if="tableData2.row.meansBook.checkUpdate == 1">（修改）审批中</div>
-                                <div v-if="tableData2.row.meansBook.checkUpdate == 2" style="color: #5daf34;">（修改）审批通过</div>
-                                <div v-if="tableData2.row.meansBook.checkUpdate == 3" style="color: red;">（修改）审批驳回</div>
+                            <div v-if="tableData2.row.roveType === 2">
+                                <div v-if="tableData2.row.status === 0">（修改）审批中</div>
+                                <div v-if="tableData2.row.status === 1" style="color: #5daf34;">（修改）审批通过</div>
+                                <div v-if="tableData2.row.status === 2" style="color: red;">（修改）审批驳回</div>
                             </div>
-                            <div v-if="tableData2.row.roveType == 3">
-                                <div v-if="tableData2.row.meansBook.checkDel == 1">（删除）审批中</div>
-                                <div v-if="tableData2.row.meansBook.checkDel == 2" style="color: #5daf34;">（删除）审批通过</div>
-                                <div v-if="tableData2.row.meansBook.checkDel == 3" style="color: red;">（删除）审批驳回</div>
+                            <div v-if="tableData2.row.roveType === 3">
+                                <div v-if="tableData2.row.status === 0">（删除）审批中</div>
+                                <div v-if="tableData2.row.status === 1" style="color: #5daf34;">（删除）审批通过</div>
+                                <div v-if="tableData2.row.status === 2" style="color: red;">（删除）审批驳回</div>
                             </div>
                         </template>
                     </el-table-column>
@@ -279,9 +277,8 @@
                             label="操作"
                     >
                         <template slot-scope="tableData2">
-                               <div v-if="tableData2.row.meansBook.checkStatus == 2 || tableData2.row.meansBook.checkStatus == 3 ||
-                               tableData2.row.meansBook.checkUpdate == 2 || tableData2.row.meansBook.checkUpdate == 3 ||
-                               tableData2.row.meansBook.checkDel == 2 || tableData2.row.meansBook.checkDel == 3
+                               <div v-if="
+                               tableData2.row.status !==0
 
 ">
                                    <el-button  type="text" size="small" style="color: #999;">修改</el-button>
@@ -321,20 +318,7 @@
         </div>
         <!--物业-->
         <div v-if="(user == '物业审批人' || user=='超管' )&& tabPosition3 == '2'">
-            <!--<el-row>-->
-                <!--<el-form ref="form" >-->
-                    <!--<el-col class="sort" :span="12">-->
-                            <!--<el-radio-group v-model="wytabPosition2" @change="wyChange" >-->
-                                <!--<el-radio-button label="-1">全部</el-radio-button>-->
-                                <!--<el-radio-button label="0">待审批</el-radio-button>-->
-                                <!--<el-radio-button label="1">处理中</el-radio-button>-->
-                                <!--<el-radio-button label="3">已完成</el-radio-button>-->
-                                <!--<el-radio-button label="2">被驳回</el-radio-button>-->
-                            <!--</el-radio-group>-->
-                    <!--</el-col>-->
-                <!--</el-form>-->
-
-            <!--</el-row>-->
+        <!--<div>-->
             <el-row style="margin-top: 20px;">
                 <el-form ref="form" >
                     <el-col  :lg="8">
@@ -363,20 +347,6 @@
                                     :picker-options="pickerOptions">
                             </el-date-picker>
                         </el-col>
-                        <!--<el-form-item label="巡检时间：">-->
-                            <!--<el-date-picker-->
-                                    <!--v-model="value1"-->
-                                    <!--type="daterange"-->
-                                    <!--align="right"-->
-                                    <!--value-format="yyyy-MM-dd"-->
-                                    <!--unlink-panels-->
-                                    <!--range-separator="至"-->
-                                    <!--@change="time"-->
-                                    <!--start-placeholder="开始日期"-->
-                                    <!--end-placeholder="结束日期"-->
-                                    <!--:picker-options="pickerOptions">-->
-                            <!--</el-date-picker>-->
-                        <!--</el-form-item>-->
                     </el-col>
                     <el-col  :lg="8">
                         <el-col :lg="4" style="opacity: 0;">
@@ -410,12 +380,6 @@
                             <!--</el-select>-->
                         <!--</el-form-item>-->
                     </el-col>
-                    <!--<el-col :span="3" class="rightS">-->
-                        <!--<div class="btns2">-->
-                            <!--<el-button type="danger">批量审批</el-button>-->
-                            <!--<el-button type="primary">导出</el-button>-->
-                        <!--</div>-->
-                    <!--</el-col>-->
                 </el-form>
             </el-row>
             <el-row class="tables" style="margin-top: 20px;">
@@ -476,7 +440,7 @@
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
                         :current-page="page.pageNum"
-                        :hide-on-single-page="1"
+                        :hide-on-single-page='pageType'
                         :page-sizes="[10, 20, 30, 40]"
                         :page-size="page.pageSize"
                         layout=" prev, pager, next, sizes,jumper"
@@ -488,7 +452,114 @@
             <assets-infor-wuye :dialogKan="dialogKan"  @changeShow="showdialogKan" ref="dialogKanRef"></assets-infor-wuye>
             <mapxj :dialogXj="dialogXj"  @changeShow="showdialogXj" ref="dialogXjRef"></mapxj>
         </div>
+        <!--处理人-->
+        <div v-if="(user == '巡检处理人')&& tabPosition3 == '2'">
+            <!--<div>-->
+            <el-row style="margin-top: 20px;">
+                <el-form ref="form" >
+                    <el-col  :lg="7">
+                        <el-col :lg="8"><div class="topLeft">巡检时间：</div></el-col>
+                        <el-col :lg="16">
+                            <el-date-picker
+                                    style="width: 100%;"
+                                    v-model="value1"
+                                    type="daterange"
+                                    align="right"
+                                    value-format="yyyy-MM-dd"
+                                    unlink-panels
+                                    range-separator="至"
+                                    @change="time"
+                                    start-placeholder="开始日期"
+                                    end-placeholder="结束日期"
+                                    :picker-options="pickerOptions">
+                            </el-date-picker>
+                        </el-col>
+                    </el-col>
+                    <el-col  :lg="8">
+                        <el-col :lg="4" style="opacity: 0;">
+                            <div class="topLeft">土：</div>
+                        </el-col>
+                        <el-col :lg="6"><div class="topLeft" style="text-align: center;">问题：</div></el-col>
+                        <el-col :lg="8">
+                            <el-select v-model="value" multiple placeholder="请选择" @change="questions">
+                                <el-option
+                                        v-for="item in options2"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                        <el-col :lg="2" style="opacity: 0;">
+                            <div class="topLeft">土：</div>
+                        </el-col>
+                        <!--<el-form-item label="问题类型：">-->
+                        <!--<el-select v-model="value" multiple placeholder="请选择" @change="questions">-->
+                        <!--<el-option-->
+                        <!--v-for="item in options2"-->
+                        <!--:key="item.value"-->
+                        <!--:label="item.label"-->
+                        <!--:value="item.value">-->
+                        <!--</el-option>-->
+                        <!--</el-select>-->
+                        <!--</el-form-item>-->
+                    </el-col>
+                </el-form>
+            </el-row>
+            <el-row class="tables" style="margin-top: 20px;">
+                <el-table
+                        ref="multipleTable"
+                        :data="wytableData2"
+                        :height="heighTable"
+                        tooltip-effect="dark"
+                        style="width: 100%"
+                        @selection-change="handleSelectionChange">
+                    <el-table-column type="selection" width="55"></el-table-column>
+                    <el-table-column  type="index" label="序号"></el-table-column>
+                    <el-table-column prop="meansBook.assetUser" label="产权人"></el-table-column>
+                    <el-table-column prop="meansBook.houseAddress" label="资产坐落"></el-table-column>
+                    <el-table-column prop="sysUser.name" label="巡检人/单位"></el-table-column>
+                    <el-table-column prop="date4" label="巡检时间">
+                        <template slot-scope="wytableData2">
+                            {{wytableData2.row.createTime | dateFormat}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="question" label="问题类型"></el-table-column>
+                    <el-table-column
+                            label="问题详情"
+                    >
+                        <template slot-scope="wytableData2">
+                            <el-button  type="text" size="small" @click="detail2(wytableData2.row)">详情</el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            fixed="right"
+                            label="操作"
+                    >
+                        <template slot-scope="wytableData2">
+                            <el-button  type="text" size="small">处理</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-row>
+            <el-row style="margin-top: 48px;text-align: right" class="pagination">
+                <el-pagination
+                        background
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="page.pageNum"
+                        :hide-on-single-page='pageType'
+                        :page-sizes="[10, 20, 30, 40]"
+                        :page-size="page.pageSize"
+                        layout=" prev, pager, next, sizes,jumper"
+                        :total="page.total">
+                </el-pagination>
+            </el-row>
 
+            <!--巡检问题详情-->
+            <assets-infor-wuye :dialogKan="dialogKan"  @changeShow="showdialogKan" ref="dialogKanRef"></assets-infor-wuye>
+            <mapxj :dialogXj="dialogXj"  @changeShow="showdialogXj" ref="dialogXjRef"></mapxj>
+        </div>
         <!--资产详情查看-->
         <assets-kan :AssetsKanVisible="AssetsKanVisible"  @changeShow="showAssetsKan" ref="AssetsKanRef"></assets-kan>
         <!--资产修改-->
@@ -552,8 +623,8 @@
                     value: '占用',
                     label: '占用'
                 }, {
-                    value: '坏境卫生',
-                    label: '坏境卫生'
+                    value: '环境卫生',
+                    label: '环境卫生'
                 }, {
                     value: '其他',
                     label: '其他'
@@ -587,7 +658,6 @@
                 tableData2: [
                 ],
                 wytableData2: [
-                    {assetCode:''}
                 ],
                 tableData3: [
                     {date1: '1',date2:'新增资产',date3:'沈振国',date4:'2020-05-16 14:28',date5:'浙江南浔旅游集团',date6:'类型1',date7:'',date8:'寸池潭7号'},
@@ -963,13 +1033,17 @@
                 }
             },
             handleCurrentChange(val) {
-                console.log(`当前页: ${val}`);
+                console.log(this.userType);
                 var userType = this.userType;
                 this.pageNum = val
                 if(userType == ''){
                     this.user = '超管';
-                    this.status = -1
-                    this.splist();
+                    this.status = -1;
+                    if(this.tabPosition3 == 1){
+                        this.splist();
+                    }else{
+                        this.wysplist(this.pageNum,'');
+                    }
                 }else if(userType == 'zcxxlrjgx'){
                     this.user = '提交人';
                     this.status = -1
@@ -1001,6 +1075,7 @@
             typeChange(val){
                 console.log(val)
                 this.tabPosition3 = val
+                this.pageNum = 1;
                 if(val == 1){
                     this.splist();
                 }else{
@@ -1018,7 +1093,9 @@
                 this.stjlist()
             },
             spoptionsvals(val){
+                console.log(val)
                 var userType = this.userType;
+                this.status = val
                 if(userType == ''){
                     this.status = val
                     this.splist();
@@ -1222,7 +1299,7 @@
                 this.user = '审批人';
                 this.status = -1
                 this.splist();
-            }else if(userType == 'xjsb,xjyjsp,htgx'){
+            }else if(userType == 'xjsb,xjyjsp,htgx' || userType == 'xjsb,xjyjsp'  ){
                 console.log(4)
                 this.user = '物业审批人';
                 this.status = -1
@@ -1234,13 +1311,18 @@
                 this.status = -1
                 this.stjlist();
             }
-            else if(userType == 'xjejsp'){
+            else if(userType == 'xjejsp' || userType == 'xjejsp,htgx'){
                 this.user = '物业审批人';
                 this.status = -1
                 this.tabPosition3 = 2
                 this.wysplist(1,this.val,this.startTime,this.endTime);
             }
-
+            else if(userType == 'xjcl'){
+                this.user = '巡检处理人';
+                this.status = -1
+                this.tabPosition3 = 2
+                this.wysplist(1,this.val,this.startTime,this.endTime);
+            }
         }
     }
 </script>

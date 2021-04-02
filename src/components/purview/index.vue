@@ -142,7 +142,7 @@
                         <div v-else>
                             <el-upload
                                     class="avatar-uploader"
-                                    action="http://39.100.95.204:2005/file/attachment/upload?type=asset"
+                                    action="http://61.153.180.66:9098/file/attachment/upload?type=asset"
                                     :show-file-list="false"
                                     :on-success="handleAvatarSuccess"
                                     :before-upload="beforeAvatarUpload">
@@ -197,7 +197,7 @@
                         <div>
                             <el-upload
                                     class="avatar-uploader"
-                                    action="http://39.100.95.204:2005/file/attachment/upload?type=asset"
+                                    action="http://61.153.180.66:9098/file/attachment/upload?type=asset"
                                     :show-file-list="false"
                                     :on-success="handleAvatarSuccess"
                                     :before-upload="beforeAvatarUpload">

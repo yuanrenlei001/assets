@@ -45,9 +45,6 @@
                         <el-menu-item index="2" style="padding-left: 0;">
                             <span slot="title">办证情况</span>
                         </el-menu-item>
-                        <el-menu-item index="3" style="padding-left: 0;">
-                            <span slot="title">现状分析</span>
-                        </el-menu-item>
                     </el-menu>
                 </el-col>
             </el-row>
@@ -57,7 +54,7 @@
                 <el-button slot="append" icon="el-icon-search" @click="searchs"></el-button>
             </el-input>
         </div>
-        <div class="addressFixed">
+        <div class="addressFixed" v-drag>
             <div class="addressFixed_title">资产详情</div>
             <div>资产编号</div>
             <div>产权人：中国工商银行股份有限公司湖州南浔支行</div>
@@ -83,10 +80,15 @@
             <div class="addressFixed_sort"><span style="width: 15%;">燃气</span><span>户号 34235243 户号2323</span><span>缴款方式：代缴</span></div>
             <div class="phones">
                 <div>照片：</div>
-                <img src="@/assets/beijing1.png" alt="">
-                <img src="@/assets/beijing1.png" alt="">
-                <img src="@/assets/beijing1.png" alt="">
-                <img src="@/assets/beijing1.png" alt="">
+                <el-image
+                        style="width: 100px; height: 100px"
+                        :src="url"
+                        :preview-src-list="srcList">
+                </el-image>
+                <!--<img  @click="alerts()" src="@/assets/beijing1.png" alt="">-->
+                <!--<img  @click="alerts()" src="@/assets/beijing1.png" alt="">-->
+                <!--<img  @click="alerts()" src="@/assets/beijing1.png" alt="">-->
+                <!--<img @click="alerts()"  src="@/assets/beijing1.png" alt="">-->
             </div>
         </div>
         <!--资产详情查看-->
@@ -102,6 +104,10 @@ export default {
   name: 'maps',
   data () {
     return {
+        url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+        srcList: [
+            'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
+        ],
         detailData:'',
         show:true,
         input2:'',
@@ -114,6 +120,21 @@ export default {
         mapSort:'oldtown:nxshdt'
     }
   },
+    directives:{
+        drag(el,bindings){
+            el.onmousedown = function(e){
+                var disx = e.pageX - el.offsetLeft;
+                var disy = e.pageY - el.offsetTop;
+                document.onmousemove = function (e){
+                    el.style.left = e.pageX - disx+'px';
+                    el.style.top = e.pageY - disy+'px';
+                }
+                document.onmouseup = function(){
+                    document.onmousemove = document.onmouseup = null;
+                }
+            }
+        }
+    },
     created(){
         this.list('景点');
 
@@ -126,6 +147,9 @@ export default {
         // leaflet
     },
     methods:{
+        alerts(){
+            console.log(123)
+        },
         showAssetsKan(data){
             if(data === 'false'){
                 this.AssetsKanVisible = false
@@ -424,9 +448,43 @@ export default {
                 }
                 this._marker = L.layerGroup(arr);
                 this.map.addLayer(this._marker);
-                var latlngs = [[30.87258082, 120.4259491],[30.87206133, 120.42330042],[30.87354164, 120.42706355]];
-                var polygon = L.polygon(latlngs, {color: 'red'}).addTo(this.map).on("click", this.markerOnClicks);
+                var latlngs1 = [
+                    [30.871796607971, 120.422998666763],[30.871893167496, 120.423312485218],[30.871957540512, 120.423280298710],
+                    [30.872013866901, 120.423494875431],[30.872327685356, 120.423374176025],[30.872156023979, 120.422851145267],
+                    [30.871796607971, 120.422998666763]
+                ];
+                var latlngs2 = [
+                    [30.873133689165, 120.427032709122],[30.873175263405, 120.427090376616],[30.873231589794, 120.427098423243],
+                    [30.873719751835, 120.427008569241],[30.873592346907, 120.426217317581],[30.873448848724, 120.426241457462],
+                    [30.873435437679, 120.426276326180],[30.873033106327, 120.426358133554],[30.873133689165, 120.427032709122],
+                ];
+                var latlngs3 = [
+                    [30.881846845150, 120.429395735264],[30.882297456264, 120.429205298424],[30.882216989994, 120.428912937641],
+                    [30.882160663605, 120.428786873817],[30.881659090519, 120.429030954838],[30.881715416908, 120.429140925407],
+                    [30.881755650043, 120.429100692272],[30.881785154343, 120.429232120514],[30.881752967834, 120.429245531559],
+                    [30.881809294224, 120.429344773293],[30.881846845150, 120.429395735264]
+                ];
+                var latlngs4 = [
+                    [30.876651406288, 120.426405072212],[30.876773446798, 120.427034050226],[30.877148956060, 120.426891893148],
+                    [30.876996070147, 120.426304489374],[30.876651406288, 120.426405072212]
+                ];
+                var latlngs5 = [
+                    [30.884062349796, 120.424852073193],[30.884150862694, 120.424911081791],[30.884148180485, 120.425216853619],
+                    [30.884113311768, 120.425629913807],[30.883904099464, 120.425919592381],[30.883815586567, 120.425986647606],
+                    [30.883753895760, 120.425911545753],[30.883960425854, 120.425654053688],[30.884006023407, 120.425361692905],
+                    [30.883992612362, 120.425093472004],[30.883885324001, 120.425082743168],[30.883877277374, 120.424970090389],
+                    [30.883874595165, 120.424862802029],[30.884062349796, 120.424852073193]
+                ];
+                var polygon = L.polygon(latlngs1, {color: 'red'}).addTo(this.map).on("click", this.markerOnClicks);
+                var polygon1 = L.polygon(latlngs2, {color: 'red'}).addTo(this.map).on("click", this.markerOnClicks);
+                var polygon3 = L.polygon(latlngs3, {color: 'red'}).addTo(this.map).on("click", this.markerOnClicks);
+                var polygon4 = L.polygon(latlngs4, {color: 'red'}).addTo(this.map).on("click", this.markerOnClicks);
+                var polygon5 = L.polygon(latlngs5, {color: 'red'}).addTo(this.map).on("click", this.markerOnClicks);
                 this.map.fitBounds(polygon.getBounds());
+                this.map.fitBounds(polygon1.getBounds());
+                this.map.fitBounds(polygon3.getBounds());
+                this.map.fitBounds(polygon4.getBounds());
+                this.map.fitBounds(polygon5.getBounds());
                 this.map.setView([30.87258082, 120.4259491],16);
             })
         },
@@ -510,11 +568,21 @@ export default {
     };
 </script>
 <style scoped>
+    .drag{
+        width: 100px;
+        height: 100px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 999;
+        background-color: red;
+    }
+    .addressFixed::-webkit-scrollbar {display:none}
     .eachars {height:100%;font-size: 14px;color: #fff;padding: 0 30px;}
     .eachars .eachars_title {line-height: 53px;}
     .eachars_sort {width: 100%;background: rgba(40,206,254,.12);height:160px;}
     .red {color: red;}
-    .sort {position: fixed;bottom:0;left:0;z-index: 99999;width:100%;height:242px;background: rgba(0,0,0,.6);}
+    .sort {position: fixed;bottom:0;left:0;z-index: 999;width:100%;height:242px;background: rgba(0,0,0,.6);}
 
     .sort .xialaDiv {
         width: 60px;
@@ -524,7 +592,7 @@ export default {
         left: 50%;
         margin-left: -30px;
         cursor: pointer;
-        z-index: 99999;
+        z-index: 999;
         background: rgba(0, 0, 0, .3);
         border-radius: 50%;
         text-align: center;
@@ -546,14 +614,14 @@ export default {
         cursor: pointer;
     }
     .button img {width: 30px;height:30px;vertical-align: middle;}
-    .menu {position: fixed;top:20%;left:53px;z-index: 99999;width:100px;height:150px;}
+    .menu {position: fixed;top:20%;left:53px;z-index: 999;width:100px;height:150px;}
     .menu>>>.el-menu {border-radius: 10px;overflow: hidden;margin-left: 1px;}
     .menu>>>.el-menu-item.is-active {background: #409EFF;color: #fff;}
     .menu>>>.el-menu-item {padding: 0;height:35px;font-size: 16px;text-align: center;line-height: 35px;color: #333;}
-    .search {position: fixed;top:15%;right:53px;z-index: 99999;}
+    .search {position: fixed;top:15%;right:53px;z-index: 999;}
     .search>>>.el-input-group__append, .el-input-group__prepend {background-color: #5c76d7;border: 1px solid #5c76d7;color: #fff;}
     .search>>> i {color: #fff;}
-    .divs {position: fixed;top:25%;left:0;z-index: 99999;width: 300px;background: #fff; display: table;}
+    .divs {position: fixed;top:25%;left:0;z-index: 999;width: 300px;background: #fff; display: table;}
     .top {width: 100%;height:80px;text-align: center;line-height: 80px;}
     .zcList{width: 100%;text-align: center;margin-bottom: 2px;}
     .top div {float:left;width:50%;line-height: 80px;}

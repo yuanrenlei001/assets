@@ -38,7 +38,8 @@ Vue.filter('dateFormat', function(originVal) {
 
     return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
 })
-Vue.prototype.getAjax = 'http://39.100.95.204:1022';
+// Vue.prototype.getAjax = 'http://39.100.95.204:1022';
+Vue.prototype.getAjax = 'http://61.153.180.66:9098/apis';
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
