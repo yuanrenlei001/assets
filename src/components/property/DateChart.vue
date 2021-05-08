@@ -7,7 +7,7 @@
                         <div class="sumLeft"><el-button type="primary" icon="el-icon-s-finance" circle style="font-size: 30px;"></el-button></div>
                         <div class="sumRight">
                             <p>可收租金</p>
-                            <p>{{sum}}</p>
+                            <p>{{sum}} 万元</p>
                         </div>
                     </div>
                 </el-col>
@@ -97,8 +97,8 @@ export default {
             }
         ],
         multipleSelection: [],
-        width:'300px',
-        height:'300px',
+        width:'400px',
+        height:'350px',
         dataList:'',
         sum:0,
         page:''
@@ -302,8 +302,8 @@ export default {
             let myChart5 =  this.$echarts.init(this.$refs.main);
             let option = {
                 title: {
-                    text:'土地用途',
-                    top:20,
+                    text:'资产租金',
+                    top:0,
                     textStyle: {
                         fontSize: 14,
                         color:'#999',
@@ -315,13 +315,13 @@ export default {
                 },
                 legend: {
                     left: 'center',
-                    top: 'bottom',
+                    bottom: '0',
                     data: ['即将到期', '已缴纳', '已超期','未到期']
                 },
                 color:['#61a5e8','#7ecf51','#eecb5f','#becb5f'],
                 series: [
                     {
-                        name: '半径模式',
+                        name: '',
                         type: 'pie',
                         radius: [0, 100],
                         center: ['50%', '50%'],

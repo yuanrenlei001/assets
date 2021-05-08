@@ -21,6 +21,42 @@ module.exports = {
                 'mufeng.me': '127.0.0.1'
             }
         },
+        '/shp': {
+            target:'https://leyou.chinananxun.com/api', // 你请求的第三方接口
+            changeOrigin:true, // 在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
+            pathRewrite:{  // 路径重写，
+                '^/shp': ''  // 替换target中的请求地址，也就是说以后你在请求http://api.jisuapi.com/XXXXX这个地址的时候直接写成/api即可。
+            },
+            cookieDomainRewrite: {
+                'mufeng.me': '127.0.0.1'
+            }
+        },
+        '/maps': {
+            target:'http://61.153.180.66:9087/geoserver', // 你请求的第三方接口
+            changeOrigin:true, // 在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
+            pathRewrite:{  // 路径重写，
+                '^/maps': ''  // 替换target中的请求地址，也就是说以后你在请求http://api.jisuapi.com/XXXXX这个地址的时候直接写成/api即可。
+            },
+            cookieDomainRewrite: {
+                'mufeng.me': '127.0.0.1'
+            }
+        },
+        '/mapsDw': {
+            target:'http://leyou.chinananxun.com', // 你请求的第三方接口
+            changeOrigin:true, // 在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
+            pathRewrite:{  // 路径重写，
+                '^/mapsDw': ''  // 替换target中的请求地址，也就是说以后你在请求http://api.jisuapi.com/XXXXX这个地址的时候直接写成/api即可。
+            },
+
+        },
+        '/mapServePath': {
+            target:'http://61.153.180.66:9087',
+            //target: 'http://192.168.0.90:8080', // 目标接口域名
+            changeOrigin: true, // 是否启用跨域
+            pathRewrite: { //
+                '^/mapServePath': ''
+            }
+        },
         '/static': {
             target: 'https://trainingadmin.yunjiglobal.com/', // 目标接口域名
             changeOrigin: true, // 是否跨域

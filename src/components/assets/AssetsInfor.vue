@@ -116,7 +116,7 @@
                                 <!--</el-form-item>-->
                             </el-col>
                             <el-col :lg="22">
-                                <el-col :lg="11"><div class="textLeft">* 土地面积 (m²)：</div></el-col>
+                                <el-col :lg="11"><div class="textLeft">土地面积 (m²)：</div></el-col>
                                 <el-col :lg="13">
                                     <el-input v-model="landArea" placeholder="请输入内容" type="number" :disabled="disabled"></el-input>
                                 </el-col>
@@ -125,7 +125,7 @@
                                 <!--</el-form-item>-->
                             </el-col>
                             <el-col  :lg="22">
-                                <el-col :lg="11"><div class="textLeft">* 土地用途²：</div></el-col>
+                                <el-col :lg="11"><div class="textLeft">土地用途²：</div></el-col>
                                 <el-col :lg="13">
                                     <el-select  v-model="landUseVal" placeholder="请选择" :disabled="disabled" @change="landUseChange">
                                         <el-option
@@ -148,7 +148,7 @@
                                 <!--</el-form-item>-->
                             </el-col>
                             <el-col  :lg="22">
-                                <el-col :lg="11"><div class="textLeft">* 土地性质：</div></el-col>
+                                <el-col :lg="11"><div class="textLeft">土地性质：</div></el-col>
                                 <el-col :lg="13">
                                     <el-select  v-model="landNatureVal" placeholder="请选择" :disabled="disabled" @change="landNatureChange">
                                         <el-option
@@ -669,6 +669,7 @@
                         'houseAddress':this.houseAddress,
                         'assetUserOri':this.assetUserOri,
                         'houseNature':this.houseNatureVal,
+                        'houseStructure':this.houseStructureVal,
                         'noCheckinArea':this.noCheckinArea,
                         'houseArea':this.houseArea,
                         'assetUse':this.assetUseVal,
@@ -702,10 +703,6 @@
                     }]
                 }
                 console.log(data)
-
-                this.$alert('修改已提交，等待管理员审核', '提示', {
-                    callback: action => {
-                    this.$emit('changeShow','false')
                 this.$axios({
                     url: this.getAjax + '/admin/meansAdmin/saveOrUpdate',
                     method: "post",
@@ -715,16 +712,20 @@
                     },
                     data:data
                 }).then(res => {
-                    if(res.data.code = '1001'){
-                }else{
-                    this.$message({
-                        message: res.data.msg,
-                        type: 'warning'
-                    });
-                }
-            })
-            }
-            });
+                    if(res.data.code == '1001'){
+                        this.$alert('修改已提交，等待管理员审核', '提示', {
+                            callback: action => {
+                                this.$emit('changeShow','false')
+                            }
+                        });
+                    }else{
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'warning'
+                        });
+                        this.$emit('changeShow','false')
+                    }
+                })
             },
             detail(param){
                 var id = param;

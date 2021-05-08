@@ -38,35 +38,7 @@
                                         <el-col :lg="9">
                                             <el-input style="font-size: 12px;"  v-model="item.houseAddr" placeholder="选择后自动生成" disabled="disabled"></el-input>
                                         </el-col>
-                                        <!--<el-form-item label="资产坐落：">-->
-                                        <!--<el-input v-model="item.houseAddr" placeholder="选择资产编号后自动生成" disabled="disabled"></el-input>-->
-                                        <!--</el-form-item>-->
                                     </el-col>
-                                    <!--<el-form-item label="资产编号：">-->
-                                        <!--<el-select-->
-                                                <!--@change="zcChange(item)"-->
-                                                <!--v-model="item.value"-->
-                                                <!--filterable-->
-                                                <!--remote-->
-                                                <!--reserve-keyword-->
-                                                <!--placeholder="请输入资产坐落或产权人"-->
-                                                <!--:remote-method="remoteMethod"-->
-                                                <!--:loading="loading">-->
-                                            <!--<el-option-->
-                                                    <!--v-for="items in zcoptions"-->
-                                                    <!--:key="items.value"-->
-                                                    <!--:label="items.label"-->
-                                                    <!--:value="items.value">-->
-                                            <!--</el-option>-->
-                                        <!--</el-select>-->
-                                    <!--</el-form-item>-->
-                                    <!--<el-form-item label="资产坐落：">-->
-                                        <!--<el-input v-model="item.houseAddr" placeholder="选择资产编号后自动生成" disabled="disabled"></el-input>-->
-                                    <!--</el-form-item>-->
-                                    <!--<el-button type="primary" style="margin-left: 20px;-->
-    <!--position: absolute;-->
-    <!--bottom:5px;-->
-    <!--right: 0;" @click="newAdds">添加</el-button>-->
                                 </div>
                                 <el-button type="primary" style="margin-left: 20px;
     position: absolute;
@@ -293,6 +265,7 @@
         },
         data () {
             return {
+                pid:'',
                 str:'zy',
                 houseAddr:'',
                 assetCode:[{value:null,houseAddr:null}],
@@ -430,11 +403,13 @@
                 }
                 // this.assetCode[index].houseAddr = this.zcoptions[0].label
             },
-            detail(data,str){
+            detail(data,str,pid){
+                this.pid = pid
                 console.log(str)
                 this.id = data.id
                 this.str = str
                 this.handlePic = []
+                this.picUrl = ''
                     var that = this;
                 if(str == 'zy'){
                     this.$axios({
@@ -479,7 +454,7 @@
                             }
 
 
-
+                            that.picUrl = params.attach;
                             that.assetCode = arr
                             that.houseAddr = params.houseAddr
                             that.pactCode = params.pactCode
@@ -498,7 +473,7 @@
                         }
                     })
                 }
-                else{
+                else if(str == 'wz'){
                     this.$axios({
                         url: this.getAjax + '/admin/property/findDetails?id='+data.id,
                         method: "get",
@@ -520,12 +495,65 @@
                             // that.list();
                             var img = params.attach;
                             this.img = params.attach;
-                            var arr = [];
-                            var obj4 = {}
-                            that.$set(obj4,'name','合同');
-                            that.$set(obj4,'url',img);
-                            that.handlePic = []
-                            that.handlePic.push(obj4);
+
+                            if(img!==''){
+                                var arr = [];
+                                var obj4 = {}
+                                that.$set(obj4,'name','合同');
+                                that.$set(obj4,'url',img);
+                                that.handlePic = []
+                                that.handlePic.push(obj4);
+                            }
+                            that.picUrl = params.attach;
+                            that.houseAddr = params.houseAddr
+                            that.pactCode = params.pactCode
+                            that.tenant = params.tenant
+                            that.contact = params.contact
+                            that.rentAmount = params.rentAmount
+                            that.fee = params.fee
+                            that.tradeName = params.tradeName
+                            that.formatsVal = params.formats
+                            that.margin = params.margin
+                            that.remark = params.remark
+                            that.books2 = params.propertyPayTypeList
+                            that.value1 = [params.rentStart,params.rentEnd]
+                            that.rentStart = params.rentStart
+                            that.rentEnd = params.rentEnd
+                        }
+                    })
+                }
+                else if(str == 'zj'){
+                    this.$axios({
+                        url: this.getAjax + '/admin/property/findDetails?id='+data.id,
+                        method: "get",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:{}
+                    }).then(res => {
+                        if(res.data.code == '2004'){
+                            this.$message({
+                                message: res.data.msg,
+                                type: 'warning'
+                            });
+                            this.$router.push('/')
+                        }else{
+                            var params = res.data.data
+                            // var list = res.data.data;
+                            // that.list();
+                            var img = params.attach;
+                            this.img = params.attach;
+
+                            if(img!==''){
+                                var arr = [];
+                                var obj4 = {}
+                                that.$set(obj4,'name','合同');
+                                that.$set(obj4,'url',img);
+                                that.handlePic = []
+                                that.handlePic.push(obj4);
+                            }
+                            that.picUrl = params.attach;
                             that.houseAddr = params.houseAddr
                             that.pactCode = params.pactCode
                             that.tenant = params.tenant
@@ -687,12 +715,14 @@
                         'margin':this.margin,
                         'remark':this.remark,
                         'typeItem':1,
-                        'propertyPayTypeList':this.books2
+                        'propertyPayTypeList':this.books2,
+                        'pid':0,
+                        'typeCore':1
                     }
                     console.log(data)
                     if(str === '' ||strs===''||this.tenant===''||this.contact===''||this.rentAmount===''
                         ||this.fee===''||this.rentStart===''||this.rentEnd===''||this.tradeName===''||this.formatsVal===''
-                        ||this.margin===''||this.remark===''||this.propertyPayTypeList===[]
+                        ||this.margin===''||(this.books2[0].dateStr =='' ||this.books2[0].dateStr ==null || this.books2[0].rentAmount =='' || this.books2[0].rentAmount ==null || this.books2[0].rentType =='' ||this.books2[0].rentType ==null)
                     ){
                         this.$message({
                             message: '值不能为空！',
@@ -720,7 +750,7 @@
                                 // var list = res.data.data;
                                 // that.list();
                                 // console.log(list)
-                                this.$alert('修改已提交，等待管理员审核', '提示', {
+                                this.$alert('修改已提交', '提示', {
                                     callback: action => {
                                         this.$emit('changeShow','false')
                                         this.$emit('child-event',data)
@@ -729,7 +759,8 @@
                             }
                         })
                     }
-                }else{
+                }
+                else if(this.str == 'wz'){
                     var data= {
                         'id':this.id,
                         'houseAddr':this.houseAddr,
@@ -746,18 +777,22 @@
                         'margin':this.margin,
                         'remark':this.remark,
                         'typeItem':2,
-                        'propertyPayTypeList':this.books2
+                        'propertyPayTypeList':this.books2,
+                        'pid':0,
+                        'typeCore':1
                     }
-                    if(this.houseAddr==''||this.tenant==''||this.contact==''||this.rentAmount==''
-                        ||this.fee==''||this.rentStart==''||this.rentEnd==''||this.tradeName==''||this.formatsVal==''
-                        ||this.margin==''||this.remark==''||this.propertyPayTypeList==[]
-                    ){
+                    console.log(data)
+                    if(this.houseAddr==''||this.tenant===''||this.contact===''||this.rentAmount===''
+                        ||this.fee===''||this.rentStart===''||this.rentEnd===''||this.tradeName===''||this.formatsVal===''
+                        ||this.picUrl === ''
+                        ||this.margin===''||(this.books2[0].dateStr =='' ||this.books2[0].dateStr ==null || this.books2[0].rentAmount =='' || this.books2[0].rentAmount ==null || this.books2[0].rentType =='' ||this.books2[0].rentType ==null)
+                    ) {
                         this.$message({
-                            message: '值不能为空！',
+                            message: '除备注外其余值不能为空，请检查！',
                             type: 'warning'
                         });
                     }else{
-                        console.log(data)
+
                         var that = this;
                         this.$axios({
                             url: this.getAjax + '/admin/property/addOrUpdate',
@@ -778,8 +813,72 @@
                                 // var list = res.data.data;
                                 // that.list();
                                 // console.log(list)
-                                this.$alert('修改已提交，等待管理员审核', '提示', {
+                                this.$alert('修改已提交', '提示', {
                                     callback: action => {
+                                        this.$emit('changeShow','false')
+                                        this.$emit('child-event',data)
+                                    }
+                                });
+                            }
+                        })
+                    }
+                }
+                else if(this.str == 'zj'){
+                    var data= {
+                        'id':this.id,
+                        'houseAddr':this.houseAddr,
+                        'pactCode':this.pactCode,
+                        'attach':this.picUrl,
+                        'tenant':this.tenant,
+                        'contact':this.contact,
+                        'rentAmount':this.rentAmount,
+                        'fee':this.fee,
+                        'rentStart':this.rentStart,
+                        'rentEnd':this.rentEnd,
+                        'tradeName':this.tradeName,
+                        'formats':this.formatsVal,
+                        'margin':this.margin,
+                        'remark':this.remark,
+                        'typeItem':2,
+                        'propertyPayTypeList':this.books2,
+                        'pid':this.pid,
+                        'typeCore':2
+                    }
+                    console.log(data)
+                    if(this.houseAddr==''||this.tenant===''||this.contact===''||this.rentAmount===''
+                        ||this.fee===''||this.rentStart===''||this.rentEnd===''||this.tradeName===''||this.formatsVal===''
+                        ||this.picUrl === ''
+                        ||this.margin===''||(this.books2[0].dateStr =='' ||this.books2[0].dateStr ==null || this.books2[0].rentAmount =='' || this.books2[0].rentAmount ==null || this.books2[0].rentType =='' ||this.books2[0].rentType ==null)
+                    ) {
+                        this.$message({
+                            message: '除备注外其余值不能为空，请检查！',
+                            type: 'warning'
+                        });
+                    }else{
+
+                        var that = this;
+                        this.$axios({
+                            url: this.getAjax + '/admin/property/addOrUpdate',
+                            method: "post",
+                            headers: {
+                                'Content-Type': 'application/json;charset=UTF-8',
+                                'Token':sessionStorage.getItem('token')
+                            },
+                            data:data
+                        }).then(res => {
+                            if(res.data.code == '2004'){
+                                this.$message({
+                                    message: res.data.msg,
+                                    type: 'warning'
+                                });
+                                this.$router.push('/')
+                            }else{
+                                // var list = res.data.data;
+                                // that.list();
+                                // console.log(list)
+                                this.$alert('修改已提交！', '提示', {
+                                    callback: action => {
+                                        this.$parent.ZCkan(this.pid)
                                         this.$emit('changeShow','false')
                                         this.$emit('child-event',data)
                                     }
@@ -793,6 +892,7 @@
             },
             handleClose(){
                 // 子组件调用父组件方法，并传递参数
+                this.picUrl = ''
                 this.$emit('changeShow','false')
             },
             handlePictureCardPreview(file) {
@@ -826,7 +926,7 @@
             this.$emit('childEvent', { name: 'zhangsan', age:  10 });
         },
         created:function () {
-
+            this.picUrl = ''
         }
     }
 </script>

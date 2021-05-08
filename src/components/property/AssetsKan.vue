@@ -311,7 +311,8 @@
             },
             detail(data,str){
                 this.id = data.id
-                this.str = str
+                this.str = str;
+                this.handlePic = []
                 var that = this;
                 if(str == 'zy'){
                     this.$axios({
@@ -457,6 +458,85 @@
                             this.$router.push('/')
                         }else{
                             var params = res.data.data
+                            var img = params.attach.split(',');
+                            console.log(img)
+                            var file= []
+                            for(var x =0;x<img.length;x++){
+                                var obj4 = {}
+                                obj4['name']= img[x].split('#_#')[0]
+                                obj4['url']= img[x].split('#_#')[1]
+                                that.handlePic.push(obj4);
+                            }
+                            for(var j=0;j<params.propertyPayTypeList.length;j++){
+                                var datas = params.propertyPayTypeList[j];
+                                var time = params.propertyPayTypeList[j].dateStr;
+                                var img = params.propertyPayTypeList[j].attach==''?null:params.propertyPayTypeList[j].attach;
+                                var strtime = time.replace("/-/g", "/");//时间转换
+                                var date1=new Date(strtime);
+                                var date2=new Date();
+                                if(date1<date2 && img){
+                                    params.propertyPayTypeList[j]['jkStatus'] ='已缴纳'
+                                }else if(date1<date2 && (img==null)){
+                                    params.propertyPayTypeList[j]['jkStatus'] ='已超期'
+                                }else{
+                                    var date = new Date();
+                                    var seperator1 = "-";
+                                    var year = date.getFullYear();
+                                    var month = date.getMonth() + 1;
+                                    var strDate = date.getDate();
+                                    if (month >= 1 && month <= 9) {
+                                        month = "0" + month;
+                                    }
+                                    if (strDate >= 0 && strDate <= 9) {
+                                        strDate = "0" + strDate;
+                                    }
+                                    var currentdate = year + seperator1 + month + seperator1 + strDate;
+                                    var arr1 = currentdate.split('-');
+                                    var arr2 = time.split('-');
+                                    arr1[1] = parseInt(arr1[1]);
+                                    arr1[2] = parseInt(arr1[2]);
+                                    arr2[1] = parseInt(arr2[1]);
+                                    arr2[2] = parseInt(arr2[2]);
+                                    var flag = true;
+                                    var type = '即将到期'
+                                    if(arr1[0] == arr2[0]){//同年
+                                        if(arr2[1]-arr1[1] > 3){ //月间隔超过3个月
+                                            flag = false;
+                                            params.propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                        }else if(arr2[1]-arr1[1] == 3){ //月相隔3个月，比较日
+                                            if(arr2[2] > arr1[2]){ //结束日期的日大于开始日期的日
+                                                flag = false;
+                                                params.propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                            }else{
+                                                params.propertyPayTypeList[j]['jkStatus'] ='即将到期'
+                                            }
+                                        }else{
+                                            params.propertyPayTypeList[j]['jkStatus'] ='即将到期'
+                                        }
+                                    }else{ //不同年
+                                        if(arr2[0] - arr1[0] > 1){
+                                            params.propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                            flag = false;
+                                        }else if(arr2[0] - arr1[0] == 1){
+                                            if(arr1[1] < 10){ //开始年的月份小于10时，不需要跨年
+                                                flag = false;
+                                                params.propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                            }else if(arr1[1]+3-arr2[1] < 12){ //月相隔大于3个月
+                                                flag = false;
+                                                params.propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                            }else if(arr1[1]+3-arr2[1] == 12){ //月相隔3个月，比较日
+                                                if(arr2[2] > arr1[2]){ //结束日期的日大于开始日期的日
+                                                    flag = false;
+                                                    params.propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                                }else{
+                                                    params.propertyPayTypeList[j]['jkStatus'] ='即将到期'
+                                                }
+                                            }
+                                        }
+                                    }
+                                    // list[i].propertyPayTypeList[j]['jkStatus'] ='未来时间'
+                                }
+                            }
                             that.houseAddr = params.houseAddr
                             that.attach = params.attach
                             that.pactCode = params.pactCode

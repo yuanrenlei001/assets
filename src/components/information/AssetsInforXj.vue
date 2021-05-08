@@ -11,7 +11,7 @@
                 <el-col :soan="24" style="padding-top: 26px;">
                     <div  class="map" id="mapid" ref="mapsss"></div>
                 </el-col>
-                <div class="fixed">
+                <div class="fixed" v-show="fixedShow">
                     <div style="width:435px;height:100%;">
                         <el-row>
                             <el-date-picker
@@ -24,10 +24,12 @@
                                     range-separator="至"
                                     start-placeholder="开始日期"
                                     end-placeholder="结束日期"
+                                    :picker-options="pickerOptions"
                             >
                             </el-date-picker>
                         </el-row>
-                        <el-row class="tables" style="height:100%;" >
+                        <div style="background: #fff;line-height: 40px;border-bottom: 1px solid #eee;">巡检打卡记录</div>
+                        <el-row class="tables" style="height:80%;" >
                             <el-table
                                     ref="multipleTable"
                                     :data="tableData2"
@@ -36,13 +38,13 @@
                             >
                                 <el-table-column  type="index" label="序号"></el-table-column>
                                 <el-table-column width="200" prop="houseAddress" label="房屋坐落"></el-table-column>
-                                <el-table-column prop="date2" label="打卡次数"></el-table-column>
+                                <el-table-column prop="num" label="打卡次数"></el-table-column>
                                 <el-table-column
                                         fixed="right"
                                         label="操作"
                                 >
-                                    <template slot-scope="tableData" >
-                                            <el-button  type="text" size="small" @click="showBtn">查看</el-button>
+                                    <template slot-scope="tableData2" >
+                                            <el-button  type="text" size="small" @click="showBtn(tableData2.row)">查看</el-button>
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -58,7 +60,7 @@
                 class="abow_dialogDK"
                 title="打卡详情"
                 :visible.sync="showDialogDK"
-                @close="handleClose"
+                @close="handleClose2"
                 width="600px">
             <el-row>
                 <el-form ref="form" class="wyxjHight" style="position: relative;">
@@ -69,8 +71,12 @@
                                            tooltip-effect="dark"
                                            border
                                    >
-                                       <el-table-column  prop="user" label="巡检人"></el-table-column>
-                                       <el-table-column prop="time" label="巡检时间"></el-table-column>
+                                       <el-table-column  prop="name" label="巡检人"></el-table-column>
+                                       <el-table-column prop="time" label="巡检时间">
+                                           <template slot-scope="tableData3" >
+                                               {{tableData3.row.createTime | dateFormat}}
+                                           </template>
+                                       </el-table-column>
 
                                    </el-table>
                             </el-row>
@@ -93,8 +99,36 @@
         },
   data () {
     return {
+        fixedShow:false,
+        pickerOptions: {
+            shortcuts: [{
+                text: '最近一周',
+                onClick(picker) {
+                    const end = new Date();
+                    const start = new Date();
+                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                    picker.$emit('pick', [start, end]);
+                }
+            }, {
+                text: '最近一个月',
+                onClick(picker) {
+                    const end = new Date();
+                    const start = new Date();
+                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                    picker.$emit('pick', [start, end]);
+                }
+            }, {
+                text: '最近三个月',
+                onClick(picker) {
+                    const end = new Date();
+                    const start = new Date();
+                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                    picker.$emit('pick', [start, end]);
+                }
+            }]
+        },
         showDialogDK:false,
-        value1: [],
+        value1:  [(new Date(new Date().getTime()- 3600 * 1000 * 24 * 90)),new Date()],
         map:null,
         _marker:null,
         AssetsKanVisible:false,
@@ -171,8 +205,28 @@
         },
     },
     methods:{
-        showBtn(){
-            this.showDialogDK = !this.showDialogDK
+        showBtn(val){
+            let code  = val.assetCode
+            this.showDialogDK = !this.showDialogDK;
+            this.$axios({
+                url: this.getAjax + '/admin/clockInAdmin/findClockInDetails?assetCode='+code,
+                method: "get",
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    'Token':sessionStorage.getItem('token')
+                },
+                data:{}
+            }).then(res => {
+                if(res.data.code == '2004'){
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'warning'
+                    });
+                    this.$router.push('/')
+                }else{
+                    this.tableData3 = res.data.data
+                }
+            })
         },
         clickTable(e,str){
             console.log(e)
@@ -182,9 +236,17 @@
         },
         list(type){
             var that = this;
-            var type = type;
+            const geoServerUrl = 'http://61.153.180.66:9087/geoserver';
+            const geoParams= {
+                service: 'WFS',
+                version: '1.1.0',
+                request: 'GetFeature',
+                typeName: 'oldtown:zch_shape',
+                outputFormat: 'application/json',
+                srsName: 'EPSG:4326',
+            };
             this.$axios({
-                url:  'https://nanxun.zjtoprs.com/api/com/comPlace/getAll?type='+type,
+                url:   '/mapServePath/geoserver/ows'+L.Util.getParamString(geoParams, geoServerUrl),
                 method: "get",
                 dataType: "json",
                 headers: {
@@ -193,59 +255,41 @@
                 data:{}
             })
                 .then(res => {
-                    if(this._marker){
-                        this.map.removeLayer(this._marker);
-                    }
                     var tabStr = "";
                     var my_spots = [];
                     //点击地图上图标
-                    var list = res.data.data
-                    // this.show=false
-                    var strartIcon = L.icon({
-                        // https://nanxun.zjtoprs.com/minio/old-town/com/place/defaultStore.jpg
-                        iconUrl:icon01,
-                        iconSize: [25, 30],
-                    });
-                    var arr = [];
-                    for(var j=0;j<list.length;j++){
-                        //获取经纬度
-                        var lng = list[j].longitude;
-                        var lat = list[j].latitude;
-                        var layers = L.marker([lat,lng ],{icon:strartIcon,data:j+1,}).addTo(this.map)
-                            .bindPopup('<div id="'+ list[j].id+'" style="color: red;text-align: center;">资产坐落'+(j+1)+'</div>',{closeButton:false})
-                            .openPopup()
-                            .on("click", this.markerOnClick)
-                        arr.push(layers)
-                    }
-                    console.log(arr)
-                    this._marker = L.layerGroup(arr);
-                    this.map.addLayer(this._marker);
-                    this.map.setView([30.87258082, 120.4259491],16);
+                    let data = res.data.features;
+                    that.polygon = L.geoJSON(res.data,{color:'red'}).addTo(that.map).on("click", this.markerOnClick);
                 })
         },
         markerOnClick(e){
-            this.listZc(e.target.options.data);
+            this.fixedShow = true;
+            var that =this;
+            that.mapArr = [];
+            var popup = L.popup();
+            var data = e.sourceTarget.feature.properties.code;
+            let _data = data.split(',');
+            console.log(_data)
+            this.listZc(_data);
         },
         listZc(e){
-            var that = this;
+            // var arr = [
+            //    "LT2182",
+            //     "LT2178",
+            // "LT2167",
+            // "LT2030",
+            // "LT1985"
+            // ]
             this.$axios({
-                url: this.getAjax + '/admin/meansAdmin/findList',
+                url: this.getAjax + '/admin/clockInAdmin/findClockInData',
                 method: "post",
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
                     'Token':sessionStorage.getItem('token')
                 },
                 data:{
-                        "pageNum": e,
-                        "pageSize": 10,
-                        "assetUser": "",
-                        "houseNature": '',
-                        "assetUse": "",
-                        "landUse": "",
-                        "landNature":'',
-                        "houseNow": '',
-                        "label": "",
-                        "search": ""
+                        name:'',
+                        assetCodes:e
                 }
             }).then(res => {
                 if(res.data.code == '2004'){
@@ -255,7 +299,7 @@
                     });
                     this.$router.push('/')
                 }else{
-                    var list = res.data.data.list;
+                    var list = res.data.data;
                     for(var i=0;i<list.length;i++){
                         list[i]['date2'] = i
                     }
@@ -300,7 +344,7 @@
               //
               // 图层名称：nanxun:nanxun_handdrawing
               // url：http://192.168.0.90:8080/geoserver/gwc/service/wmts
-              var ign = new L.TileLayer.WMTS("http://zjtoprs.f3322.net:18080/geoserver/gwc/service/wmts", {
+              var ign = new L.TileLayer.WMTS("http://61.153.180.66:9087/geoserver/gwc/service/wmts", {
                   layer:"nanxun_jbjbMaps", //影像名称
                   // layer:"oldtown:nxshdt", //手绘名称
                   tilematrixSet: "EPSG:4326", //GeoServer使用的网格名称
@@ -404,6 +448,11 @@
             // 子组件调用父组件方法，并传递参数
             this.$emit('changeShow','false')
         },
+        handleClose2(){
+            // 子组件调用父组件方法，并传递参数
+            // this.$emit('changeShow','false')
+            this.showDialogDK = false
+        },
         handleRemove(file) {
             console.log(file);
         },
@@ -426,6 +475,7 @@
     },
     created:function () {
         this.listZc(2);
+        // new Date(new Date.getTime() - 3600 * 1000 * 24 * 90), new Date()
     }
 }
 </script>

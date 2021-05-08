@@ -413,7 +413,7 @@
             // }
         },
         detail(type,str){
-            console.log(type)
+            console.log(type,str)
             this.typeItem = type
             this.str = str
         },
@@ -529,7 +529,6 @@
             });
         },
         open() {
-            console.log(this.assetCode)
             if(this.str == 'zy'){
                 var arr = [];
                 for(var i=0;i<this.assetCode.length;i++){
@@ -562,12 +561,14 @@
                     'margin':this.margin,
                     'remark':this.remark,
                     'typeItem':this.typeItem,
-                    'propertyPayTypeList':this.books2
+                    'propertyPayTypeList':this.books2,
+                    'pid':0,
+                    'typeCore':1
                 }
                 console.log(data)
                 if(str === '' ||strs===''||this.tenant===''||this.contact===''||this.rentAmount===''
                     ||this.fee===''||this.rentStart===''||this.rentEnd===''||this.tradeName===''||this.formatsVal===''
-                    ||this.margin===''||this.remark===''||this.propertyPayTypeList===[]
+                    ||this.margin===''||(this.books2[0].dateStr =='' ||this.books2[0].dateStr ==null || this.books2[0].rentAmount =='' || this.books2[0].rentAmount ==null || this.books2[0].rentType =='' ||this.books2[0].rentType ==null)
                 )
                 {
                     this.$message({
@@ -577,58 +578,66 @@
                 }
                 else{
                     var that = this;
-                    this.$axios({
-                        url: this.getAjax + '/admin/property/addOrUpdate',
-                        method: "post",
-                        headers: {
-                            'Content-Type': 'application/json;charset=UTF-8',
-                            'Token':sessionStorage.getItem('token')
-                        },
-                        data:data
-                    }).then(res => {
-                        if(res.data.code == '2004'){
-                            this.$message({
-                                message: res.data.msg,
-                                type: 'warning'
-                            });
-                            this.$router.push('/')
-                        }else{
-                            // var list = res.data.data;
-                            // that.list();
-                            // console.log(list)
-                            this.$alert('修改已提交，等待管理员审核', '提示', {
-                                callback: action => {
-                                    this.$emit('changeShow','false')
-                                    this.$emit('child-event',data)
-                                    this.assetCode =[{value:null,houseAddr:null}]
-                                    this.picUrl = ''
-                                    this.houseAddr = ''
-                                    this.pactCode = ''
-                                    this.tenant = ''
-                                    this.contact = ''
-                                    this.rentAmount = ''
-                                    this.fee = ''
-                                    this.rentStart = ''
-                                    this.rentEnd = ''
-                                    this.value1 = ''
-                                    this.tradeName = ''
-                                    this.margin = ''
-                                    this.formatsVal = ''
-                                    this.remark = ''
-                                    this.typeItem = ''
-                                    this.dialogImageUrl = ''
-                                    this.$refs.upload.clearFiles()
-                                    this.books2 = [
-                                        {id:null,num:null,dateStr:null,rentAmount:null,attach:null,rentType:null}
-                                    ];
-                                }
-                            });
-                        }
-                    })
+                    this.$confirm('确认提交？', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$axios({
+                            url: this.getAjax + '/admin/property/addOrUpdate',
+                            method: "post",
+                            headers: {
+                                'Content-Type': 'application/json;charset=UTF-8',
+                                'Token':sessionStorage.getItem('token')
+                            },
+                            data:data
+                        })
+                            .then(res => {
+                            if(res.data.code == '2004'){
+                                this.$message({
+                                    message: res.data.msg,
+                                    type: 'warning'
+                                });
+                                this.$router.push('/')
+                            }else{
+                                // var list = res.data.data;
+                                // that.list();
+                                // console.log(list)
+                                        this.$emit('changeShow','false')
+                                        this.$emit('child-event',data)
+                                        this.assetCode =[{value:null,houseAddr:null}]
+                                        this.picUrl = ''
+                                        this.houseAddr = ''
+                                        this.pactCode = ''
+                                        this.tenant = ''
+                                        this.contact = ''
+                                        this.rentAmount = ''
+                                        this.fee = ''
+                                        this.rentStart = ''
+                                        this.rentEnd = ''
+                                        this.value1 = ''
+                                        this.tradeName = ''
+                                        this.margin = ''
+                                        this.formatsVal = ''
+                                        this.remark = ''
+                                        this.typeItem = ''
+                                        this.dialogImageUrl = ''
+                                        this.$refs.upload.clearFiles()
+                                        this.books2 = [
+                                            {id:null,num:null,dateStr:null,rentAmount:null,attach:null,rentType:null}
+                                        ];
+                            }
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消'
+                        });
+                    });
                 }
 
             }
-            else{
+            else if (this.str == 'wz'){
                 var arr = [];
                 for(var i=0;i<this.assetCode.length;i++){
                     if(this.assetCode[i].value){
@@ -660,42 +669,160 @@
                     'margin':this.margin,
                     'remark':this.remark,
                     'typeItem':this.typeItem,
-                    'propertyPayTypeList':this.books2
+                    'propertyPayTypeList':this.books2,
+                    'pid':0,
+                    'typeCore':1
                 }
                 console.log(data)
+
                 if(str === '' ||strs===''||this.tenant===''||this.contact===''||this.rentAmount===''
                     ||this.fee===''||this.rentStart===''||this.rentEnd===''||this.tradeName===''||this.formatsVal===''
-                    ||this.margin===''||this.remark===''||this.propertyPayTypeList===[]
+                    ||this.picUrl === ''
+                    ||this.margin===''||(this.books2[0].dateStr =='' ||this.books2[0].dateStr ==null || this.books2[0].rentAmount =='' || this.books2[0].rentAmount ==null || this.books2[0].rentType =='' ||this.books2[0].rentType ==null)
                 )
                 {
                     this.$message({
-                        message: '值不能为空！',
+                        message: '除备注外其余值不能为空，请检查！',
                         type: 'warning'
                     });
                 }
                 else{
                     var that = this;
-                    this.$axios({
-                        url: this.getAjax + '/admin/property/addOrUpdate',
-                        method: "post",
-                        headers: {
-                            'Content-Type': 'application/json;charset=UTF-8',
-                            'Token':sessionStorage.getItem('token')
-                        },
-                        data:data
-                    }).then(res => {
-                        if(res.data.code == '2004'){
-                            this.$message({
-                                message: res.data.msg,
-                                type: 'warning'
-                            });
-                            this.$router.push('/')
-                        }else{
-                            // var list = res.data.data;
-                            // that.list();
-                            // console.log(list)
-                            this.$alert('修改已提交，等待管理员审核', '提示', {
-                                callback: action => {
+                    this.$confirm('确认提交?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$axios({
+                            url: this.getAjax + '/admin/property/addOrUpdate',
+                            method: "post",
+                            headers: {
+                                'Content-Type': 'application/json;charset=UTF-8',
+                                'Token':sessionStorage.getItem('token')
+                            },
+                            data:data
+                        })
+                            .then(res => {
+                                if(res.data.code == '2004'){
+                                    this.$message({
+                                        message: res.data.msg,
+                                        type: 'warning'
+                                    });
+                                    this.$router.push('/')
+                                }else{
+                                    // var list = res.data.data;
+                                    // that.list();
+                                    // console.log(list)
+                                            this.$emit('changeShow','false')
+                                            this.$emit('child-event',data)
+                                            this.assetCode =[{value:null,houseAddr:null}]
+                                            this.picUrl = ''
+                                            this.houseAddr = ''
+                                            this.pactCode = ''
+                                            this.tenant = ''
+                                            this.contact = ''
+                                            this.rentAmount = ''
+                                            this.fee = ''
+                                            this.rentStart = ''
+                                            this.rentEnd = ''
+                                            this.value1 = ''
+                                            this.tradeName = ''
+                                            this.margin = ''
+                                            this.formatsVal = ''
+                                            this.remark = ''
+                                            this.typeItem = ''
+                                            this.dialogImageUrl = ''
+                                            this.$refs.upload.clearFiles()
+                                            this.books2 = [
+                                                {id:null,num:null,dateStr:null,rentAmount:null,attach:null,rentType:null}
+                                            ];
+                                }
+                            })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消'
+                        });
+                    });
+                }
+            }
+            else if (this.str == 'zj'){
+                var arr = [];
+                for(var i=0;i<this.assetCode.length;i++){
+                    if(this.assetCode[i].value){
+                        arr.push(this.assetCode[i].value)
+                    }
+                }
+                var str = arr.join(",");
+                var arrs = [];
+                for(var j=0;j<this.assetCode.length;j++){
+                    if(this.assetCode[j].houseAddr){
+                        arrs.push(this.assetCode[j].houseAddr)
+                    }
+                }
+                var strs = arrs.join(",");
+                var data= {
+                    'id':null,
+                    'assetCode':str,
+                    'attach':this.picUrl,
+                    'houseAddr':strs,
+                    'pactCode':this.pactCode,
+                    'tenant':this.tenant,
+                    'contact':this.contact,
+                    'rentAmount':this.rentAmount,
+                    'fee':this.fee,
+                    'rentStart':this.rentStart,
+                    'rentEnd':this.rentEnd,
+                    'tradeName':this.tradeName,
+                    'formats':this.formatsVal,
+                    'margin':this.margin,
+                    'remark':this.remark,
+                    'typeItem':2,
+                    'propertyPayTypeList':this.books2,
+                    'pid':this.typeItem,
+                    'typeCore':2
+                }
+                console.log(data)
+
+                if(str === '' ||strs===''||this.tenant===''||this.contact===''||this.rentAmount===''
+                    ||this.fee===''||this.rentStart===''||this.rentEnd===''||this.tradeName===''||this.formatsVal===''
+                    ||this.picUrl === ''
+                    ||this.margin===''||(this.books2[0].dateStr =='' ||this.books2[0].dateStr ==null || this.books2[0].rentAmount =='' || this.books2[0].rentAmount ==null || this.books2[0].rentType =='' ||this.books2[0].rentType ==null)
+                )
+                {
+                    this.$message({
+                        message: '除备注外其余值不能为空，请检查！',
+                        type: 'warning'
+                    });
+                }
+                else{
+                    var that = this;
+                    this.$confirm('确认提交?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$axios({
+                            url: this.getAjax + '/admin/property/addOrUpdate',
+                            method: "post",
+                            headers: {
+                                'Content-Type': 'application/json;charset=UTF-8',
+                                'Token':sessionStorage.getItem('token')
+                            },
+                            data:data
+                        })
+                            .then(res => {
+                                if(res.data.code == '2004'){
+                                    this.$message({
+                                        message: res.data.msg,
+                                        type: 'warning'
+                                    });
+                                    this.$router.push('/')
+                                }else{
+                                    // var list = res.data.data;
+                                    // that.list();
+                                    // console.log(list)
+                                    this.$parent.ZCkan(this.typeItem)
                                     this.$emit('changeShow','false')
                                     this.$emit('child-event',data)
                                     this.assetCode =[{value:null,houseAddr:null}]
@@ -720,14 +847,41 @@
                                         {id:null,num:null,dateStr:null,rentAmount:null,attach:null,rentType:null}
                                     ];
                                 }
-                            });
-                        }
-                    })
+                            })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消'
+                        });
+                    });
                 }
             }
+            this.zcoptions = [];
         },
         handleClose(){
             // 子组件调用父组件方法，并传递参数
+            this.assetCode =[{value:null,hcouseAddr:null}]
+            this.zcoptions = [];
+            this.picUrl = ''
+            this.houseAddr = ''
+            this.pactCode = ''
+            this.tenant = ''
+            this.contact = ''
+            this.rentAmount = ''
+            this.fee = ''
+            this.rentStart = ''
+            this.rentEnd = ''
+            this.value1 = ''
+            this.tradeName = ''
+            this.margin = ''
+            this.formatsVal = ''
+            this.remark = ''
+            this.typeItem = ''
+            this.dialogImageUrl = ''
+            this.$refs.upload.clearFiles()
+            this.books2 = [
+                {id:null,num:null,dateStr:null,rentAmount:null,attach:null,rentType:null}
+            ];
             this.$emit('changeShow','false')
         },
         handleRemove(file) {

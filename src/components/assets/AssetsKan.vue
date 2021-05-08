@@ -95,8 +95,8 @@
                            </el-col>
                            <el-col :span="12">
                                <el-col :lg="22">
-                                   <el-col :lg="11"><div class="textLeft" :style="showObj.landArea == 'landArea'?'color:red':''">房屋建筑面积 (m²)：</div></el-col>
-                                   <el-col :lg="13"><el-input v-model="tmp&&tmp.landArea?tmp.landArea:meansBook.landArea" placeholder="" :disabled="disabled"></el-input></el-col>
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.houseArea == 'houseArea'?'color:red':''">房屋建筑面积 (m²)：</div></el-col>
+                                   <el-col :lg="13"><el-input v-model="tmp&&tmp.houseArea?tmp.houseArea:meansBook.houseArea" placeholder="" :disabled="disabled"></el-input></el-col>
                                </el-col>
                                <el-col :lg="22">
                                    <el-col :lg="11"><div class="textLeft" :style="showObj.noCheckinArea == 'noCheckinArea'?'color:red':''">未登记建筑面积 (m²)：</div></el-col>
@@ -133,6 +133,12 @@
                                    <el-col :lg="11"><div class="textLeft" :style="showObj.houseNo == 'houseNo'?'color:red':''">房屋档案编号：</div></el-col>
                                    <el-col :lg="13">
                                        <el-input v-model="tmp&&tmp.houseNo?tmp.houseNo:meansBook.houseNo" placeholder="" :disabled="disabled"></el-input>
+                                   </el-col>
+                               </el-col>
+                               <el-col :lg="22">
+                                   <el-col :lg="11"><div class="textLeft" :style="showObj.label == 'label'?'color:red':''">标签：</div></el-col>
+                                   <el-col :lg="13">
+                                       <el-input v-model="tmp&&tmp.label?tmp.label:meansBook.label" placeholder="" :disabled="disabled"></el-input>
                                    </el-col>
                                </el-col>
                                <el-col :lg="22">
@@ -333,9 +339,14 @@
         fcPic:[],
         tdPic:[],
         imgpicc:[],
+        mapList:'',
+        polygon:'',
+        ign:''
     }
   },
         components:{
+        },
+        created(){
         },
     watch:{
         // 监听 addOrUpdateVisible 改变
@@ -358,16 +369,62 @@
             this.imgShow = false;
             console.log(123)
         },
+        list(type){
+            console.log(type)
+            const geoServerUrl = 'http://61.153.180.66:9087/geoserver';
+            const geoParams= {
+                service: 'WFS',
+                version: '1.1.0',
+                request: 'GetFeature',
+                typeName: 'oldtown:zch_shape',
+                outputFormat: 'application/json',
+                srsName: 'EPSG:4326',
+            };
+
+            const url = this.getAjaxMap + L.Util.getParamString(geoParams, geoServerUrl);
+            // console.log(L.Util.getParamString(geoParams, geoServerUrl))
+            var that = this;
+            var type = type;
+            this.$axios({
+                url:   '/mapServePath/geoserver/ows'+L.Util.getParamString(geoParams, geoServerUrl),
+                method: "get",
+                dataType: "json",
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                },
+                data:{}
+            }).then(res => {
+                var tabStr = "";
+                var my_spots = [];
+                //点击地图上图标
+                let arr = res.data.features;
+                var  data = ''
+                for(let i=0;i<arr.length;i++){
+                    let code = arr[i].properties.code.split(',');
+                    console.log(code)
+                    if(code.indexOf(type) == 0){
+                        data = arr[i]
+                    }
+                }
+                if(data !== ''){
+                    // that.polygon.clearLayers();
+                    that.polygon = L.geoJSON(data,{color:'red'}).addTo(that.map).on("click", that.markerOnClicks);
+                }else{
+                    // that.polygon.clearLayers();
+                }
+            })
+        },
         detail(param,str){
+            // T2610,LT2630"
             var id = param;
             var that = this;
             this.$nextTick(()=>{
                 this.map = L.map(this.$refs['mapsss'], {
-                    center: [30.88246, 120.427756],
-                    zoom: 14,
+                    center: [30.878191, 120.426207],
+                    zoom: 12,
                     maxZoom: 18,
-                    minZoom: 14,
-                    maxBounds:14,
+                    minZoom: 12,
+                    zoomControl:false,
                     attributionControl: false,
                     crs: L.CRS.EPSG4326
                 });
@@ -382,8 +439,8 @@
                 //
                 // 图层名称：nanxun:nanxun_handdrawing
                 // url：http://192.168.0.90:8080/geoserver/gwc/service/wmts
-                var ign = new L.TileLayer.WMTS("http://zjtoprs.f3322.net:18080/geoserver/gwc/service/wmts", {
-                    layer:"nanxun_jbjbMaps", //影像名称
+                var ign = new L.TileLayer.WMTS("http://61.153.180.66:9087/geoserver/gwc/service/wmts", {
+                    layer:'nanxun_jbjbMaps', //影像名称
                     // layer:"oldtown:nxshdt", //手绘名称
                     tilematrixSet: "EPSG:4326", //GeoServer使用的网格名称
                     width: 20,
@@ -392,13 +449,14 @@
                     format: 'image/png',
                     matrixIds: matrixIds,
                 })
-                this.map.addLayer(ign);
+                this.ign = ign
+                this.map.addLayer(ign).on("click", this.fixedsss);
                 setTimeout(function () {
                     that.map.invalidateSize(true);
                 }, 10);
             })
-
             this.typesss = str
+            console.log(str)
             if(str == 'sp'){
                 var that = this;
                 this.$axios({
@@ -427,150 +485,302 @@
                     });
                 }
             })
-            }
-            this.$axios({
-                url: this.getAjax + '/admin/meansAdmin/findDetails?id='+id,
-                method: "get",
-                headers: {
-                    'Content-Type': 'application/json;charset=UTF-8',
-                    'Token':sessionStorage.getItem('token')
-                },
-                data:{}
-            }).then(res => {
-                if(res.data.code = '1001'){
-                    this.meansBook = res.data.data.meansBook;
-                    this.tmp = res.data.data.tmp
-                    that.showObj = ''
-                    that.bdPic = []
-                    that.fcPic = []
-                    that.tdPic = []
-                    that.imgpicc = []
-                    var file= []
-                    if(res.data.data.tmp){
-                        if(res.data.data.tmp.realEstateAttach && res.data.data.tmp.realEstateAttach!==''){
-                            var imgbd = res.data.data.tmp.realEstateAttach.split(',')
-                            for(var j =0;j<imgbd.length;j++){
-                                var obj4 = {}
-                                obj4['name']= imgbd[j].split('#_#')[0]
-                                obj4['url']= imgbd[j].split('#_#')[1]
-                                obj4['hz']= imgbd[j].split('#_#')[1].substring(imgbd[j].split('#_#')[1].lastIndexOf("."))
-                                that.bdPic.push(obj4);
-                            }
-                        }
-                        if(res.data.data.tmp.realHouseAttach && res.data.data.tmp.realHouseAttach !==''){
-                            var imgfc = res.data.data.tmp.realHouseAttach.split(',');
-                            for(var z =0;z<imgfc.length;z++){
-                                var obj4 = {}
-                                obj4['name']= imgfc[z].split('#_#')[0]
-                                obj4['url']= imgfc[z].split('#_#')[1]
-                                obj4['hz']= imgfc[z].split('#_#')[1].substring(imgfc[z].split('#_#')[1].lastIndexOf("."))
-                                that.fcPic.push(obj4);
-                                console.log(that.fcPic)
-                            }
-                        }
-                        if(res.data.data.tmp.realLandAttach && res.data.data.tmp.realLandAttach!==''){
-                            var imgtd = res.data.data.tmp.realLandAttach.split(',');
-                            for(var x =0;x<imgtd.length;x++){
-                                var obj4 = {}
-                                obj4['name']= imgtd[x].split('#_#')[0]
-                                obj4['url']= imgtd[x].split('#_#')[1]
-                                obj4['hz']= imgtd[x].split('#_#')[1].substring(imgtd[x].split('#_#')[1].lastIndexOf("."))
-                                that.tdPic.push(obj4);
-                            }
-                        }
-                        if(res.data.data.tmp.pic && res.data.data.tmp.pic !==''){
-                            var imgpicc = res.data.data.tmp.pic.split(',');
-                            if(imgpicc == ''){
-                                that.imgpicc =[]
-                            }else{
-                                for(var k =0;k<imgpicc.length;k++){
-                                    var obj4 = {}
-                                    obj4['url']= imgpicc[k].split('#_#')[1]
-                                    obj4['hz']= imgpicc[k].split('#_#')[1].substring(imgpicc[k].split('#_#')[1].lastIndexOf("."))
-                                    that.imgpicc.push(obj4);
+                this.$axios({
+                    url: this.getAjax + '/admin/meansAdmin/findDetails?id='+id,
+                    method: "get",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    data:{}
+                })
+                    .then(res => {
+                        if(res.data.code = '1001'){
+                            this.meansBook = res.data.data.meansBook;
+                            this.list(res.data.data.meansBook.assetCode)
+                            this.tmp = res.data.data.tmp
+                            that.showObj = ''
+                            that.bdPic = []
+                            that.fcPic = []
+                            that.tdPic = []
+                            that.imgpicc = []
+                            var file= []
+                            if(res.data.data.tmp){
+                                if(res.data.data.tmp.realEstateAttach && res.data.data.tmp.realEstateAttach!==''){
+                                    var imgbd = res.data.data.tmp.realEstateAttach.split(',')
+                                    for(var j =0;j<imgbd.length;j++){
+                                        var obj4 = {}
+                                        obj4['name']= imgbd[j].split('#_#')[0]
+                                        obj4['url']= imgbd[j].split('#_#')[1]
+                                        obj4['hz']= imgbd[j].split('#_#')[1].substring(imgbd[j].split('#_#')[1].lastIndexOf("."))
+                                        that.bdPic.push(obj4);
+                                    }
+                                }
+                                if(res.data.data.tmp.realHouseAttach && res.data.data.tmp.realHouseAttach !==''){
+                                    var imgfc = res.data.data.tmp.realHouseAttach.split(',');
+                                    for(var z =0;z<imgfc.length;z++){
+                                        var obj4 = {}
+                                        obj4['name']= imgfc[z].split('#_#')[0]
+                                        obj4['url']= imgfc[z].split('#_#')[1]
+                                        obj4['hz']= imgfc[z].split('#_#')[1].substring(imgfc[z].split('#_#')[1].lastIndexOf("."))
+                                        that.fcPic.push(obj4);
+                                        console.log(that.fcPic)
+                                    }
+                                }
+                                if(res.data.data.tmp.realLandAttach && res.data.data.tmp.realLandAttach!==''){
+                                    var imgtd = res.data.data.tmp.realLandAttach.split(',');
+                                    for(var x =0;x<imgtd.length;x++){
+                                        var obj4 = {}
+                                        obj4['name']= imgtd[x].split('#_#')[0]
+                                        obj4['url']= imgtd[x].split('#_#')[1]
+                                        obj4['hz']= imgtd[x].split('#_#')[1].substring(imgtd[x].split('#_#')[1].lastIndexOf("."))
+                                        that.tdPic.push(obj4);
+                                    }
+                                }
+                                if(res.data.data.tmp.pic && res.data.data.tmp.pic !==''){
+                                    var imgpicc = res.data.data.tmp.pic.split(',');
+                                    if(imgpicc == ''){
+                                        that.imgpicc =[]
+                                    }else{
+                                        for(var k =0;k<imgpicc.length;k++){
+                                            var obj4 = {}
+                                            obj4['url']= imgpicc[k].split('#_#')[1]
+                                            obj4['hz']= imgpicc[k].split('#_#')[1].substring(imgpicc[k].split('#_#')[1].lastIndexOf("."))
+                                            that.imgpicc.push(obj4);
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    }else{
-                        if(res.data.data.meansBook.realEstateAttach && res.data.data.meansBook.realEstateAttach!==''){
-                            var imgbd = res.data.data.meansBook.realEstateAttach.split(',')
-                            for(var j =0;j<imgbd.length;j++){
-                                var obj4 = {}
-                                obj4['name']= imgbd[j].split('#_#')[0]
-                                obj4['url']= imgbd[j].split('#_#')[1]
-                                obj4['hz']= imgbd[j].split('#_#')[1].substring(imgbd[j].split('#_#')[1].lastIndexOf("."))
-                                that.bdPic.push(obj4);
-                            }
-                        }
-                        if(res.data.data.meansBook.realHouseAttach && res.data.data.meansBook.realHouseAttach !==''){
-                            var imgfc = res.data.data.meansBook.realHouseAttach.split(',');
-                            for(var z =0;z<imgfc.length;z++){
-                                var obj4 = {}
-                                obj4['name']= imgfc[z].split('#_#')[0]
-                                obj4['url']= imgfc[z].split('#_#')[1]
-                                obj4['hz']= imgfc[z].split('#_#')[1].substring(imgfc[z].split('#_#')[1].lastIndexOf("."))
-                                that.fcPic.push(obj4);
-                                console.log(that.fcPic)
-                            }
-                        }
-                        if(res.data.data.meansBook.realLandAttach && res.data.data.meansBook.realLandAttach!==''){
-                            var imgtd = res.data.data.meansBook.realLandAttach.split(',');
-                            for(var x =0;x<imgtd.length;x++){
-                                var obj4 = {}
-                                obj4['name']= imgtd[x].split('#_#')[0]
-                                obj4['url']= imgtd[x].split('#_#')[1]
-                                obj4['hz']= imgtd[x].split('#_#')[1].substring(imgtd[x].split('#_#')[1].lastIndexOf("."))
-                                that.tdPic.push(obj4);
-                            }
-                        }
-                        if(res.data.data.meansBook.pic && res.data.data.meansBook.pic !==''){
-                            var imgpicc = res.data.data.meansBook.pic.split(',');
-                            if(imgpicc == ''){
-                                that.imgpicc =[]
-                            }else{
-                                for(var k =0;k<imgpicc.length;k++){
-                                    var obj4 = {}
-                                    obj4['url']= imgpicc[k].split('#_#')[1]
-                                    obj4['hz']= imgpicc[k].split('#_#')[1].substring(imgpicc[k].split('#_#')[1].lastIndexOf("."))
-                                    that.imgpicc.push(obj4);
+                            else{
+                                if(res.data.data.meansBook.realEstateAttach && res.data.data.meansBook.realEstateAttach!==''){
+                                    var imgbd = res.data.data.meansBook.realEstateAttach.split(',')
+                                    for(var j =0;j<imgbd.length;j++){
+                                        var obj4 = {}
+                                        obj4['name']= imgbd[j].split('#_#')[0]
+                                        obj4['url']= imgbd[j].split('#_#')[1]
+                                        obj4['hz']= imgbd[j].split('#_#')[1].substring(imgbd[j].split('#_#')[1].lastIndexOf("."))
+                                        that.bdPic.push(obj4);
+                                    }
+                                }
+                                if(res.data.data.meansBook.realHouseAttach && res.data.data.meansBook.realHouseAttach !==''){
+                                    var imgfc = res.data.data.meansBook.realHouseAttach.split(',');
+                                    for(var z =0;z<imgfc.length;z++){
+                                        var obj4 = {}
+                                        obj4['name']= imgfc[z].split('#_#')[0]
+                                        obj4['url']= imgfc[z].split('#_#')[1]
+                                        obj4['hz']= imgfc[z].split('#_#')[1].substring(imgfc[z].split('#_#')[1].lastIndexOf("."))
+                                        that.fcPic.push(obj4);
+                                        console.log(that.fcPic)
+                                    }
+                                }
+                                if(res.data.data.meansBook.realLandAttach && res.data.data.meansBook.realLandAttach!==''){
+                                    var imgtd = res.data.data.meansBook.realLandAttach.split(',');
+                                    for(var x =0;x<imgtd.length;x++){
+                                        var obj4 = {}
+                                        obj4['name']= imgtd[x].split('#_#')[0]
+                                        obj4['url']= imgtd[x].split('#_#')[1]
+                                        obj4['hz']= imgtd[x].split('#_#')[1].substring(imgtd[x].split('#_#')[1].lastIndexOf("."))
+                                        that.tdPic.push(obj4);
+                                    }
+                                }
+                                if(res.data.data.meansBook.pic && res.data.data.meansBook.pic !==''){
+                                    var imgpicc = res.data.data.meansBook.pic.split(',');
+                                    if(imgpicc == ''){
+                                        that.imgpicc =[]
+                                    }else{
+                                        for(var k =0;k<imgpicc.length;k++){
+                                            var obj4 = {}
+                                            obj4['url']= imgpicc[k].split('#_#')[1]
+                                            obj4['hz']= imgpicc[k].split('#_#')[1].substring(imgpicc[k].split('#_#')[1].lastIndexOf("."))
+                                            that.imgpicc.push(obj4);
+                                        }
+                                    }
                                 }
                             }
+
+
+
+
+
+
+                            let obj1 = res.data.data.meansBook;
+                            let obj2 = res.data.data.tmp;
+                            let obj1arr = []
+                            let obj2arr = []
+                            for(k in obj1){let obj = {};obj['name'] = k;obj['value'] =obj1[k]; obj1arr.push(obj)}
+                            for(k in obj2){let obj = {};obj['name'] = k;obj['value'] =obj2[k]; obj2arr.push(obj)}
+                            let Ids = obj1arr.map(item => item.value);
+                            let arr = new Array();
+                            obj2arr.forEach((item, index) => {
+                                if (!Ids.includes(item.value)) {
+                                    arr.push(item);
+                                }
+                            });
+                            if(arr.length>0){
+                                let objSum = {}
+                                for(let i=0;i<arr.length;i++){
+                                    objSum[arr[i].name] = arr[i].name
+                                }
+                                this.showObj = objSum
+                                console.log(objSum)
+                            }
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
+                                type: 'warning'
+                            });
                         }
-                    }
-
-
-
-
-
-
-                    let obj1 = res.data.data.meansBook;
-                    let obj2 = res.data.data.tmp;
-                    let obj1arr = []
-                    let obj2arr = []
-                    for(k in obj1){let obj = {};obj['name'] = k;obj['value'] =obj1[k]; obj1arr.push(obj)}
-                    for(k in obj2){let obj = {};obj['name'] = k;obj['value'] =obj2[k]; obj2arr.push(obj)}
-                    let Ids = obj1arr.map(item => item.value);
-                    let arr = new Array();
-                    obj2arr.forEach((item, index) => {
-                        if (!Ids.includes(item.value)) {
-                            arr.push(item);
-                        }
-                    });
-                    if(arr.length>0){
-                        let objSum = {}
-                        for(let i=0;i<arr.length;i++){
-                            objSum[arr[i].name] = arr[i].name
-                        }
-                        this.showObj = objSum
-                        console.log(objSum)
-                    }
-            }else{
-                this.$message({
-                    message: res.data.msg,
-                    type: 'warning'
-                });
+                    })
             }
-        })
+            else{
+                this.$axios({
+                    url: this.getAjax + '/admin/meansAdmin/findDetails?id='+id,
+                    method: "get",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    data:{}
+                })
+                    .then(res => {
+                        if(res.data.code = '1001'){
+                            this.meansBook = res.data.data.meansBook;
+                            this.list(res.data.data.meansBook.assetCode)
+                            // this.tmp = res.data.data.tmp
+                            that.showObj = ''
+                            that.bdPic = []
+                            that.fcPic = []
+                            that.tdPic = []
+                            that.imgpicc = []
+                            var file= []
+                            // if(res.data.data.tmp){
+                            //     if(res.data.data.tmp.realEstateAttach && res.data.data.tmp.realEstateAttach!==''){
+                            //         var imgbd = res.data.data.tmp.realEstateAttach.split(',')
+                            //         for(var j =0;j<imgbd.length;j++){
+                            //             var obj4 = {}
+                            //             obj4['name']= imgbd[j].split('#_#')[0]
+                            //             obj4['url']= imgbd[j].split('#_#')[1]
+                            //             obj4['hz']= imgbd[j].split('#_#')[1].substring(imgbd[j].split('#_#')[1].lastIndexOf("."))
+                            //             that.bdPic.push(obj4);
+                            //         }
+                            //     }
+                            //     if(res.data.data.tmp.realHouseAttach && res.data.data.tmp.realHouseAttach !==''){
+                            //         var imgfc = res.data.data.tmp.realHouseAttach.split(',');
+                            //         for(var z =0;z<imgfc.length;z++){
+                            //             var obj4 = {}
+                            //             obj4['name']= imgfc[z].split('#_#')[0]
+                            //             obj4['url']= imgfc[z].split('#_#')[1]
+                            //             obj4['hz']= imgfc[z].split('#_#')[1].substring(imgfc[z].split('#_#')[1].lastIndexOf("."))
+                            //             that.fcPic.push(obj4);
+                            //             console.log(that.fcPic)
+                            //         }
+                            //     }
+                            //     if(res.data.data.tmp.realLandAttach && res.data.data.tmp.realLandAttach!==''){
+                            //         var imgtd = res.data.data.tmp.realLandAttach.split(',');
+                            //         for(var x =0;x<imgtd.length;x++){
+                            //             var obj4 = {}
+                            //             obj4['name']= imgtd[x].split('#_#')[0]
+                            //             obj4['url']= imgtd[x].split('#_#')[1]
+                            //             obj4['hz']= imgtd[x].split('#_#')[1].substring(imgtd[x].split('#_#')[1].lastIndexOf("."))
+                            //             that.tdPic.push(obj4);
+                            //         }
+                            //     }
+                            //     if(res.data.data.tmp.pic && res.data.data.tmp.pic !==''){
+                            //         var imgpicc = res.data.data.tmp.pic.split(',');
+                            //         if(imgpicc == ''){
+                            //             that.imgpicc =[]
+                            //         }else{
+                            //             for(var k =0;k<imgpicc.length;k++){
+                            //                 var obj4 = {}
+                            //                 obj4['url']= imgpicc[k].split('#_#')[1]
+                            //                 obj4['hz']= imgpicc[k].split('#_#')[1].substring(imgpicc[k].split('#_#')[1].lastIndexOf("."))
+                            //                 that.imgpicc.push(obj4);
+                            //             }
+                            //         }
+                            //     }
+                            // }
+                            // else{
+                                if(res.data.data.meansBook.realEstateAttach && res.data.data.meansBook.realEstateAttach!==''){
+                                    var imgbd = res.data.data.meansBook.realEstateAttach.split(',')
+                                    for(var j =0;j<imgbd.length;j++){
+                                        var obj4 = {}
+                                        obj4['name']= imgbd[j].split('#_#')[0]
+                                        obj4['url']= imgbd[j].split('#_#')[1]
+                                        obj4['hz']= imgbd[j].split('#_#')[1].substring(imgbd[j].split('#_#')[1].lastIndexOf("."))
+                                        that.bdPic.push(obj4);
+                                    }
+                                }
+                                if(res.data.data.meansBook.realHouseAttach && res.data.data.meansBook.realHouseAttach !==''){
+                                    var imgfc = res.data.data.meansBook.realHouseAttach.split(',');
+                                    for(var z =0;z<imgfc.length;z++){
+                                        var obj4 = {}
+                                        obj4['name']= imgfc[z].split('#_#')[0]
+                                        obj4['url']= imgfc[z].split('#_#')[1]
+                                        obj4['hz']= imgfc[z].split('#_#')[1].substring(imgfc[z].split('#_#')[1].lastIndexOf("."))
+                                        that.fcPic.push(obj4);
+                                        console.log(that.fcPic)
+                                    }
+                                }
+                                if(res.data.data.meansBook.realLandAttach && res.data.data.meansBook.realLandAttach!==''){
+                                    var imgtd = res.data.data.meansBook.realLandAttach.split(',');
+                                    for(var x =0;x<imgtd.length;x++){
+                                        var obj4 = {}
+                                        obj4['name']= imgtd[x].split('#_#')[0]
+                                        obj4['url']= imgtd[x].split('#_#')[1]
+                                        obj4['hz']= imgtd[x].split('#_#')[1].substring(imgtd[x].split('#_#')[1].lastIndexOf("."))
+                                        that.tdPic.push(obj4);
+                                    }
+                                }
+                                if(res.data.data.meansBook.pic && res.data.data.meansBook.pic !==''){
+                                    var imgpicc = res.data.data.meansBook.pic.split(',');
+                                    if(imgpicc == ''){
+                                        that.imgpicc =[]
+                                    }else{
+                                        for(var k =0;k<imgpicc.length;k++){
+                                            var obj4 = {}
+                                            obj4['url']= imgpicc[k].split('#_#')[1]
+                                            obj4['hz']= imgpicc[k].split('#_#')[1].substring(imgpicc[k].split('#_#')[1].lastIndexOf("."))
+                                            that.imgpicc.push(obj4);
+                                        }
+                                    }
+                                }
+                            // }
+
+
+
+
+
+
+                            // let obj1 = res.data.data.meansBook;
+                            // let obj2 = res.data.data.tmp;
+                            // let obj1arr = []
+                            // let obj2arr = []
+                            // for(k in obj1){let obj = {};obj['name'] = k;obj['value'] =obj1[k]; obj1arr.push(obj)}
+                            // for(k in obj2){let obj = {};obj['name'] = k;obj['value'] =obj2[k]; obj2arr.push(obj)}
+                            // let Ids = obj1arr.map(item => item.value);
+                            // let arr = new Array();
+                            // obj2arr.forEach((item, index) => {
+                            //     if (!Ids.includes(item.value)) {
+                            //         arr.push(item);
+                            //     }
+                            // });
+                            // if(arr.length>0){
+                            //     let objSum = {}
+                            //     for(let i=0;i<arr.length;i++){
+                            //         objSum[arr[i].name] = arr[i].name
+                            //     }
+                            //     this.showObj = objSum
+                            //     console.log(objSum)
+                            // }
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
+                                type: 'warning'
+                            });
+                        }
+                    })
+            }
+
         },
         // open() {
         //     this.$alert('修改已提交，等待管理员审核', '提示', {
@@ -580,8 +790,10 @@
         //     });
         // },
         handleClose(){
-            // 子组件调用父组件方法，并传递参数
+            this.map.setView([30.878191, 120.426207],14)
+            // 子组件调用组件方法，并传递参数
             this.$emit('changeShow','false')
+
         },
         handleRemove(file) {
             console.log(file);
@@ -604,10 +816,6 @@
 
         this.$emit('childEvent', { name: 'zhangsan', age:  10 });
     },
-    created:function () {
-
-        //
-    }
 }
 </script>
 <style scoped>

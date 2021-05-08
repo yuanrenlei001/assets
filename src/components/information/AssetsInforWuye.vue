@@ -98,6 +98,12 @@
                                 <!--&lt;!&ndash;<el-input v-model="" placeholder="请输入内容" disabled="disabled"></el-input>&ndash;&gt;-->
                             <!--</el-form-item>-->
                         </el-col>
+                        <el-col :lg="22" v-if="datas.status == 2">
+                            <el-col :lg="11"><div class="textLeft">驳回理由：</div></el-col>
+                            <el-col :lg="13" style="line-height: 40px;font-size: 24px;">
+                                {{datas.remark}}
+                            </el-col>
+                        </el-col>
                     </el-col>
                     <el-col :span="24" v-if="userType =='xjcl'">
                         <el-col :span="24">
@@ -277,8 +283,8 @@
                 }else{
                     this.$alert('处理已上传', '提示', {
                         callback: action => {
+                            this.$parent.wysplist(1)
                             this.$emit('changeShow','false')
-                            this.wysplist(1)
                         }
                     });
                 }
@@ -380,7 +386,7 @@
               //
               // 图层名称：nanxun:nanxun_handdrawing
               // url：http://192.168.0.90:8080/geoserver/gwc/service/wmts
-              var ign = new L.TileLayer.WMTS("http://zjtoprs.f3322.net:18080/geoserver/gwc/service/wmts", {
+              var ign = new L.TileLayer.WMTS("http://61.153.180.66:9087/geoserver/gwc/service/wmts", {
                   layer:"nanxun_jbjbMaps", //影像名称
                   // layer:"oldtown:nxshdt", //手绘名称
                   tilematrixSet: "EPSG:4326", //GeoServer使用的网格名称

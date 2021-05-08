@@ -416,7 +416,6 @@ export default {
                     left:'-100',
                     radius: '50%',
                     center: ['50%', '50%'],
-                    roseType: 'radius',
                     label: {
                         show: false
                     },
@@ -437,20 +436,13 @@ export default {
         },
         myChart5:'',
         echarts_option:{
-            title: {
-                text: '土地性质',
+            title:{
+                text:'土地性质',
                 top:20,
                 textStyle: {
                     fontSize: 14,
                     color:'#999',
                 }
-            },
-            // color: ['#FF8700', '#ffc300', '#00e473', '#009DFF'],
-            grid: {
-                top: '15%',
-                bottom: '54%',
-                left: "30%",
-                containLabel: false
             },
             legend: {
                 type: 'scroll',
@@ -463,71 +455,44 @@ export default {
                     color: "#333"
                 },
             },
-            yAxis: [{
-                type: 'category',
-                inverse: true,
-                axisLine: {
-                    show: false
-                },
-                axisTick: {
-                    show: false
-                },
-                axisLabel: {
 
-                    interval: 0,
-                    inside: true,
-                    textStyle: {
-                        color: "#333",
-                        fontSize: 14,
-                        rich: {
-                            line: {
-                                width: 170,
-                                height: 10,
-                                // backgroundColor: {image: dashedPic}
-                            },
-                            name: {
-                                color: '#666',
-                                fontSize: 14,
-                            },
-                            bd: {
-                                color: '#ccc',
-                                padding: [0, 5],
-                                fontSize: 14,
-                            },
-                            percent:{
-                                color: '#333',
-                                fontSize: 14,
-                            },
-                            value: {
-                                color: '#333',
-                                fontSize: 16,
-                                fontWeight: 500,
-                                padding: [0, 0, 0, 20]
-                            },
-                            unit: {
-                                fontSize: 14
-                            }
-                        }
-                    },
-                    show: true
-                },
-                data: []
-            }],
-            xAxis: [{
-                show: false
-            }],
+            // legend: {
+            //     orient: 'vertical',
+            //     left: '50%',
+            //     data: ['占用', '闲置'],
+            //     bottom: 0,
+            //     textStyle: {
+            //         color: "#333"
+            //     },
+            //     itemGap: 20
+            // },
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b} : {c} ({d}%)'
+            },
             series: [
                 {
-                    name: '',
+                    name: '访问来源',
                     type: 'pie',
-                    clockWise: true,
-                    hoverAnimation: false,
-                    radius: '',
-                    center: ["30%", "50%"],
+                    left:'-30',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
                     label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '30',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
                         show: false
                     },
-                    data: []
+                    data: [
+                    ]
                 }
             ]
         },
@@ -721,94 +686,106 @@ export default {
             var that =this;
             this.$axios({
                 url: this.getAjax + '/admin/meansAdmin/count',
-                method: "get",
+                method: "post",
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json;charset=UTF-8',
                     'Token':sessionStorage.getItem('token')
                 },
-                data:{}
+                data:{codes: []}
             }).then(res => {
-                var datas = res.data.data.landNature
+                var datas = res.data.data.landNature;
                 var arr = []
                 for(var i=0;i<datas.length;i++){
                     var obj = {};
-                    obj['name'] = Object.keys(datas[i]).toString()
-                    obj['value'] = Object.values(datas[i]).toString()
-                    arr.push(obj)
+                    if(Object.keys(datas[i]).toString() !== ''){
+                        obj['name'] = Object.keys(datas[i]).toString()
+                        obj['value'] = Object.values(datas[i]).toString()
+                        arr.push(obj)
+                    }
+
                 }
-                var chartData = arr;
-                let arrName = [];
-                let arrValue = [];
-                let sum = 0;
-                let pieSeries = [],
-                    lineYAxis = [];
-
-// 数据处理
-                chartData.forEach((v, i) => {
-                    arrName.push(v.name);
-                    arrValue.push(v.value);
-                    sum = sum + parseInt(v.value);
-                })
-                this.arrName = arrName
-// 图表option整理
-                chartData.forEach((v, i) => {
-                    console.log(sum)
-                    pieSeries.push({
-                        name: v.name,
-                        type: 'pie',
-                        clockWise: true,
-                        hoverAnimation: false,
-                        radius: [65 - i * 15 + '%', 57 - i * 15 + '%'],
-                        center: ["30%", "50%"],
-                        label: {
-                            show: false
-                        },
-                        data: [
-                            {
-                            value: parseInt(v.value),
-                            name: v.name
-                        }, {
-                            value: sum-parseInt(v.value),
-                            name: '',
-                            itemStyle: {
-                                color: "rgba(0,0,0,0)"
-                            }
-                        }
-                        ]
-                    });
-
-                })
-                console.log(pieSeries)
-                this.echarts_option.legend.data=arrName;
-                this.echarts_option.yAxis[0].data=lineYAxis;
-                this.echarts_option.series=pieSeries;
-                // window.addEventListener("resize", () => {
-                //     that.echarts_option.resize();
-                // });
-                // setTimeout(function (){
-                //     window.onresize = function () {
-                //         this.echarts_option.resize();
-                //     }
-                // },200)
+                this.echarts_option.series[0].data=arr;
+                this.echarts_option.legend.data=arr.name;
+//                 var arr = []
+//                 for(var i=0;i<datas.length;i++){
+//                     var obj = {};
+//                     obj['name'] = Object.keys(datas[i]).toString()
+//                     obj['value'] = Object.values(datas[i]).toString()
+//                     arr.push(obj)
+//                 }
+//                 var chartData = arr;
+//                 let arrName = [];
+//                 let arrValue = [];
+//                 let sum = 0;
+//                 let pieSeries = [],
+//                     lineYAxis = [];
+//
+// // 数据处理
+//                 chartData.forEach((v, i) => {
+//                     arrName.push(v.name);
+//                     arrValue.push(v.value);
+//                     sum = sum + parseInt(v.value);
+//                 })
+//                 this.arrName = arrName
+// // 图表option整理
+//                 chartData.forEach((v, i) => {
+//                     console.log(sum)
+//                     pieSeries.push({
+//                         name: v.name,
+//                         type: 'pie',
+//                         clockWise: true,
+//                         hoverAnimation: false,
+//                         radius: [65 - i * 15 + '%', 57 - i * 15 + '%'],
+//                         center: ["30%", "50%"],
+//                         label: {
+//                             show: false
+//                         },
+//                         data: [
+//                             {
+//                             value: parseInt(v.value),
+//                             name: v.name
+//                         }, {
+//                             value: sum-parseInt(v.value),
+//                             name: '',
+//                             itemStyle: {
+//                                 color: "rgba(0,0,0,0)"
+//                             }
+//                         }
+//                         ]
+//                     });
+//
+//                 })
+//                 console.log(pieSeries)
+//                 this.echarts_option.legend.data=arrName;
+//                 this.echarts_option.yAxis[0].data=lineYAxis;
+//                 this.echarts_option.series=pieSeries;
             })
         },
         init3(){
             this.$axios({
                 url: this.getAjax + '/admin/meansAdmin/count',
-                method: "get",
+                method: "post",
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json;charset=UTF-8',
                     'Token':sessionStorage.getItem('token')
                 },
-                data:{}
+                data:{codes: []}
             }).then(res => {
                 var datas = res.data.data.houseNow
                 var arr = []
                 for(var i=0;i<datas.length;i++){
                     var obj = {};
-                    obj['name'] = Object.keys(datas[i]).toString()
-                    obj['value'] = Object.values(datas[i]).toString()
-                    arr.push(obj)
+                    if(Object.keys(datas[i]).toString() == ''){
+                        obj['name'] = '空白'
+                        obj['value'] = Object.values(datas[i]).toString()
+                        arr.push('空白')
+                    }else{
+                        obj['name'] = Object.keys(datas[i]).toString()
+                        obj['value'] = Object.values(datas[i]).toString()
+                        arr.push(obj)
+                    }
+
+
                 }
                 this.echarts3_option.series[0].data=arr;
                 this.echarts3_option.legend.data=arr.name;
@@ -817,12 +794,12 @@ export default {
         init4(){
             this.$axios({
                 url: this.getAjax + '/admin/meansAdmin/count',
-                method: "get",
+                method: "post",
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json;charset=UTF-8',
                     'Token':sessionStorage.getItem('token')
                 },
-                data:{}
+                data:{codes: []}
             }).then(res => {
                 var datas = res.data.data.landUse
                 var arr = []
@@ -858,12 +835,12 @@ export default {
         init5(){
             this.$axios({
                 url: this.getAjax + '/admin/meansAdmin/count',
-                method: "get",
+                method: "post",
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json;charset=UTF-8',
                     'Token':sessionStorage.getItem('token')
                 },
-                data:{}
+                data:{codes: []}
             }).then(res => {
                 var datas = res.data.data.landUse
                 var arr = []
@@ -871,9 +848,9 @@ export default {
                 for(var i=0;i<datas.length;i++){
                     var obj = {};
                     if(Object.keys(datas[i]).toString() == ''){
-                        obj['name'] = '空白'
-                        obj['value'] = Object.values(datas[i]).toString()
-                        address.push('空白')
+                        // obj['name'] = '空白'
+                        // obj['value'] = Object.values(datas[i]).toString()
+                        // address.push('空白')
                     }else{
                         obj['value'] =  Object.values(datas[i]).toString()
                         obj['name'] = Object.keys(datas[i]).toString()
@@ -891,12 +868,12 @@ export default {
             this.findExportTitle = true
             this.$axios({
                 url: this.getAjax + '/admin/meansAdmin/count',
-                method: "get",
+                method: "post",
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json;charset=UTF-8',
                     'Token':sessionStorage.getItem('token')
                 },
-                data:{}
+                data:{codes: []}
             }).then(res => {
                 this.list = res.data.data
                 console.log(this.list)
@@ -905,12 +882,12 @@ export default {
         init7(){
             this.$axios({
                 url: this.getAjax + '/admin/meansAdmin/count',
-                method: "get",
+                method: "post",
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json;charset=UTF-8',
                     'Token':sessionStorage.getItem('token')
                 },
-                data:{}
+                data:{codes: []}
             }).then(res => {
                 var datas = res.data.data.realEstate
                 let num = 0;
@@ -922,7 +899,6 @@ export default {
                     }else{
                          num = num + parseFloat(Object.values(datas[i]).toString())
                     }
-
                 }
                 var arr = [
                     {'name':'未办证','value':this.total - num},
@@ -934,12 +910,12 @@ export default {
         init6(){
             this.$axios({
                 url: this.getAjax + '/admin/meansAdmin/count',
-                method: "get",
+                method: "post",
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json;charset=UTF-8',
                     'Token':sessionStorage.getItem('token')
                 },
-                data:{}
+                data:{codes: []}
             }).then(res => {
                 var datas = res.data.data.houseNature
                 var arr = []

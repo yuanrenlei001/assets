@@ -35,7 +35,7 @@
                     </div>
                     <div class="userinfo">
                         <div class="btn-fullscreen icon-font" @click="newss" style="position: relative;">
-                            <div v-if="tableData.length !==0" style="position: absolute;top:0;right:0;border-radius: 50%;font-size: 12px;background: red;color: #fff;width: 10px;height:10px;"></div>
+                            <div v-if="tableData.length !==0" style="position: absolute;top:50%;right:0;border-radius: 50%;font-size: 12px;background: red;color: #fff;width: 10px;height:10px;margin-top: -15px;"></div>
                             <el-tooltip class="item" effect="dark" content="消息" placement="bottom">
                                 <i class="el-icon-bell"></i>
                             </el-tooltip>
@@ -97,7 +97,7 @@
                 <el-row class="tables" >
                     <el-table
                             ref="multipleTable"
-                            :data="tableData"
+                            :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                             tooltip-effect="dark"
                             :key="toggleIndex"
                             style="width: 100%"
@@ -128,6 +128,18 @@
                         </el-table-column>
                     </el-table>
                 </el-row>
+                <el-row style="margin-top: 48px;text-align: right" class="pagination">
+                    <el-pagination
+                            background
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page="currentPage"
+                            :page-sizes="[10, 20, 30, 40]"
+                            :page-size="pagesize"
+                            layout=" prev, pager, next, sizes,jumper"
+                            :total="this.tableData.length">
+                    </el-pagination>
+                </el-row>
             </div>
 
         </div>
@@ -145,6 +157,9 @@ export default {
     },
     data() {
         return {
+            toggleIndex:0,
+            currentPage:1,
+            pagesize:10,
             headerData:JSON.parse(sessionStorage.getItem('userImg')),
             collapse: false, //菜单栏是否闭合
             fullscreen: false,
@@ -162,6 +177,14 @@ export default {
     beforeDestroy() {
     },
     methods: {
+        handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+            this.pagesize = val
+        },
+        handleCurrentChange(val) {
+            console.log(`当前页: ${val}`);
+            this.currentPage = val;
+        },
         gourl(data){
             // assets
             // property
@@ -280,9 +303,9 @@ export default {
         this.tabs = false;
         this.new = false;
         this.news = false;
-        this.timer = setInterval(() => {
+        // this.timer = setInterval(() => {
             that.list();
-        }, 1000);
+        // }, 1000);
     },
 }
 </script>

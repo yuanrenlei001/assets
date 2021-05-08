@@ -103,14 +103,11 @@
                        @selection-change="handleSelectionChange">
                    <el-table-column type="selection" width="55"></el-table-column>
                    <el-table-column  type="index" width="80" label="序号"></el-table-column>
-                   <el-table-column prop="date9" width="100" label="付款详情">
-                       <template scope="tableData">
-                           <div v-for="item in tableData.row.propertyPayTypeList">{{item.jkStatus}} ： {{item.rentAmount}}</div>
-                           <!--<span v-if="tableData.row.propertyPayTypeList === '1'" style="color:deepskyblue;">已缴纳</span>-->
-                           <!--<span v-if="tableData.row.date9 === '2'" style="color:red;">已超期</span>-->
-                           <!--<span v-if="tableData.row.date9 === '3'" style="color:orange;">即将到期</span>-->
-                       </template>
-                   </el-table-column>
+                   <!--<el-table-column prop="date9" width="100" label="付款详情">-->
+                       <!--<template scope="tableData">-->
+                           <!--<div v-for="item in tableData.row.propertyPayTypeList">{{item.jkStatus}} ： {{item.rentAmount}}</div>-->
+                       <!--</template>-->
+                   <!--</el-table-column>-->
                    <el-table-column prop="pactCode" width="100" label="合同编号"></el-table-column>
                    <el-table-column prop="tenant" label="承租方"></el-table-column>
                    <el-table-column prop="contact" width="100" label="联系方式"></el-table-column>
@@ -140,7 +137,7 @@
                    </el-table-column>
                    <el-table-column label="合同详情" width="100">
                        <template slot-scope="tableData">
-                           <el-button  type="text" size="small" @click="kan(tableData.row)">详情</el-button>
+                           <el-button  type="text" size="small" @click="kan(tableData.row,'zy')">详情</el-button>
                        </template>
                    </el-table-column>
                    <el-table-column
@@ -260,7 +257,7 @@
             <el-row class="tables" style="margin-top: 26px;" >
                 <el-table
                         ref="multipleTable"
-                        :data="tableData"
+                        :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                         :height="heighTable"
                         :key="toggleIndex"
                         tooltip-effect="dark"
@@ -291,7 +288,7 @@
                             label="合同详情" width="100"
                     >
                         <template slot-scope="tableData">
-                            <el-button  type="text" size="small" @click="kan(tableData.row)">详情</el-button>
+                            <el-button  type="text" size="small" @click="kan(tableData.row,'wz')">详情</el-button>
                         </template>
                     </el-table-column>
                     <el-table-column prop="contStatus" width="100" label="合同状态">
@@ -306,11 +303,11 @@
                         <template slot-scope="tableData">
                             <div v-if="sysAuthAdmin !== '' && sysAuthAdmin !== 'zcxxlrjgx' && sysAuthAdmin !== 'zcgxsp'">
                                 <el-button  type="text" size="small" @click="info(tableData.row)">修改</el-button>
-                                <el-button type="text" size="small" @click="del(tableData.row)">删除</el-button>
+                                <!--<el-button type="text" size="small" @click="del(tableData.row)">删除</el-button>-->
                             </div>
                             <div v-else>
                                 <el-button  type="text" size="small" style="color: #999;">修改</el-button>
-                                <el-button type="text" size="small" style="color: #999;">删除</el-button>
+                                <!--<el-button type="text" size="small" style="color: #999;">删除</el-button>-->
                             </div>
                         </template>
 
@@ -318,8 +315,8 @@
                     <el-table-column
                             label="历史出租合同" width="150"
                     >
-                        <template slot-scope="scope">
-                            <el-button  type="text" size="small" @click="kan">详情</el-button>
+                        <template slot-scope="tableData">
+                            <el-button  type="text" size="small" @click="ZCkan(tableData.row.id)">详情</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -329,11 +326,11 @@
                         background
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
-                        :current-page="currentPage4"
+                        :current-page="currentPage"
                         :page-sizes="[10, 20, 30, 40]"
-                        :page-size="10"
+                        :page-size="pagesize"
                         layout=" prev, pager, next, sizes,jumper"
-                        :total="page.total">
+                        :total="this.tableData.length">
                 </el-pagination>
             </el-row>
         </div>
@@ -462,6 +459,74 @@
                 </el-form>
             </el-row>
         </el-dialog>
+
+        <!--租出合同列表-->
+        <el-dialog
+                :visible.sync="dialogVisibleZC"
+                title="租出合同列表"
+                @close="handleCloseZJ"
+                width="90%">
+            <el-row>
+                <el-col >
+                        <el-button type="primary" @click="handleClickssZJ">新增</el-button>
+                </el-col>
+            </el-row>
+            <el-row class="tables" style="margin-top: 26px;" >
+                <el-table
+                        ref="multipleTable"
+                        :data="tableData33"
+                        :height="heighTable"
+                        :key="toggleIndex"
+                        tooltip-effect="dark"
+                        style="width: 100%"
+                        @selection-change="handleSelectionChange">
+                    <el-table-column  type="index" label="序号"></el-table-column>
+                    <el-table-column prop="pactCode" width="150" label="租出合同编号"></el-table-column>
+                    <el-table-column prop="tenant" label="承租方"></el-table-column>
+                    <el-table-column prop="contact" width="100" label="联系方式"></el-table-column>
+                    <el-table-column prop="rentAmount" width="100" label="租金（元）"></el-table-column>
+                    <el-table-column prop="fee" width="150" label="物业费（元）"></el-table-column>
+                    <el-table-column prop="date8" width="200" label="租约日期">
+                        <template scope="tableData">
+                            <span >{{tableData.row.rentStart}} - {{tableData.row.rentEnd}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="tableData" width="100" label="付款详情">
+                        <template scope="tableData">
+                            <el-button  type="text" size="small" @click="fkzt(tableData.row)">详情</el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="合同详情" width="100"
+                    >
+                        <template slot-scope="tableData">
+                            <el-button  type="text" size="small" @click="kan(tableData.row,'wz')">详情</el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="contStatus" width="100" label="合同状态">
+                        <template slot-scope="tableData">
+                            <div >{{tableData.row.flag}}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="remark" label="备注"></el-table-column>
+                    <el-table-column
+                            label="操作" width="100"
+                    >
+                        <template slot-scope="tableData">
+                            <div v-if="sysAuthAdmin !== '' && sysAuthAdmin !== 'zcxxlrjgx' && sysAuthAdmin !== 'zcgxsp'">
+                                <el-button  type="text" size="small" @click="info(tableData.row)">修改</el-button>
+                                <!--<el-button type="text" size="small" @click="del(tableData.row)">删除</el-button>-->
+                            </div>
+                            <div v-else>
+                                <el-button  type="text" size="small" style="color: #999;">修改</el-button>
+                                <!--<el-button type="text" size="small" style="color: #999;">删除</el-button>-->
+                            </div>
+                        </template>
+
+                    </el-table-column>
+                </el-table>
+            </el-row>
+        </el-dialog>
     </div>
 </template>
 
@@ -475,6 +540,7 @@
         name: 'login',
         data () {
             return {
+                dialogVisibleZC:false,
                 dataChar:'',
                 heighTable:300,
                 pagesize:10,
@@ -530,6 +596,7 @@
                 typeItem:'1',
                 value: '',
                 tableData: [],
+                tableData33: [],
                 tableData2: [
                 ],
                 tablezclist:[],
@@ -597,6 +664,169 @@
             DateChart,AssetsInfor,AssetsAdd,AssetsKan,AssetsKans
         },
         methods:{
+            handleCloseZJ(){
+                this.itemtypes = 'wz'
+            },
+            ZCkan(id,flag){
+                var sysAuthAdmin = this.sysAuthAdmin;
+                if(sysAuthAdmin == '' || sysAuthAdmin == 'zcxxlrjgx' || sysAuthAdmin == 'zcgxsp'  || sysAuthAdmin == 'xjcl' || sysAuthAdmin == 'xjyjsp'){
+                    this.$message({
+                        message: '暂无权限！',
+                        type: 'warning'
+                    });
+                }else{
+                    if(flag !== false){
+                        this.dialogVisibleZC = true;
+                    }else{
+                        console.log(flag)
+                    }
+
+                    this.ZJid = id;
+                    var that = this;
+                    var rentStart = rentStart;
+                    var rentEnd = rentEnd;
+                    this.itemtypes = 'zj'
+                    this.toggleIndex = Math.random()
+                    var data = {
+                        "rentStart":'',
+                        "rentEnd":'',
+                        "typeItem": 2,
+                        pactCode:this.pactCode,
+                        "pid": id
+                    }
+                    this.$axios({
+                        url: this.getAjax + '/admin/property/findList',
+                        method: "post",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:data
+                    })
+                        .then(res => {
+                            if(res.data.code == '1001'){
+                                var list = res.data.data.list;
+                                this.page = [];
+                                this.page = res.data.data;
+                                var dataList = res.data.data.list;
+                                var arr = [];
+                                for(var i=0;i<list.length;i++){
+                                    for(var j=0;j<list[i].propertyPayTypeList.length;j++){
+                                        var datas = list[i].propertyPayTypeList[j];
+                                        var time = list[i].propertyPayTypeList[j].dateStr?list[i].propertyPayTypeList[j].dateStr:'2021-01-28';
+                                        var img = list[i].propertyPayTypeList[j].attach==''?null:list[i].propertyPayTypeList[j].attach;
+                                        var strtime = time.replace("/-/g", "/");//时间转换
+                                        var date1=new Date(strtime);
+                                        var date2=new Date();
+                                        if(date1<date2 && img){
+                                            list[i].propertyPayTypeList[j]['jkStatus'] ='已缴纳'
+                                        }
+                                        else if(date1<date2 && (img==null)){
+                                            list[i].propertyPayTypeList[j]['jkStatus'] ='已超期'
+                                        }
+                                        else{
+                                            var date = new Date();
+                                            var seperator1 = "-";
+                                            var year = date.getFullYear();
+                                            var month = date.getMonth() + 1;
+                                            var strDate = date.getDate();
+                                            if (month >= 1 && month <= 9) {
+                                                month = "0" + month;
+                                            }
+                                            if (strDate >= 0 && strDate <= 9) {
+                                                strDate = "0" + strDate;
+                                            }
+                                            var currentdate = year + seperator1 + month + seperator1 + strDate;
+                                            var arr1 = currentdate.split('-');
+                                            var arr2 = time.split('-');
+                                            arr1[1] = parseInt(arr1[1]);
+                                            arr1[2] = parseInt(arr1[2]);
+                                            arr2[1] = parseInt(arr2[1]);
+                                            arr2[2] = parseInt(arr2[2]);
+                                            var flag = true;
+                                            var type = '即将到期'
+                                            if(arr1[0] == arr2[0]){//同年
+                                                if(arr2[1]-arr1[1] > 3){ //月间隔超过3个月
+                                                    flag = false;
+                                                    list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                                }else if(arr2[1]-arr1[1] == 3){ //月相隔3个月，比较日
+                                                    if(arr2[2] > arr1[2]){ //结束日期的日大于开始日期的日
+                                                        flag = false;
+                                                        list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                                    }else{
+                                                        list[i].propertyPayTypeList[j]['jkStatus'] ='即将到期'
+                                                    }
+                                                }else{
+                                                    list[i].propertyPayTypeList[j]['jkStatus'] ='即将到期'
+                                                }
+                                            }else{ //不同年
+                                                if(arr2[0] - arr1[0] > 1){
+                                                    list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                                    flag = false;
+                                                }else if(arr2[0] - arr1[0] == 1){
+                                                    if(arr1[1] < 10){ //开始年的月份小于10时，不需要跨年
+                                                        flag = false;
+                                                        list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                                    }else if(arr1[1]+3-arr2[1] < 12){ //月相隔大于3个月
+                                                        flag = false;
+                                                        list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                                    }else if(arr1[1]+3-arr2[1] == 12){ //月相隔3个月，比较日
+                                                        if(arr2[2] > arr1[2]){ //结束日期的日大于开始日期的日
+                                                            flag = false;
+                                                            list[i].propertyPayTypeList[j]['jkStatus'] ='未到期'
+                                                        }else{
+                                                            list[i].propertyPayTypeList[j]['jkStatus'] ='即将到期'
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            // list[i].propertyPayTypeList[j]['jkStatus'] ='未来时间'
+                                        }
+                                    }
+                                }
+                                for(var z=0;z<list.length;z++){
+                                    list[z]['flag'] = '';
+                                    var flag = list[z].flag,
+                                        item = list[z].propertyPayTypeList;
+                                    for(var y = 0; y < item.length; y++) {
+                                        if(item[y].jkStatus === "已超期") {
+                                            list[z].flag = '已超期'
+                                        } else if(item[y].jkStatus === "已缴纳") {
+                                            if(
+                                                (list[z].flag.length == 0) &&
+                                                (list[z].flag !== "已超期")&&(list[z].flag !== "即将到期" )
+                                            ){
+                                                list[z].flag = "已缴纳"
+                                            }
+                                        } else if(item[y].jkStatus === "即将到期") {
+                                            if(  (list[z].flag != "已超期") ){
+                                                list[z].flag = "即将到期"
+                                            }
+                                        }
+                                    }
+                                }
+                                console.log(list)
+                                if(this.val === '全部'){
+                                    this.tableData33 = list
+                                }else{
+                                    var arr = [];
+                                    list.forEach((item, i) => {
+                                        if(item.flag === this.val){
+                                            arr.push(item)
+                                        }
+                                    })
+                                    this.tableData33 = arr
+                                }
+
+                            }else{
+                                this.$message({
+                                    message: res.data.msg,
+                                    type: 'warning'
+                                });
+                            }
+                        })
+                }
+            },
             dialogVisibleShow(){
                 console.log(this.tableData)
                 this.dialogVisible = true;
@@ -623,13 +853,16 @@
 
             },
             fk(val){
+                console.log(val)
                 this.val = val;
+                this.currentPage = 1
+                this.toggleIndex=0
                 this.findList(this.user,this.val,this.rentStart,this.rentEnd,this.pactCode)
             },
             // 获取导出列表
             findExportTitles(){
                 var sysAuthAdmin = this.sysAuthAdmin;
-                if(sysAuthAdmin == '' || sysAuthAdmin == 'zcxxlrjgx' || sysAuthAdmin == 'zcgxsp'){
+                if(sysAuthAdmin == '' || sysAuthAdmin == 'zcxxlrjgx' || sysAuthAdmin == 'zcgxsp'  || sysAuthAdmin == 'xjcl' || sysAuthAdmin == 'xjyjsp'){
                     this.$message({
                         message: '暂无权限！',
                         type: 'warning'
@@ -805,6 +1038,8 @@
                                     that.Amount += parseFloat(that.books2[i].rentAmount)
                                 }
                             }
+                            that.findList(that.user,that.val,that.rentStart,that.rentEnd,that.pactCode);
+                            that.ZCkan(that.ZJid,false);
                             console.log(that.books2)
                         }
                     })
@@ -855,6 +1090,8 @@
                                     that.Amount += parseFloat(that.books2[i].rentAmount)
                                 }
                             }
+                            that.findList(that.user,that.val,that.rentStart,that.rentEnd,that.pactCode);
+                            that.ZCkan(that.ZJid,false);
                             console.log(that.books2)
                         }
                     })
@@ -882,42 +1119,51 @@
             },
             // 付款状态
             fkzt(data){
-                this.skvisible = true;
-                this.id= data.id
-                var that = this;
-                this.$axios({
-                    url: this.getAjax + '/admin/property/findDetails?id='+data.id,
-                    method: "get",
-                    headers: {
-                        'Content-Type': 'application/json;charset=UTF-8',
-                        'Token':sessionStorage.getItem('token')
-                    },
-                    data:{}
-                }).then(res => {
-                    if(res.data.code == '2004'){
+                var sysAuthAdmin = this.sysAuthAdmin;
+                if(sysAuthAdmin == '' || sysAuthAdmin == 'zcxxlrjgx' || sysAuthAdmin == 'zcgxsp'  || sysAuthAdmin == 'xjcl' || sysAuthAdmin == 'xjyjsp'){
                     this.$message({
-                        message: res.data.msg,
+                        message: '暂无权限！',
                         type: 'warning'
                     });
-                    this.$router.push('/')
                 }else{
-                    var params = res.data.data
-                        this.Amount = 0;
-                    that.books2 = params.propertyPayTypeList
-                        for(var i=0;i<that.books2.length;i++){
-                            if(this.books2[i].attach){
-                                var obj4 = {}
-                                that.$set(obj4,'name','第'+(i+1)+'笔收据');
-                                that.$set(obj4,'url',that.books2[i].attach);
-                                var arr4 = []
-                                arr4.push(obj4)
-                                that.books2[i]['img'] = arr4
-                                this.Amount += parseFloat(that.books2[i].rentAmount)
+                    this.skvisible = true;
+                    this.id= data.id
+                    var that = this;
+                    this.$axios({
+                        url: this.getAjax + '/admin/property/findDetails?id='+data.id,
+                        method: "get",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:{}
+                    })
+                        .then(res => {
+                            if(res.data.code == '2004'){
+                                this.$message({
+                                    message: res.data.msg,
+                                    type: 'warning'
+                                });
+                                this.$router.push('/')
+                            }else{
+                                var params = res.data.data
+                                this.Amount = 0;
+                                that.books2 = params.propertyPayTypeList
+                                for(var i=0;i<that.books2.length;i++){
+                                    if(this.books2[i].attach){
+                                        var obj4 = {}
+                                        that.$set(obj4,'name','第'+(i+1)+'笔收据');
+                                        that.$set(obj4,'url',that.books2[i].attach);
+                                        var arr4 = []
+                                        arr4.push(obj4)
+                                        that.books2[i]['img'] = arr4
+                                        this.Amount += parseFloat(that.books2[i].rentAmount)
+                                    }
+                                }
+                                console.log(that.books2)
                             }
-                        }
-                        console.log(that.books2)
+                        })
                 }
-            })
             },
             // 资产详情
             zcdetail(data){
@@ -1019,7 +1265,8 @@
                         'Token':sessionStorage.getItem('token')
                     },
                     data:data
-                }).then(res => {
+                })
+                    .then(res => {
                     if(res.data.code == '1001'){
                     var list = res.data.data.list;
                     this.page = [];
@@ -1152,6 +1399,8 @@
             },
             typeChange(val){
                 console.log(val)
+                this.currentPage = 1
+                   this.toggleIndex=0
                 this.value2 = ''
                 this.valuefk = ''
                 this.toggleIndex = Math.random()
@@ -1165,7 +1414,7 @@
             },
             handleClickss(){
                 var sysAuthAdmin = this.sysAuthAdmin;
-                if(sysAuthAdmin == '' || sysAuthAdmin == 'zcxxlrjgx' || sysAuthAdmin == 'zcgxsp'){
+                if(sysAuthAdmin == '' || sysAuthAdmin == 'zcxxlrjgx' || sysAuthAdmin == 'zcgxsp'  || sysAuthAdmin == 'xjcl' || sysAuthAdmin == 'xjyjsp'){
                     this.$message({
                         message: '暂无权限！',
                         type: 'warning'
@@ -1180,7 +1429,7 @@
             // 外租合同
             handleClicksswz(){
                 var sysAuthAdmin = this.sysAuthAdmin;
-                if(sysAuthAdmin == '' || sysAuthAdmin == 'zcxxlrjgx' || sysAuthAdmin == 'zcgxsp'){
+                if(sysAuthAdmin == '' || sysAuthAdmin == 'zcxxlrjgx' || sysAuthAdmin == 'zcgxsp'  || sysAuthAdmin == 'xjcl' || sysAuthAdmin == 'xjyjsp'){
                     this.$message({
                         message: '暂无权限！',
                         type: 'warning'
@@ -1192,6 +1441,21 @@
                 }
 
             },
+            // 租进合同
+            handleClickssZJ(){
+                var sysAuthAdmin = this.sysAuthAdmin;
+                if(sysAuthAdmin == '' || sysAuthAdmin == 'zcxxlrjgx' || sysAuthAdmin == 'zcgxsp'  || sysAuthAdmin == 'xjcl'){
+                    this.$message({
+                        message: '暂无权限！',
+                        type: 'warning'
+                    });
+                }else{
+                    this.dialogVisibleAdd = true
+                    var type = this.user
+                    this.$refs.dialogVisibleAddRef.detail(this.ZJid,'zj')
+                }
+
+            },
             showdialogVisibleAdd(data){
                 if(data === 'false'){
                     this.dialogVisibleAdd = false
@@ -1200,9 +1464,9 @@
                 }
             },
 
-            kan(data){
+            kan(data,type){
                 this.dialogVisibleKanwy = true
-                this.$refs.dialogVisibleKanwyRef.detail(data,'zy')
+                this.$refs.dialogVisibleKanwyRef.detail(data,type)
             },
             showdialogVisibleKan(data){
                 if(data === 'false'){
@@ -1213,8 +1477,17 @@
             },
 
             info(data){
-                this.dialogVisibleInfor = true
-                this.$refs.dialogVisibleInforRef.detail(data,this.itemtypes)
+                var sysAuthAdmin = this.sysAuthAdmin;
+                if(sysAuthAdmin == '' || sysAuthAdmin == 'zcxxlrjgx' || sysAuthAdmin == 'zcgxsp'  || sysAuthAdmin == 'xjcl' || sysAuthAdmin == 'xjyjsp'){
+                    this.$message({
+                        message: '暂无权限！',
+                        type: 'warning'
+                    });
+                }else{
+                    this.dialogVisibleInfor = true;
+                    this.$refs.dialogVisibleInforRef.detail(data,this.itemtypes,this.ZJid)
+                }
+
             },
             showdialogVisibleInfor(data){
                 if(data === 'false'){

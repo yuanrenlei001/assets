@@ -29,17 +29,17 @@
                         <!--</el-form-item>-->
                     </el-col>
                     <el-col  :lg="12">
-                        <el-col :lg="8"><div class="topLeft">审批类型：</div></el-col>
-                        <el-col :lg="16">
-                            <el-select  v-model="spoptionsval" placeholder="请选择" @change="spoptionsvals">
-                                <el-option
-                                        v-for="item in spoptions"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-col>
+                        <!--<el-col :lg="8"><div class="topLeft">审批类型：</div></el-col>-->
+                        <!--<el-col :lg="16">-->
+                            <!--<el-select  v-model="spoptionsval" placeholder="请选择" @change="spoptionsvals">-->
+                                <!--<el-option-->
+                                        <!--v-for="item in spoptions"-->
+                                        <!--:key="item.value"-->
+                                        <!--:label="item.label"-->
+                                        <!--:value="item.value">-->
+                                <!--</el-option>-->
+                            <!--</el-select>-->
+                        <!--</el-col>-->
                         <!--<el-form-item label="审批类型：">-->
                             <!--<el-select  v-model="spoptionsval" placeholder="请选择" @change="spoptionsvals">-->
                                 <!--<el-option-->
@@ -124,6 +124,13 @@
                             </div>
                         </template>
                     </el-table-column>
+                    <el-table-column  label="审批结果">
+                        <template slot-scope="tableData">
+                            <div v-if="tableData.row.status == 0">待审批</div>
+                            <div v-if="tableData.row.status == 1" style="color: #5daf34;">审批通过</div>
+                            <div v-if="tableData.row.status == 2" style="color: red;">审批驳回：{{tableData.row.remark}}</div>
+                        </template>
+                    </el-table-column>
                     <el-table-column
                             fixed="right"
                             label="操作"
@@ -195,19 +202,9 @@
                             <!--</el-radio-group>-->
                         <!--</el-form-item>-->
                     </el-col>
-                    <el-col  :lg="10">
-                        <el-col :lg="8"><div class="topLeft">审批类型：</div></el-col>
-                        <el-col :lg="16">
-                            <el-select  v-model="spoptionsval" placeholder="请选择" @change="spoptionsvals">
-                                <el-option
-                                        v-for="item in spoptions"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                        <!--<el-form-item label="审批类型：">-->
+                    <!--<el-col  :lg="10">-->
+                        <!--<el-col :lg="8"><div class="topLeft">审批类型：</div></el-col>-->
+                        <!--<el-col :lg="16">-->
                             <!--<el-select  v-model="spoptionsval" placeholder="请选择" @change="spoptionsvals">-->
                                 <!--<el-option-->
                                         <!--v-for="item in spoptions"-->
@@ -216,8 +213,8 @@
                                         <!--:value="item.value">-->
                                 <!--</el-option>-->
                             <!--</el-select>-->
-                        <!--</el-form-item>-->
-                    </el-col>
+                        <!--</el-col>-->
+                    <!--</el-col>-->
                     <el-col  :lg="3">
                         <div class="btns2">
                             <!--<el-button type="danger">批量修改</el-button>-->
@@ -281,13 +278,13 @@
                                tableData2.row.status !==0
 
 ">
-                                   <el-button  type="text" size="small" style="color: #999;">修改</el-button>
+                                   <!--<el-button  type="text" size="small" style="color: #999;">修改</el-button>-->
                                    <el-button  type="text" size="small" style="color: #999;">撤销</el-button>
                                    <el-button  type="text" size="small" style="color: #999;">催办</el-button>
                                </div>
                             <div v-else>
 
-                                <el-button  type="text" size="small" @click="dialogUpdates(tableData2.$index,tableData2.row)">修改</el-button>
+                                <!--<el-button  type="text" size="small" @click="dialogUpdates(tableData2.$index,tableData2.row)"  v-if="tableData2.row.meansBook.checkUpdate !==1">修改</el-button>-->
                                 <el-button  type="text" size="small" @click="cexiao(tableData2.row)">撤销</el-button>
                                 <el-button  type="text" size="small" @click="cui(tableData2.row)">催办</el-button>
                             </div>
@@ -330,7 +327,7 @@
                             <el-radio-button label="2">被驳回</el-radio-button>
                         </el-radio-group>
                     </el-col>
-                    <el-col  :lg="7">
+                    <el-col  :lg="6">
                         <el-col :lg="8"><div class="topLeft">巡检时间：</div></el-col>
                         <el-col :lg="16">
                             <el-date-picker
@@ -348,10 +345,10 @@
                             </el-date-picker>
                         </el-col>
                     </el-col>
-                    <el-col  :lg="8">
-                        <el-col :lg="4" style="opacity: 0;">
-                            <div class="topLeft">土：</div>
-                        </el-col>
+                    <el-col  :lg="10">
+                        <!--<el-col :lg="4" style="opacity: 0;">-->
+                            <!--<div class="topLeft">土：</div>-->
+                        <!--</el-col>-->
                         <el-col :lg="6"><div class="topLeft" style="text-align: center;">问题：</div></el-col>
                         <el-col :lg="8">
                             <el-select v-model="value" multiple placeholder="请选择" @change="questions">
@@ -363,10 +360,10 @@
                                 </el-option>
                             </el-select>
                         </el-col>
-                        <el-col :lg="2" style="opacity: 0;">
-                            <div class="topLeft">土：</div>
+                        <el-col :lg="3" style="margin-right: 40px;margin-left: 20px;">
+                            <el-button type="primary" @click="piliang">批量审批</el-button>
                         </el-col>
-                        <el-col :lg="4">
+                        <el-col :lg="3">
                             <el-button type="warning" @click="xunjian">巡检打卡</el-button>
                         </el-col>
                         <!--<el-form-item label="问题类型：">-->
@@ -449,14 +446,21 @@
             </el-row>
 
             <!--巡检问题详情-->
-            <assets-infor-wuye :dialogKan="dialogKan"  @changeShow="showdialogKan" ref="dialogKanRef"></assets-infor-wuye>
-            <mapxj :dialogXj="dialogXj"  @changeShow="showdialogXj" ref="dialogXjRef"></mapxj>
+            <assets-infor-wuye  :dialogKan="dialogKan"  @changeShow="showdialogKan" ref="dialogKanRef"></assets-infor-wuye>
+            <mapxj  :dialogXj="dialogXj"  @changeShow="showdialogXj" ref="dialogXjRef"></mapxj>
         </div>
         <!--处理人-->
         <div v-if="(user == '巡检处理人')&& tabPosition3 == '2'">
             <!--<div>-->
             <el-row style="margin-top: 20px;">
                 <el-form ref="form" >
+                    <el-col  :lg="8">
+                        <el-radio-group v-model="wytabPosition2" @change="wyChange" >
+                            <el-radio-button label="-1">全部</el-radio-button>
+                            <el-radio-button label="1">待处理</el-radio-button>
+                            <el-radio-button label="3">已完成</el-radio-button>
+                        </el-radio-group>
+                    </el-col>
                     <el-col  :lg="7">
                         <el-col :lg="8"><div class="topLeft">巡检时间：</div></el-col>
                         <el-col :lg="16">
@@ -537,7 +541,10 @@
                             label="操作"
                     >
                         <template slot-scope="wytableData2">
-                            <el-button  type="text" size="small">处理</el-button>
+                            <div v-if="wytableData2.row.status == 1">
+                                <el-button  type="text" size="small" @click="detail2(wytableData2.row)">处理</el-button>
+                            </div>
+                            <div v-if="wytableData2.row.status == 3" style="color: #333;">已完成</div>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -558,12 +565,41 @@
 
             <!--巡检问题详情-->
             <assets-infor-wuye :dialogKan="dialogKan"  @changeShow="showdialogKan" ref="dialogKanRef"></assets-infor-wuye>
-            <mapxj :dialogXj="dialogXj"  @changeShow="showdialogXj" ref="dialogXjRef"></mapxj>
+            <mapxj  :dialogXj="dialogXj"  @changeShow="showdialogXj" ref="dialogXjRef"></mapxj>
         </div>
+
+        <!--批量审批-->
+        <el-dialog
+                title="批量审批"
+                :visible.sync="updateBatch"
+                v-if="updateBatch"
+                class="counts plcounts"
+                width="700px">
+            <div>
+                <el-row>
+                    <el-form rel="form">
+                        <el-col :span="24" style="text-align: center;">
+                            您选择了{{multipleSelection.length}}条数据
+                        </el-col>
+                    </el-form>
+                </el-row>
+            </div>
+            <el-form ref="form" >
+                <el-row>
+                    <el-col :span="24" style="text-align: right;margin-top: 20px;">
+                        <el-button type="primary" round @click="pltg">通过</el-button>
+                        <el-button type="danger" round @click="plbh">驳回</el-button>
+                        <el-button type="success" round @click="updateBatch=false">取消</el-button>
+                    </el-col>
+                </el-row>
+            </el-form>
+        </el-dialog>
+
+
         <!--资产详情查看-->
-        <assets-kan :AssetsKanVisible="AssetsKanVisible"  @changeShow="showAssetsKan" ref="AssetsKanRef"></assets-kan>
+        <assets-kan  :AssetsKanVisible="AssetsKanVisible"  @changeShow="showAssetsKan" ref="AssetsKanRef"></assets-kan>
         <!--资产修改-->
-        <assets-infor :dialogUpdate="dialogUpdate" @child-event="newInforUpdate"  @changeShow="showdialogUpdate" ref="dialogUpdateRef"></assets-infor>
+        <assets-infor  :dialogUpdate="dialogUpdate" @child-event="newInforUpdate"  @changeShow="showdialogUpdate" ref="dialogUpdateRef"></assets-infor>
     </div>
 </template>
 
@@ -577,6 +613,7 @@
         name: 'login',
         data () {
             return {
+                updateBatch:false,
                 heighTable:300,
                 pickerOptions: {
                     shortcuts: [{
@@ -704,8 +741,113 @@
             AssetsInfor,AssetsInforManager,AssetsInforWuye,AssetsKan,mapxj
         },
         methods:{
+            pltg(){
+                let arr = this.multipleSelection;
+                let arr2 = []
+                for(let i=0;i<arr.length;i++){
+                    arr2.push(arr[i].id)
+                }
+                var data = {
+                    ids:arr2,
+                    status:1,
+                    remark:'通过'
+                }
+                this.$axios({
+                    url: this.getAjax + '/admin/meansBookReportAdmin/check',
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'Token':sessionStorage.getItem('token')
+                    },
+                    data:data
+                }).then(res => {
+                    if(res.data.code == '2004'){
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'warning'
+                        });
+                        this.$router.push('/')
+                    }else{
+                        this.$message({
+                            type: 'success',
+                            message: '审批成功！'
+                        });
+                        this.updateBatch = false;
+                        this.wysplist(1)
+                    }
+                })
+            },
+            plbh(){
+                let arr = this.multipleSelection;
+                let arr2 = []
+                for(let i=0;i<arr.length;i++){
+                    arr2.push(arr[i].id)
+                }
+
+                this.$prompt('请输入驳回理由', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                }).then(({ value }) => {
+                    var data = {
+                        ids:arr2,
+                        status:2,
+                        remark:value
+                    }
+                    this.$axios({
+                        url: this.getAjax + '/admin/meansBookReportAdmin/check',
+                        method: "post",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:data
+                    }).then(res => {
+                        if(res.data.code == '2004'){
+                            this.$message({
+                                message: res.data.msg,
+                                type: 'warning'
+                            });
+                            this.$router.push('/')
+                        }else{
+                            this.$message({
+                                type: 'success',
+                                message: '驳回成功！'
+                            });
+                            this.updateBatch = false;
+                            this.wysplist(1)
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '取消驳回'
+                    });
+                });
+            },
+            piliang(){
+                var sysAuthAdmin = this.sysAuthAdmin
+                if(sysAuthAdmin == 'zcgxsp' || sysAuthAdmin == 'xjsb,xjyjsp,htgx' || sysAuthAdmin == 'xjsb,htgx'){
+
+                    let arr = this.multipleSelection;
+                    if(arr.length>0){
+                        this.updateBatch = true;
+                    }else{
+                        this.$message({
+                            message: '请选择相关数据！',
+                            type: 'warning'
+                        });
+                    }
+                }else{
+                    this.$message({
+                        message: '暂无权限！',
+                        type: 'warning'
+                    });
+                }
+
+            },
             xunjian(){
                 this.dialogXj =true;
+                console.log(this.dialogXj)
                 this.$refs.dialogXjRef.detail('123')
                 },
             time(e){
@@ -718,7 +860,7 @@
                 }else{
                     this.rentStart=''
                     this.rentEnd=''
-                    this.wysplist(1,this.val,this.startTime,this.endTime);
+                    this.wysplist(1,this.val,'','');
                     // this.findList(1,this.val,this.rentStart,this.rentEnd);
                 }
 
@@ -734,7 +876,7 @@
                 var data ={
                     question:question,
                     pageNum:page,
-                    pageSize:10,
+                    pageSize:this.pageSize,
                     status:this.wytabPosition2,
                     startTime:startTime,
                     endTime:endTime
@@ -790,7 +932,7 @@
             // 提交人撤销审批
             cexiao(data){
                 var that = this;
-                this.$confirm('通过该项审批？', '审批提示', {
+                this.$confirm('确认撤销此项申请？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -1026,14 +1168,15 @@
                     this.user = '物业审批人';
                     this.status = -1
                     this.wysplist(1,'');
-                }else if(userType == 'xjsb,htgx'){
-                    this.user = '提交人';
-                    this.status = -1
                     this.stjlist();
+                }else if(userType == 'xjcl'){
+                    this.user = '巡检处理人';
+                    this.wysplist(1,'',this.startTime,this.endTime);
                 }
             },
             handleCurrentChange(val) {
                 console.log(this.userType);
+                this.pageSize = 10;
                 var userType = this.userType;
                 this.pageNum = val
                 if(userType == ''){
@@ -1046,20 +1189,19 @@
                     }
                 }else if(userType == 'zcxxlrjgx'){
                     this.user = '提交人';
-                    this.status = -1
                     this.stjlist();
                 }else if(userType == 'zcgxsp'){
                     this.user = '审批人';
-                    this.status = -1
                     this.splist();
-                }else if(userType == 'xjsb,xjyjsp,htgx'){
+                }else if(userType == 'xjsb,xjyjsp,htgx' || userType == 'xjsb,xjyjsp'){
                     this.user = '物业审批人';
-                    this.status = -1
-                    this.wysplist(1,'');
+                    this.wysplist(val,'');
                 }else if(userType == 'xjsb,htgx'){
                     this.user = '提交人';
-                    this.status = -1
                     this.stjlist();
+                }else if(userType == 'xjcl'){
+                    this.user = '巡检处理人';
+                    this.wysplist(val,'',this.startTime,this.endTime);
                 }
             },
             ZCdetail(){
@@ -1083,8 +1225,9 @@
                 }
             },
             wyChange(val){
+                console.log(val)
                 this.wytabPosition2 = val
-                this.wysplist(1)
+                this.wysplist(1,'',this.startTime,this.endTime)
             },
             typeChange2(val){
                 console.log(val)
@@ -1207,9 +1350,9 @@
             showdialogXj(data){
                 console.log(data)
                 if(data === 'false'){
-                    this.dialogKan = false
+                    this.dialogXj = false
                 }else{
-                    this.dialogKan = true
+                    this.dialogXj = true
                 }
             },
             handleSelectionChange(val) {
@@ -1299,7 +1442,7 @@
                 this.user = '审批人';
                 this.status = -1
                 this.splist();
-            }else if(userType == 'xjsb,xjyjsp,htgx' || userType == 'xjsb,xjyjsp'  ){
+            }else if(userType == 'xjsb,xjyjsp,htgx' || userType == 'xjsb,xjyjsp' || userType == 'xjyjsp' ){
                 console.log(4)
                 this.user = '物业审批人';
                 this.status = -1

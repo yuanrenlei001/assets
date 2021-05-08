@@ -86,7 +86,13 @@
                         <el-table-column type="selection" width="55"></el-table-column>
                         <el-table-column  prop="id" label="ID"></el-table-column>
                         <el-table-column prop="userName" label="用户账号"></el-table-column>
-                        <el-table-column prop="roleName" label="用户角色"></el-table-column>
+                        <el-table-column prop="roleName" label="用户角色">
+                            <template slot-scope="tableData" >
+                                <div v-for="item in adminList" v-if="item.value == tableData.row.roleId">
+                                    {{item.label}}
+                                </div>
+                            </template>
+                        </el-table-column>
                         <el-table-column prop="name" label="姓名"></el-table-column>
                         <el-table-column prop="unit" label="所属单位"></el-table-column>
                         <el-table-column prop="mobile" label="联系电话"></el-table-column>
@@ -537,7 +543,7 @@
                         // unshift()
                         arr.unshift(p)
                     this.adminList = arr
-                    console.log()
+                    console.log(arr)
                 }else{
                     this.$message({
                         message: res.data.msg,

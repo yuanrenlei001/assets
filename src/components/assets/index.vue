@@ -157,36 +157,13 @@
                 </el-col>
                 <el-col :lg="8">
                     <div class="btns2">
+                        <el-button type="primary" @click="AddShpdc">导入shp</el-button>
                         <el-button type="primary" @click="handleClickAdd">新增</el-button>
                         <el-button type="warning" @click="updateBatchs">批量修改</el-button>
                         <el-button type="success" @click="chars">统计</el-button>
                         <el-button type="danger" @click="findExportTitles">导出</el-button>
                     </div>
-                    <!--<el-col :lg="6"><el-button type="primary" @click="handleClickAdd">新增</el-button></el-col>-->
-                    <!--<el-col :lg="6"><el-button type="warning" @click="updateBatchs">批量修改</el-button></el-col>-->
-                    <!--<el-col :lg="6"><el-button type="success" @click="chars">统计</el-button></el-col>-->
-                    <!--<el-col :lg="6"><el-button type="danger" @click="findExportTitles">导出</el-button></el-col>-->
                 </el-col>
-                <!--<el-col class="sort bqSort" :span="4" >-->
-                    <!--<el-form-item label="标签：">-->
-                        <!--<el-select  v-model="value" placeholder="请选择">-->
-                            <!--<el-option-->
-                                    <!--v-for="item in options"-->
-                                    <!--:key="item.value"-->
-                                    <!--:label="item.label"-->
-                                    <!--:value="item.value">-->
-                            <!--</el-option>-->
-                        <!--</el-select>-->
-                    <!--</el-form-item>-->
-                <!--</el-col>-->
-                <!--<el-col :lg="5">-->
-                    <!--<div class="btns2">-->
-                        <!--<el-button type="primary" @click="handleClickAdd">新增</el-button>-->
-                        <!--<el-button type="warning" @click="updateBatchs">批量修改</el-button>-->
-                        <!--<el-button type="success" @click="chars">统计</el-button>-->
-                        <!--<el-button type="danger" @click="findExportTitles">导出</el-button>-->
-                    <!--</div>-->
-                <!--</el-col>-->
             </el-form>
         </el-row>
         <el-row class="tables" >
@@ -223,7 +200,7 @@
                         label="操作"
                         >
                     <template slot-scope="tableData" >
-                        <div v-if="sysAuthAdmin !== '' && sysAuthAdmin !== 'xjsb,htgx' && sysAuthAdmin !== 'zcgxsp' && sysAuthAdmin !== 'xjsb,xjyjsp,htgx'">
+                        <div v-if="sysAuthAdmin !== '' && sysAuthAdmin !== 'xjsb,htgx' && sysAuthAdmin !== 'zcgxsp' && sysAuthAdmin !== 'xjsb,xjyjsp,htgx' && sysAuthAdmin !== 'xjcl'">
                             <el-button  @click="dialogUpdates(tableData.$index,tableData.row)" type="text" size="small" style="color: #333;">修改</el-button>
                             <el-button  type="text" size="small" style="color: red;" @click="deletes(tableData.$index,tableData.row)">删除</el-button>
                         </div>
@@ -248,6 +225,87 @@
                     :total="total">
             </el-pagination>
         </el-row>
+
+
+        <!--导入shp-->
+        <el-dialog
+                class="abow_dialog"
+                id="zcxz"
+                title="导入Shp"
+                :visible.sync="AddShp"
+                v-if="AddShp"
+                width="600px">
+            <div class="count">
+                <el-form ref="form" >
+                    <el-row>
+                        <el-col :span="24">
+                            <div  style="
+    font-size: 14px;color: #333;
+    line-height: 40px;">上传完整的Shp文件</div>
+                            <el-upload
+                                     style="position: relative;right:0;"
+                                    class="upload-demo"
+                                    action="http://61.153.180.66:9098/file/attachment/upload?type=asset"
+                                    multiple
+                                     :on-remove="handleRemoveShp"
+                                    :on-change="handleChangeShp"
+                                    :file-list="fileListShp">
+                                <el-button size="small" type="primary">点击上传</el-button>
+                            </el-upload>
+                        </el-col>
+                        <el-col :span="24">
+                            <div  style="width: 38%;
+    font-size: 14px;color: #333;
+    line-height: 40px;">关联资产</div>
+
+                            <!--<div v-for='(item,index) in booksShp' :id="'myid'+index" v-model="myValueShp[index]" style="margin-bottom: 12px;">-->
+                                <!--<el-input v-model="item.assetCode" placeholder="" style="width: 300px;" ></el-input>-->
+                                <!--<el-button type="primary" @click="del(index)" style="margin-left: 20px;">删除</el-button>-->
+                            <!--</div>-->
+                            <div  v-for='(item,index) in assetCode' style="margin-bottom: 20px;">
+                            <el-select
+                                    style="width:70%;"
+                                    @change="zcChange(item)"
+                                    v-model="item.value"
+                                    filterable
+                                    remote
+                                    reserve-keyword
+                                    placeholder="请输入产权人/资产坐落查询资产编号,管理Shp"
+                                    :remote-method="remoteMethod"
+                                    :loading="loading">
+                                <el-option
+                                        v-for="items in zcoptions"
+                                        :key="items.value"
+                                        :label="items.label"
+                                        :value="items.value">
+                                </el-option>
+                            </el-select>
+                                <el-button type="primary" @click="delShp(index)" style="margin-left: 20px;">删除</el-button>
+                            </div>
+                        </el-col>
+                        <el-col :span="24" style="margin-top: 20px;">
+                            <el-button type="primary" @click="newAddsShp">添加</el-button>
+                            <div style="width: 54%;
+    font-size: 14px;
+    color: rgb(51, 51, 51);
+    line-height: 40px;
+    float: right;
+    margin-right: 143px;
+">若存在多条台账数据，请点击添加按钮</div>
+
+
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </div>
+           <el-row>
+               <el-col :span="24" style="text-align: right;margin-top: 20px;margin-bottom: 20px;">
+                   <el-button type="primary" round @click="successShp">关联</el-button>
+                   <el-button type="success" round @click="AddShp = false">取消</el-button>
+               </el-col>
+           </el-row>
+        </el-dialog>
+
             <!-- 新增编辑弹框子组件 -->
         <add-or-update :addOrUpdateVisible="addOrUpdateVisible" @changeShow="showAddOrUpdate" ref="addOrUpdateRef"></add-or-update>
 
@@ -264,7 +322,7 @@
             <div class="count">
                 <el-form ref="form" >
                     <el-row>
-                        <el-col :span="24" class="newAdd">
+                        <el-col :span="24" class="newAdd" style="opacity: 0;">
                             <el-form-item label="请导入资产shp 文件：">
                                 <el-upload
                                         class="avatar-uploader"
@@ -631,6 +689,7 @@
         <el-dialog
                 :visible.sync="findExportTitle"
                 v-if="findExportTitle"
+                @close="handleClose"
                 title="选择导出字段"
                 width="500px">
             <el-row>
@@ -664,6 +723,13 @@ export default {
   name: 'login',
   data () {
     return {
+        shpData:{shapeFiles:'',code:''},
+        shpDataFile:new FormData(),
+        fileListShp:[],
+        loading: false,
+        assetCode:[{value:null,houseAddr:null}],
+        zcoptions: [],
+        AddShp:false,
         heighTable:'300',
         houseNature:[
             {'label':'全部'},{'label':'办公'},{'label':'参主'},{'label':'仓储'},{'label':'工业厂房'},{'label':'公房'},
@@ -689,16 +755,17 @@ export default {
         ],
         landUseval:'',
         sysAuthAdmin:sessionStorage.getItem('authStr'),
-        checkAll: false,
+        checkAll: true,
         checkedCities: [],
         cities: [{'title':'上海','key':'shanghai'},{'title':'上海1','key':'shanghai1'},{'title':'上海2','key':'shanghai2'},],
-        isIndeterminate: false,
+        isIndeterminate: true,
         findExportTitle:false,
         hisytor:false,
         pageSizesList: [10, 15, 20, 30, 50],
         newAddinput:'',
         itemcount:[{'books':'','id':''}],
         myValue:[],
+        myValueShp:[],
         imageUrl: '',
         detailData:'333333',
         detailId:'123',
@@ -736,6 +803,7 @@ export default {
         approvalFindList:[{openRole:{'user':''}},{checkRole:{'user':''}},{noticeRole:{'user':''}}],
         zcAdd:'',
         books:[{'id':''}],
+        booksShp:[{'id':''}],
         delId:'',
         delinput:'',
         updateBatch:false,
@@ -766,12 +834,123 @@ export default {
         realEstateAttachUrl:'',
         realHouseAttachUrl:'',
         realLandAttachUrl:'',
+        daochuFlag:true,
+        arrFlag:true,
     }
   },
     components:{
         DateChart,AssetsInfor,NewInfor,NewAdd,AssetsKan,AddOrUpdate,history,AssetsKanwy
     },
     methods:{
+        handleRemoveShp(file, fileList){
+            var that  =this;
+            let arr = [];
+            if(fileList.length>0){
+                let formData = that.shpDataFile;
+                for(let i=0;i<fileList.length;i++){
+                    console.log(fileList[i])
+                    formData.append('shapeFiles',fileList[i].raw)
+                }
+            }
+        },
+        handleChangeShp(file, fileList) {
+            var that  =this;
+            let arr = [];
+            if(fileList.length>0){
+                let formData = that.shpDataFile;
+                for(let i=0;i<fileList.length;i++){
+                    console.log(fileList[i])
+                    formData.append('shapeFiles',fileList[i].raw)
+                    arr.push(formData)
+                }
+            }
+        },
+        successShp(){
+            var that = this;
+            if(this.assetCode.length>0){
+                let arr = [];
+                for(let i=0;i<this.assetCode.length;i++){
+                    arr.push(this.assetCode[i].value)
+                }
+                let str = arr.join(",");
+                that.shpData.code = str;
+                that.shpDataFile.append('code',str)
+                this.$axios({
+                    url: this.getAjaxShp + 'zch/zchShape/add',
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    // responseType: 'blob',
+                    data:that.shpDataFile
+                }).then(res => {
+                    console.log(res)
+                    if(res.data.code == '200'){
+                        that.AddShp = false;
+                        this.$message({
+                            message: '关联成功！',
+                            type: 'success'
+                        });
+                    }else{
+                        this.$message({
+                            message: res.data.message,
+                            type: 'warning'
+                        });
+                    }
+                })
+            }
+
+        },
+        remoteMethod(query) {
+            var that =this;
+            if (query !== '') {
+                this.loading = true;
+                var data = {search:query}
+                setTimeout(() => {
+                    this.loading = false;
+                    this.$axios({
+                        url: this.getAjax + '/admin/meansAdmin/findHouseAddrByCode',
+                        method: "post",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        data:data
+                    }).then(res => {
+                        console.log(res)
+                        var arr = [];
+                        var list = res.data.data
+                        for(var i=0;i<list.length;i++){
+                            var obj = {};
+                            obj['value'] = list[i].assetCode
+                            obj['label'] = list[i].assetCode +'，'+ list[i].houseAddress
+                            obj['address'] = list[i].houseAddress
+                            arr.push(obj)
+                        }
+                        this.zcoptions  = arr
+                        console.log(arr)
+                    })
+                    // this.zcoptions = this.list.filter(item => {
+                    //     return item.label.toLowerCase()
+                    //         .indexOf(query.toLowerCase()) > -1;
+                    // });
+                    // console.log(this.zcoptions)
+                }, 200);
+            } else {
+                this.zcoptions = [];
+            }
+        },
+        zcChange(item){
+            console.log(item)
+            var val = item.value
+            var arr = this.zcoptions
+            for(var i=0;i<arr.length;i++){
+                if(val === arr[i].value){
+                    item.houseAddr = arr[i].address
+                }
+            }
+            // this.assetCode[index].houseAddr = this.zcoptions[0].label
+        },
         labelHead(h,{column,index}){
             let l = column.label.length
             let f = 16 //每个字大小，其实是每个字的比例值，大概会比字体大小差不多大一点，
@@ -783,6 +962,12 @@ export default {
         del(e){
 
             var arr = this.books.splice(e, 1);
+
+            console.log(arr);
+        },
+        delShp(e){
+
+            var arr = this.assetCode.splice(e, 1);
 
             console.log(arr);
         },
@@ -842,11 +1027,25 @@ export default {
 
             this.list(this.search)
         },
-
+        handleClose(){
+            this.isIndeterminate = true;
+            this.checkAll = true
+        },
+        AddShpdc(){
+            var sysAuthAdmin = this.sysAuthAdmin;
+            if(sysAuthAdmin == '' || sysAuthAdmin == 'xjsb,xjyjsp,htgx' || sysAuthAdmin == 'xjsb,htgx'  || sysAuthAdmin == 'xjcl' || sysAuthAdmin == 'xjyjsp' ){
+                this.$message({
+                    message: '暂无权限！',
+                    type: 'warning'
+                });
+            }else{
+                this.AddShp = true;
+            }
+        },
       // 获取导出列表
         findExportTitles(){
             var sysAuthAdmin = this.sysAuthAdmin;
-            if(sysAuthAdmin == '' || sysAuthAdmin == 'zcgxsp' || sysAuthAdmin == 'xjsb,xjyjsp,htgx' || sysAuthAdmin == 'xjsb,htgx' ){
+            if(sysAuthAdmin == '' || sysAuthAdmin == 'xjsb,xjyjsp,htgx' || sysAuthAdmin == 'xjsb,htgx'  || sysAuthAdmin == 'xjcl'  || sysAuthAdmin == 'xjyjsp'){
                 this.$message({
                     message: '暂无权限！',
                     type: 'warning'
@@ -863,7 +1062,11 @@ export default {
                     data:{}
                 }).then(res => {
                     if(res.data.code == '1001'){
-                        this.cities = res.data.data
+                            this.cities = res.data.data
+                            this.checkedCities =  res.data.data;
+                            this.isIndeterminate = false;
+                            this.arrFlag = true;
+                            this.exports(this.checkedCities)
                     }else{
                         this.$message({
                             message: res.data.msg,
@@ -876,12 +1079,14 @@ export default {
         },
 
         handleCheckAllChange(val) {
+            this.daochuFlag = val
             const cityOptions = this.cities;
             this.checkedCities = val ? cityOptions : [];
             this.isIndeterminate = false;
             this.exports(this.checkedCities)
         },
         handleCheckedCitiesChange(value) {
+            this.isIndeterminate = false;
             let checkedCount = value.length;
             this.checkAll = checkedCount === this.cities.length;
             this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
@@ -901,39 +1106,43 @@ export default {
             for(var j=0;j<list.length;j++){
                 listArr.push(list[j].id)
             }
-            console.log(list)
-            var data = str
-            var that = this;
-            var formData = new FormData();
-            console.log(JSON.stringify(listArr))
-            formData.append('exportTitle',JSON.stringify(arr))
-            formData.append('ids',JSON.stringify(listArr))
-            formData.append('houseNature',this.houseNatureval=='全部'?'':this.houseNatureval)
-            formData.append('assetUse',this.assetUseval=='全部'?'':this.assetUseval)
-            formData.append('landUse',this.landUseval=='全部'?'':this.landUseval)
-            formData.append('landNature',this.landNatureval=='全部'?'':this.landNatureval)
-            formData.append('houseNow',this.houseNowval=='全部'?'':this.houseNowval)
-            this.formDatas = formData
-            for (var value of formData.values()) {
-                console.log(value);
+            console.log(arr.length)
+            if(arr.length>0){
+                var data = str
+                var that = this;
+                var formData = new FormData();
+                this.arrFlag = true;
+                formData.append('exportTitle',JSON.stringify(arr))
+                formData.append('ids',JSON.stringify(listArr))
+                formData.append('houseNature',this.houseNatureval=='全部'?'':this.houseNatureval)
+                formData.append('assetUse',this.assetUseval=='全部'?'':this.assetUseval)
+                formData.append('landUse',this.landUseval=='全部'?'':this.landUseval)
+                formData.append('landNature',this.landNatureval=='全部'?'':this.landNatureval)
+                formData.append('houseNow',this.houseNowval=='全部'?'':this.houseNowval)
+                this.formDatas = formData
+            }else{
+                this.arrFlag = false;
             }
+
         },
         daochu(){
-            var url =this.getAjax + '/admin/meansAdmin/export';
-            // this.formSubmit(url,this.formDatas)
-            this.$axios({
-                url: url,
-                method: "post",
-                headers: {
-                    'Content-Type': 'application/json;charset=UTF-8',
-                    'Token':sessionStorage.getItem('token')
-                },
-                responseType: 'blob',
-                data:this.formDatas
-            }).then(res => {
-                this.download(res.data);
-                this.findExportTitle = false;
-            })
+            if(this.arrFlag){
+                var url =this.getAjax + '/admin/meansAdmin/export';
+                    // this.formSubmit(url,this.formDatas)
+                    this.$axios({
+                        url: url,
+                        method: "post",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8',
+                            'Token':sessionStorage.getItem('token')
+                        },
+                        responseType: 'blob',
+                        data:this.formDatas
+                    }).then(res => {
+                        this.download(res.data);
+                        this.findExportTitle = true;
+                    })
+            }
         },
         download(data){
             if (window.navigator && window.navigator.msSaveOrOpenBlob) {
@@ -1072,6 +1281,7 @@ export default {
                 },
                 data:data
             }).then(res => {
+                console.log(res)
                 if(res.data.code == '2004'){
                 this.$message({
                     message: res.data.msg,
@@ -1136,13 +1346,18 @@ export default {
             obj['id'] = ''
             this.books.push(obj);
         },
+        newAddsShp(){
+            this.assetCode.push({
+                value: null,
+            });
+        },
         newInforUpdate(data){
             this.findList();
         },
         // 批量修改
         updateBatchs(){
             var sysAuthAdmin = this.sysAuthAdmin
-            if(sysAuthAdmin == '' || sysAuthAdmin == 'zcgxsp' || sysAuthAdmin == 'xjsb,xjyjsp,htgx' || sysAuthAdmin == 'xjsb,htgx'){
+            if(sysAuthAdmin == '' || sysAuthAdmin == 'zcgxsp' || sysAuthAdmin == 'xjsb,xjyjsp,htgx' || sysAuthAdmin == 'xjsb,htgx' || sysAuthAdmin == 'xjcl'  || sysAuthAdmin == 'xjyjsp'){
                 this.$message({
                     message: '暂无权限！',
                     type: 'warning'
@@ -1438,7 +1653,7 @@ export default {
         },
         handleClickAdd(){
             var sysAuthAdmin = this.sysAuthAdmin;
-            if(sysAuthAdmin == '' || sysAuthAdmin == 'zcgxsp' || sysAuthAdmin == 'xjsb,xjyjsp,htgx' || sysAuthAdmin == 'xjsb,htgx' ){
+            if(sysAuthAdmin == '' || sysAuthAdmin == 'zcgxsp' || sysAuthAdmin == 'xjsb,xjyjsp,htgx' || sysAuthAdmin == 'xjsb,htgx' || sysAuthAdmin == 'xjcl' || sysAuthAdmin == 'xjyjsp'){
                 this.$message({
                     message: '暂无权限！',
                     type: 'warning'
@@ -1498,7 +1713,7 @@ export default {
     .count>>>.el-form-item {margin-bottom: 5px;}
     /*.count>>>.el-input {width: 400px;}*/
     .count>>>.el-upload--picture-card {width: 40px;height:40px;position: absolute;top:0;right:220px;}
-    .count>>>.el-upload--picture-card i {width: 40px;height:40px;position: absolute;top:6px;left:0;}
+    .count>>>.el-upload--picture-card i {width: 40px;height:40px;position: absolute;}
     .count .phone>>>.el-upload--picture-card {width: 140px;height:140px;position: relative;right: inherit;}
     .count .phone>>>.el-upload--picture-card i {width: 140px;height:140px;position: relative;}
     .count .table>>>.el-input {width: 150px;}
@@ -1508,7 +1723,7 @@ export default {
         left: 90px;
     }
     .count>>>.upload-demo {    width: 200px;
-        position: absolute;
+        position: relative;
         top: 0;
         right: 85px;
         z-index: 9999;}

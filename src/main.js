@@ -8,6 +8,11 @@ import qs from 'qs'
 import echarts from 'echarts'
 import 'default-passive-events'
 import '@/assets/main.css'
+// import L from "leaflet";
+// import "leaflet/dist/leaflet.css";
+
+import "leaflet-draw";
+import "leaflet-draw/dist/leaflet.draw.css";
 import App from './App'
 import router from './router'
 Vue.prototype.$echarts = echarts
@@ -40,6 +45,8 @@ Vue.filter('dateFormat', function(originVal) {
 })
 // Vue.prototype.getAjax = 'http://39.100.95.204:1022';
 Vue.prototype.getAjax = 'http://61.153.180.66:9098/apis';
+Vue.prototype.getAjaxShp = 'https://leyou.chinananxun.com/api/';
+Vue.prototype.getAjaxMap = 'http://61.153.180.66:9087/geoserver';
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

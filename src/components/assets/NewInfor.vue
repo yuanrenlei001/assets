@@ -125,7 +125,7 @@
                                 <!--</el-form-item>-->
                             </el-col>
                             <el-col  :lg="22">
-                                <el-col :lg="11"><div class="textLeft">* 土地用途：</div></el-col>
+                                <el-col :lg="11"><div class="textLeft"> 土地用途：</div></el-col>
                                 <el-col :lg="13">
                                     <el-select  v-model="landUseVal" placeholder="请选择" :disabled="disabled" @change="landUseChange">
                                         <el-option
@@ -148,7 +148,7 @@
                                 <!--</el-form-item>-->
                             </el-col>
                             <el-col  :lg="22">
-                                <el-col :lg="11"><div class="textLeft">* 土地性质：</div></el-col>
+                                <el-col :lg="11"><div class="textLeft">土地性质：</div></el-col>
                                 <el-col :lg="13">
                                     <el-select  v-model="landNatureVal" placeholder="请选择" :disabled="disabled" @change="landNatureChange">
                                         <el-option
@@ -985,20 +985,7 @@
                 });
                 return;
             }
-            if(data.landUse == '' || data.landUse == undefined){
-                this.$message({
-                    message: '土地用途为空',
-                    type: 'warning'
-                });
-                return;
-            }
-            if(data.landNature == '' || data.landNature == undefined){
-                this.$message({
-                    message: '土地性质为空',
-                    type: 'warning'
-                });
-                return;
-            }
+
             if(data.houseNow == '' ||  data.houseNow == undefined){
                 this.$message({
                     message: '房屋现状为空',
